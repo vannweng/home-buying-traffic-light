@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#12342b" />
+    <title>購屋紅綠燈｜看房決策儀表板</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="購屋紅綠燈首頁"><span class="brand-dot"></span>購屋紅綠燈</a>
+      <div class="top-actions">
+        <span class="saved-state" id="savedState">資料儲存在這台裝置</span>
+        <button class="button ghost" id="resetButton">重設資料</button>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">HOME BUYING DECISION TOOL</p>
+          <h1>把看房的感覺，<br /><em>變成可判斷的訊號。</em></h1>
+          <p class="hero-copy">輸入物件與自己的財務條件，讓預算、價格、地段與風險一起亮燈。它不是估價工具，而是幫你在下斡旋前問對問題。</p>
+        </div>
+        <div class="hero-light" aria-label="目前決策燈號">
+          <span class="light red"></span><span class="light yellow active"></span><span class="light green"></span>
+          <strong id="heroSignal">值得進一步確認</strong>
+          <small id="heroScore">目前 0 / 100</small>
+        </div>
+      </section>
+
+      <section class="dashboard-grid">
+        <form class="card input-card" id="homeForm">
+          <div class="card-heading"><div><p class="section-kicker">01 / 輸入條件</p><h2>這次看的房子</h2></div><span class="required-note">* 必填</span></div>
+          <div class="field wide"><label for="propertyName">物件名稱 <b>*</b></label><input id="propertyName" name="propertyName" placeholder="例如：大安區 2 房電梯" required /></div>
+          <div class="field-row">
+            <div class="field"><label for="totalPrice">開價（萬）<b>*</b></label><input id="totalPrice" name="totalPrice" type="number" min="0" placeholder="2,580" required /></div>
+            <div class="field"><label for="area">權狀坪數 <b>*</b></label><input id="area" name="area" type="number" min="0" step="0.1" placeholder="28.5" required /></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label for="downPayment">可用自備款（萬）<b>*</b></label><input id="downPayment" name="downPayment" type="number" min="0" placeholder="600" required /></div>
+            <div class="field"><label for="monthlyIncome">家庭月收入（萬）<b>*</b></label><input id="monthlyIncome" name="monthlyIncome" type="number" min="0" step="0.1" placeholder="14" required /></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label for="loanRate">預估房貸利率（%）</label><input id="loanRate" name="loanRate" type="number" min="0" step="0.01" value="2.5" /></div>
+            <div class="field"><label for="loanYears">貸款年限（年）</label><select id="loanYears" name="loanYears"><option value="30">30 年</option><option value="35" selected>35 年</option><option value="40">40 年</option></select></div>
+          </div>
+          <div class="field"><label for="note">看房備註</label><textarea id="note" name="note" rows="2" placeholder="採光、漏水、屋況、仲介承諾⋯⋯"></textarea></div>
+          <div class="divider"></div>
+          <div class="card-heading compact"><div><p class="section-kicker">02 / 主觀評分</p><h2>你對它的感受</h2></div><span class="scale">1 很差 — 5 很好</span></div>
+          <div class="ratings">
+            <label>地段與生活機能 <output for="location">3</output><input id="location" name="location" type="range" min="1" max="5" value="3" /></label>
+            <label>屋況與格局 <output for="condition">3</output><input id="condition" name="condition" type="range" min="1" max="5" value="3" /></label>
+            <label>社區與轉手性 <output for="resale">3</output><input id="resale" name="resale" type="range" min="1" max="5" value="3" /></label>
+          </div>
+          <button class="button primary" type="submit">更新判斷結果 <span>→</span></button>
+        </form>
+
+        <section class="result-column">
+          <article class="card signal-card" id="signalCard">
+            <div class="signal-top"><p class="section-kicker">03 / 綜合燈號</p><span class="signal-date" id="signalDate"></span></div>
+            <div class="signal-main"><div class="big-light yellow" id="bigLight"></div><div><h2 id="signalTitle">先輸入一個物件</h2><p id="signalDescription">資料填妥後，這裡會整理出你下一步該確認的事。</p></div></div>
+            <div class="score-row"><span>決策分數</span><strong id="scoreValue">--</strong><span>/ 100</span></div>
+            <div class="score-track"><i id="scoreBar"></i></div>
+          </article>
+
+          <article class="card metrics-card">
+            <div class="card-heading compact"><div><p class="section-kicker">04 / 關鍵數字</p><h2>壓力測試</h2></div></div>
+            <div class="metrics">
+              <div><span>每坪單價</span><strong id="unitPrice">--</strong><small>萬元 / 坪</small></div>
+              <div><span>預估月付</span><strong id="monthlyPayment">--</strong><small>萬元 / 月</small></div>
+              <div><span>房貸收入比</span><strong id="incomeRatio">--</strong><small>建議低於 40%</small></div>
+              <div><span>自備款比例</span><strong id="downRatio">--</strong><small>建議至少 20%</small></div>
+            </div>
+          </article>
+
+          <article class="card checklist-card">
+            <div class="card-heading compact"><div><p class="section-kicker">05 / 下一步</p><h2>下決定前再查一次</h2></div><span class="count" id="checkCount">0 / 6</span></div>
+            <div class="checklist" id="checklist"></div>
+          </article>
+        </section>
+      </section>
+      <section class="tip-strip"><span>判讀原則</span><p>綠燈不代表一定買，紅燈也不等於放棄；燈號的用途，是幫你找到最該補齊的資訊。</p></section>
+    </main>
+    <footer>購屋紅綠燈 · 為你的決策保留一點冷靜</footer>
+    <script src="app.js"></script>
+  </body>
+</html>
