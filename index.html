@@ -1,92 +1,61 @@
 <!doctype html>
 <html lang="zh-Hant">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#12342b" />
-    <title>購屋紅綠燈｜看房決策儀表板</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header class="topbar">
-      <a class="brand" href="#top" aria-label="購屋紅綠燈首頁"><span class="brand-dot"></span>購屋紅綠燈</a>
-      <div class="top-actions">
-        <span class="saved-state" id="savedState">資料儲存在這台裝置</span>
-        <button class="button ghost" id="resetButton">重設資料</button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#102d27" />
+  <title>購屋紅綠燈｜中和區預售屋開價比一比</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top"><span class="brand-mark"><i></i><i></i><i></i></span>購屋紅綠燈</a>
+    <div class="top-right"><span class="region-pill">首站 · 新北市中和區</span><a href="#method" class="top-link">判讀方式 ↗</a></div>
+  </header>
+  <main id="top">
+    <section class="hero">
+      <div class="hero-content">
+        <div class="eyebrow"><span class="eyebrow-line"></span> ZHONGHE / PRICE SIGNAL</div>
+        <h1>這個開價，<br /><em>到底合理嗎？</em></h1>
+        <p>找出中和區的預售建案，輸入業務報的價格。我們用公開成交紀錄整理比較基準，讓你知道該追問什麼、從哪裡開始談。</p>
+        <div class="hero-meta"><span>01 搜尋建案</span><b>→</b><span>02 輸入開價</span><b>→</b><span>03 查看燈號與案例</span></div>
       </div>
-    </header>
+      <div class="hero-art" aria-hidden="true"><div class="art-grid"></div><div class="art-ring ring-one"></div><div class="art-ring ring-two"></div><div class="art-core"><span class="art-light red"></span><span class="art-light amber"></span><span class="art-light green"></span></div><div class="art-label">MAKE AN INFORMED OFFER <span>↗</span></div></div>
+    </section>
 
-    <main id="top">
-      <section class="hero">
-        <div>
-          <p class="eyebrow">HOME BUYING DECISION TOOL</p>
-          <h1>把看房的感覺，<br /><em>變成可判斷的訊號。</em></h1>
-          <p class="hero-copy">輸入物件與自己的財務條件，讓預算、價格、地段與風險一起亮燈。它不是估價工具，而是幫你在下斡旋前問對問題。</p>
-        </div>
-        <div class="hero-light" aria-label="目前決策燈號">
-          <span class="light red"></span><span class="light yellow active"></span><span class="light green"></span>
-          <strong id="heroSignal">值得進一步確認</strong>
-          <small id="heroScore">目前 0 / 100</small>
-        </div>
-      </section>
-
-      <section class="dashboard-grid">
-        <form class="card input-card" id="homeForm">
-          <div class="card-heading"><div><p class="section-kicker">01 / 輸入條件</p><h2>這次看的房子</h2></div><span class="required-note">* 必填</span></div>
-          <div class="field wide"><label for="propertyName">物件名稱 <b>*</b></label><input id="propertyName" name="propertyName" placeholder="例如：大安區 2 房電梯" required /></div>
-          <div class="field-row">
-            <div class="field"><label for="totalPrice">開價（萬）<b>*</b></label><input id="totalPrice" name="totalPrice" type="number" min="0" placeholder="2,580" required /></div>
-            <div class="field"><label for="area">權狀坪數 <b>*</b></label><input id="area" name="area" type="number" min="0" step="0.1" placeholder="28.5" required /></div>
-          </div>
-          <div class="field-row">
-            <div class="field"><label for="downPayment">可用自備款（萬）<b>*</b></label><input id="downPayment" name="downPayment" type="number" min="0" placeholder="600" required /></div>
-            <div class="field"><label for="monthlyIncome">家庭月收入（萬）<b>*</b></label><input id="monthlyIncome" name="monthlyIncome" type="number" min="0" step="0.1" placeholder="14" required /></div>
-          </div>
-          <div class="field-row">
-            <div class="field"><label for="loanRate">預估房貸利率（%）</label><input id="loanRate" name="loanRate" type="number" min="0" step="0.01" value="2.5" /></div>
-            <div class="field"><label for="loanYears">貸款年限（年）</label><select id="loanYears" name="loanYears"><option value="30">30 年</option><option value="35" selected>35 年</option><option value="40">40 年</option></select></div>
-          </div>
-          <div class="field"><label for="note">看房備註</label><textarea id="note" name="note" rows="2" placeholder="採光、漏水、屋況、仲介承諾⋯⋯"></textarea></div>
-          <div class="divider"></div>
-          <div class="card-heading compact"><div><p class="section-kicker">02 / 主觀評分</p><h2>你對它的感受</h2></div><span class="scale">1 很差 — 5 很好</span></div>
-          <div class="ratings">
-            <label>地段與生活機能 <output for="location">3</output><input id="location" name="location" type="range" min="1" max="5" value="3" /></label>
-            <label>屋況與格局 <output for="condition">3</output><input id="condition" name="condition" type="range" min="1" max="5" value="3" /></label>
-            <label>社區與轉手性 <output for="resale">3</output><input id="resale" name="resale" type="range" min="1" max="5" value="3" /></label>
-          </div>
-          <button class="button primary" type="submit">更新判斷結果 <span>→</span></button>
+    <section class="workspace">
+      <div class="entry-panel card">
+        <div class="step-heading"><span class="step-index">01 / START HERE</span><h2>選一個你正在看的建案</h2><p>先從中和區有公開預售成交紀錄的建案開始。</p></div>
+        <label class="field-label" for="projectSearch">搜尋建案名稱或路名</label>
+        <div class="search-wrap"><span class="search-icon" aria-hidden="true">⌕</span><input id="projectSearch" autocomplete="off" placeholder="例如：連城路、大同新紀元" aria-controls="projectOptions" aria-expanded="false" /><button id="clearSearch" type="button" aria-label="清除搜尋">×</button></div>
+        <div id="projectOptions" class="project-options" role="listbox" hidden></div>
+        <p id="dataStatus" class="field-hint">正在讀取中和區官方成交資料…</p>
+        <div id="selectedProject" class="selected-project" hidden><div><span class="selected-kicker">已選建案</span><strong id="selectedName"></strong><small id="selectedAddress"></small></div><button type="button" id="changeProject" class="text-button">更換</button></div>
+        <form id="priceForm">
+          <div class="form-divider"></div>
+          <div class="step-heading second"><span class="step-index">02 / YOUR ASKING PRICE</span><h2>輸入你拿到的開價</h2><p>請確認是同一種坪數與價格口徑，避免車位讓單價失真。</p></div>
+          <div class="fields"><div class="field"><label class="field-label" for="askingUnit">每坪開價 <span>必填</span></label><div class="input-unit"><input id="askingUnit" type="number" inputmode="decimal" min="1" max="500" step="0.01" placeholder="例如 85" required /><span>萬 / 坪</span></div></div><div class="field"><label class="field-label" for="targetArea">房屋坪數 <span>必填</span></label><div class="input-unit"><input id="targetArea" type="number" inputmode="decimal" min="8" max="150" step="0.01" placeholder="不含車位" required /><span>坪</span></div></div></div>
+          <p class="field-hint">如果業務只報總價，先扣除車位價，再除以不含車位的房屋坪數。</p>
+          <button class="primary-button" type="submit">開始比價 <span>↗</span></button>
         </form>
+      </div>
 
-        <section class="result-column">
-          <article class="card signal-card" id="signalCard">
-            <div class="signal-top"><p class="section-kicker">03 / 綜合燈號</p><span class="signal-date" id="signalDate"></span></div>
-            <div class="signal-main"><div class="big-light yellow" id="bigLight"></div><div><h2 id="signalTitle">先輸入一個物件</h2><p id="signalDescription">資料填妥後，這裡會整理出你下一步該確認的事。</p></div></div>
-            <div class="score-row"><span>決策分數</span><strong id="scoreValue">--</strong><span>/ 100</span></div>
-            <div class="score-track"><i id="scoreBar"></i></div>
-          </article>
-
-          <article class="card metrics-card">
-            <div class="card-heading compact"><div><p class="section-kicker">04 / 關鍵數字</p><h2>壓力測試</h2></div></div>
-            <div class="metrics">
-              <div><span>每坪單價</span><strong id="unitPrice">--</strong><small>萬元 / 坪</small></div>
-              <div><span>預估月付</span><strong id="monthlyPayment">--</strong><small>萬元 / 月</small></div>
-              <div><span>房貸收入比</span><strong id="incomeRatio">--</strong><small>建議低於 40%</small></div>
-              <div><span>自備款比例</span><strong id="downRatio">--</strong><small>建議至少 20%</small></div>
-            </div>
-          </article>
-
-          <article class="card checklist-card">
-            <div class="card-heading compact"><div><p class="section-kicker">05 / 下一步</p><h2>下決定前再查一次</h2></div><span class="count" id="checkCount">0 / 6</span></div>
-            <div class="checklist" id="checklist"></div>
-          </article>
+      <div class="results-panel">
+        <section id="resultEmpty" class="empty-state card"><div class="empty-orb"><span></span><span></span><span></span></div><span class="step-index">THE SIGNAL</span><h2>你的結果，會從這裡開始。</h2><p>選擇建案並輸入每坪開價，我們會展示成交基準、價差與使用的案例。</p><div class="empty-lines"><i></i><i></i><i></i></div></section>
+        <section id="resultContent" hidden>
+          <article id="signalCard" class="signal-card card"><div class="signal-top"><span class="step-index">03 / PRICE SIGNAL</span><span id="resultDate"></span></div><div class="signal-title-row"><div id="signalLamp" class="signal-lamp neutral"><i></i><i></i><i></i></div><div><span id="resultProject" class="signal-project"></span><h2 id="signalTitle"></h2><p id="signalDescription"></p></div></div><div class="signal-stats"><div><span>你的每坪開價</span><strong id="askingDisplay">—</strong><small>萬 / 坪</small></div><div><span>可比成交基準</span><strong id="baselineDisplay">—</strong><small>萬 / 坪</small></div><div><span>高低價差</span><strong id="differenceDisplay">—</strong><small>相對成交基準</small></div></div><div id="confidenceNote" class="confidence-note"></div></article>
+          <article class="cases-card card"><div class="cases-header"><div><span class="step-index">04 / THE EVIDENCE</span><h2>這些成交案例怎麼比？</h2></div><span id="casesCount" class="case-count"></span></div><p id="casesSummary" class="cases-summary"></p><div id="caseList" class="case-list"></div><a class="source-link" href="https://data.ntpc.gov.tw/datasets/9238ccc2-9701-4ca7-a0a0-ebe4a0669685" target="_blank" rel="noopener noreferrer">前往新北市政府資料來源 ↗</a></article>
+          <article class="visit-card card"><div class="visit-icon">↗</div><div><span class="step-index">BEFORE YOU VISIT</span><h2>地圖上看過，現場再走一次</h2><p>確認基地周圍道路、噪音與設施。街景拍攝時間可能早於建案公開時間。</p><a id="mapsLink" href="#" target="_blank" rel="noopener noreferrer" class="maps-button">在 Google Maps 查看基地 ↗</a></div></article>
         </section>
-      </section>
-      <section class="tip-strip"><span>判讀原則</span><p>綠燈不代表一定買，紅燈也不等於放棄；燈號的用途，是幫你找到最該補齊的資訊。</p></section>
-    </main>
-    <footer>購屋紅綠燈 · 為你的決策保留一點冷靜</footer>
-    <script src="app.js"></script>
-  </body>
+      </div>
+    </section>
+
+    <section id="method" class="method-section"><div><span class="step-index">HOW IT WORKS</span><h2>一盞燈背後，<br />有清楚的比較依據。</h2></div><div class="method-copy"><p>優先比較同建案近期成交，再嘗試同一路名、同類型且坪數相近的其他建案。基準使用每坪單價的中位數；資料不足時，不硬給燈號。</p><div class="legend"><span><i class="green"></i>低於基準 · 綠燈</span><span><i class="amber"></i>基準至高出 15% · 黃燈</span><span><i class="red"></i>高出超過 15% · 紅燈</span></div><p class="method-small">同一路名不一定代表實際步行距離相近。此版資料限預售屋；成交紀錄有發布時間差，過去成交價也不是建商現在的最低接受價。</p></div></section>
+  </main>
+  <footer><span>購屋紅綠燈 / 中和區試行版</span><span id="sourceFreshness">資料來源：新北市政府地政局</span></footer>
+  <script type="module" src="app.mjs"></script>
+</body>
 </html>
