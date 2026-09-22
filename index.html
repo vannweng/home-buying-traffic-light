@@ -13,9 +13,11 @@
 <body>
   <header class="topbar">
     <a class="brand" href="#top"><span class="brand-mark"><i></i><i></i><i></i></span>購屋紅綠燈</a>
-    <div class="top-right"><span class="region-pill">首站 · 新北市中和區</span><a href="#method" class="top-link">判讀方式 ↗</a></div>
+    <div class="top-right"><span class="region-pill">首站 · 新北市中和區</span><a href="#method" id="topAnalysisLink" class="top-link">判讀方式 ↗</a></div>
   </header>
   <main id="top">
+    <nav class="page-tabs" role="tablist" aria-label="主要功能"><button id="tabWatchlist" type="button" role="tab" aria-controls="watchlist" aria-selected="true">我的建案觀察列表</button><button id="tabAnalysis" type="button" role="tab" aria-controls="analysisPanel" aria-selected="false">這個開價，到底合理嗎？</button></nav>
+    <div id="analysisPanel" role="tabpanel" aria-labelledby="tabAnalysis" hidden>
     <section class="hero">
       <div class="hero-content">
         <div class="eyebrow"><span class="eyebrow-line"></span> ZHONGHE / PRICE SIGNAL</div>
@@ -52,12 +54,13 @@
         </section>
       </div>
     </section>
+    </div>
 
     <section id="watchlist" class="watchlist-section card">
       <div class="watchlist-header"><div><span class="step-index">MY PROJECT LIST</span><h2>我的建案觀察列表</h2><p>自行加入中和區建案，並排查看最新一筆成交與近三年的價格分布。列表只保存在這台瀏覽器。</p></div><span id="watchCount" class="case-count">0 個建案</span></div>
       <div class="watchlist-picker"><label for="watchProject">選擇建案</label><select id="watchProject"><option value="">資料載入中…</option></select><button id="addWatchProject" type="button">＋ 加入列表</button></div>
       <p id="watchStatus" class="watch-status" role="status"></p>
-      <div id="watchList" class="watch-list"></div>
+      <div class="watch-table-scroll"><table class="watch-table"><thead><tr><th scope="col">建案 <span>／近三年筆數</span></th><th scope="col">最新成交 <span>萬／坪</span></th><th scope="col">近三年價格界線 <span>萬／坪</span></th><th scope="col">紅綠燈</th><th scope="col">三年平均 <span>單價／總價／坪數</span></th><th scope="col">最新日期</th><th scope="col"><span class="sr-only">操作</span></th></tr></thead><tbody id="watchList"></tbody></table></div>
       <p class="watch-method">三個價格值依近三年成交單價計算：便宜界線為第 25 百分位、合理參考價為中位數、昂貴界線為第 75 百分位。最新一筆 ≤ 便宜界線為綠燈、≥ 昂貴界線為紅燈，其餘為黃燈。每案至少需要 5 筆近三年成交才判燈。</p>
     </section>
 

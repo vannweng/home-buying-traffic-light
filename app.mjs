@@ -10,6 +10,30 @@ let selectedNames = new Set();
 const watchStorageKey = 'zhonghe-watchlist-v1';
 let watchNames = [];
 
+$('#top').insertBefore($('#watchlist'), $('#analysisPanel'));
+function activateTab(tab, updateHash = true) {
+  const watch = tab === 'watchlist';
+  $('#watchlist').hidden = !watch;
+  $('#analysisPanel').hidden = watch;
+  $('#method').hidden = watch;
+  $('#tabWatchlist').setAttribute('aria-selected', String(watch));
+  $('#tabAnalysis').setAttribute('aria-selected', String(!watch));
+  $('#tabWatchlist').tabIndex = watch ? 0 : -1;
+  $('#tabAnalysis').tabIndex = watch ? -1 : 0;
+  if (updateHash) history.replaceState(null, '', watch ? '#watchlist' : '#analysis');
+}
+$('#tabWatchlist').addEventListener('click', () => activateTab('watchlist'));
+$('#tabAnalysis').addEventListener('click', () => activateTab('analysis'));
+$('#topAnalysisLink').addEventListener('click', () => activateTab('analysis', false));
+$('.page-tabs').addEventListener('keydown', (event) => {
+  if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+  event.preventDefault();
+  const target = event.target.id === 'tabWatchlist' ? $('#tabAnalysis') : $('#tabWatchlist');
+  target.click();
+  target.focus();
+});
+activateTab(['#analysis', '#method'].includes(location.hash) ? 'analysis' : 'watchlist', false);
+
 function element(tag, className, content) {
   const node = document.createElement(tag);
   if (className) node.className = className;
@@ -22,11 +46,14 @@ function saveWatchlist() {
   catch { $('#watchStatus').textContent = '瀏覽器無法儲存列表；重新整理後可能需要再次加入。'; }
 }
 
-function watchMetric(label, value, detail = '') {
-  const metric = element('div', 'watch-metric');
-  metric.append(element('span', '', label), element('strong', '', value));
-  if (detail) metric.append(element('small', '', detail));
-  return metric;
+function watchLines(items) {
+  const box = element('div', 'watch-lines');
+  for (const [label, value] of items) {
+    const line = element('div', 'watch-line');
+    line.append(element('span', '', label), element('strong', '', value));
+    box.append(line);
+  }
+  return box;
 }
 
 function renderWatchlist() {
@@ -34,18 +61,42 @@ function renderWatchlist() {
   list.replaceChildren();
   $('#watchCount').textContent = `${watchNames.length} 個建案`;
   if (!watchNames.length) {
-    list.append(element('p', 'watch-empty', '列表目前是空的。從上方挑選建案，即可把它加入追蹤。'));
+    const row = element('tr', 'watch-empty');
+    const cell = element('td', '', '列表目前是空的。從上方挑選建案，即可把它加入追蹤。');
+    cell.colSpan = 7;
+    row.append(cell);
+    list.append(row);
     return;
   }
   const signalLabels = { green: '便宜', amber: '合理', red: '昂貴', neutral: '資料不足' };
   for (const name of watchNames) {
     const summary = summarizeProject({ name, transactions });
     if (!summary) continue;
-    const card = element('article', 'watch-card');
-    const heading = element('div', 'watch-card-heading');
+    const row = element('tr', 'watch-row');
+    const cell = (content, className = '') => {
+      const td = element('td', className);
+      if (typeof content === 'string') td.textContent = content;
+      else td.append(content);
+      row.append(td);
+    };
     const identity = element('div', 'watch-identity');
-    identity.append(element('h3', '', name), element('small', '', `${summary.count} 筆近三年成交`));
-    const remove = element('button', 'watch-remove', '移除 ×');
+    identity.append(element('strong', '', name), element('small', '', `${summary.count} 筆成交`));
+    cell(identity, 'watch-name-cell');
+    const latest = element('strong', 'watch-price', number(summary.latest.unitPrice, 1));
+    cell(latest);
+    cell(watchLines([
+      ['便', summary.cheapMax === null ? '—' : `≤ ${number(summary.cheapMax, 1)}`],
+      ['合', summary.reasonablePrice === null ? '—' : number(summary.reasonablePrice, 1)],
+      ['貴', summary.expensiveMin === null ? '—' : `≥ ${number(summary.expensiveMin, 1)}`],
+    ]));
+    cell(element('span', `watch-signal ${summary.signal}`, signalLabels[summary.signal]));
+    cell(watchLines([
+      ['單價', summary.averageUnitPrice === null ? '—' : `${number(summary.averageUnitPrice, 1)} 萬／坪`],
+      ['總價', summary.averageTotalPrice === null ? '—' : `${number(summary.averageTotalPrice, 0)} 萬`],
+      ['坪數', summary.averageHomeArea === null ? '—' : `${number(summary.averageHomeArea, 1)} 坪`],
+    ]));
+    cell(summary.latest.date);
+    const remove = element('button', 'watch-remove', '移除');
     remove.type = 'button';
     remove.setAttribute('aria-label', `從觀察列表移除 ${name}`);
     remove.addEventListener('click', () => {
@@ -54,27 +105,8 @@ function renderWatchlist() {
       renderWatchlist();
       $('#watchStatus').textContent = `已移除「${name}」。`;
     });
-    heading.append(identity, remove);
-    const latest = element('div', 'watch-latest');
-    const latestPrice = element('div', 'watch-latest-price');
-    latestPrice.append(element('span', '', '最新一筆成交單價'), element('strong', '', `${number(summary.latest.unitPrice, 1)} 萬／坪`));
-    latest.append(latestPrice, element('span', `watch-signal ${summary.signal}`, signalLabels[summary.signal]));
-    const bands = element('div', 'watch-bands');
-    bands.append(
-      watchMetric('便宜界線', summary.cheapMax === null ? '—' : `≤ ${number(summary.cheapMax, 1)}`, '萬／坪'),
-      watchMetric('合理參考價', summary.reasonablePrice === null ? '—' : number(summary.reasonablePrice, 1), '萬／坪（中位數）'),
-      watchMetric('昂貴界線', summary.expensiveMin === null ? '—' : `≥ ${number(summary.expensiveMin, 1)}`, '萬／坪'),
-    );
-    const averages = element('div', 'watch-averages');
-    averages.append(
-      watchMetric('三年平均單價', summary.averageUnitPrice === null ? '—' : `${number(summary.averageUnitPrice, 1)} 萬／坪`),
-      watchMetric('三年平均總價', summary.averageTotalPrice === null ? '—' : `${number(summary.averageTotalPrice, 0)} 萬`),
-      watchMetric('三年平均房屋坪數', summary.averageHomeArea === null ? '—' : `${number(summary.averageHomeArea, 1)} 坪`),
-    );
-    const foot = element('p', 'watch-foot', `最新交易日期 ${summary.latest.date} · 最新成交總價 ${number(summary.latest.totalPrice, 0)} 萬（含車位時依登錄原價）`);
-    card.append(heading, latest, bands, averages, foot);
-    if (summary.count < 5) card.append(element('p', 'watch-low-data', summary.count === 0 ? '近三年沒有符合條件的成交，暫不判燈。' : '近三年成交少於 5 筆，價格界線與燈號暫不顯示。'));
-    list.append(card);
+    cell(remove);
+    list.append(row);
   }
 }
 
