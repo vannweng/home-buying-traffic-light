@@ -1,0 +1,25 @@
+{
+  "updatedAt": "2026-09-22",
+  "items": [
+    {
+      "id": "wanda-連城路",
+      "street": "連城路",
+      "title": "萬大中和線規劃中的中和、連城錦和及中和高中站",
+      "status": "官方路線頁列為工程站點；請查核最新進度與通車公告",
+      "source": "新北市政府捷運工程局",
+      "url": "https://www.dorts.ntpc.gov.tw/about/routeInfo/8pRG2lkJmb5z",
+      "progressUrl": "https://www.dorts.ntpc.gov.tw/about/routeProgress/8pRG2lkJmb5z",
+      "note": "僅為同路段線索；無基地座標，不能推算到站步行距離。"
+    },
+    {
+      "id": "wanda-莒光路",
+      "street": "莒光路",
+      "title": "萬大中和線規劃中的莒光站",
+      "status": "官方路線頁列為工程站點；請查核最新進度與通車公告",
+      "source": "新北市政府捷運工程局",
+      "url": "https://www.dorts.ntpc.gov.tw/about/routeInfo/8pRG2lkJmb5z",
+      "progressUrl": "https://www.dorts.ntpc.gov.tw/about/routeProgress/8pRG2lkJmb5z",
+      "note": "僅為同路段線索；無基地座標，不能推算到站步行距離。"
+    }
+  ]
+}

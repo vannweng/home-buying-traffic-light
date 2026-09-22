@@ -1,4 +1,5 @@
 import { comparePrice, getProjects, summarizeProject } from './price-engine.mjs';
+import { analyzeTrend } from './trend-engine.mjs';
 
 const $ = (selector) => document.querySelector(selector);
 const number = (value, digits = 1) => Number(value).toLocaleString('zh-TW', { maximumFractionDigits: digits, minimumFractionDigits: digits });
@@ -9,30 +10,40 @@ let snapshot = null;
 let selectedNames = new Set();
 const watchStorageKey = 'zhonghe-watchlist-v1';
 let watchNames = [];
+let trendEvidence = [];
+let aiSummaries = {};
 
 $('#top').insertBefore($('#watchlist'), $('#analysisPanel'));
 function activateTab(tab, updateHash = true) {
   const watch = tab === 'watchlist';
+  const trend = tab === 'trend';
   $('#watchlist').hidden = !watch;
-  $('#analysisPanel').hidden = watch;
-  $('#method').hidden = watch;
+  $('#analysisPanel').hidden = watch || trend;
+  $('#method').hidden = watch || trend;
+  $('#trendPanel').hidden = !trend;
   $('#tabWatchlist').setAttribute('aria-selected', String(watch));
-  $('#tabAnalysis').setAttribute('aria-selected', String(!watch));
+  $('#tabAnalysis').setAttribute('aria-selected', String(!watch && !trend));
+  $('#tabTrend').setAttribute('aria-selected', String(trend));
   $('#tabWatchlist').tabIndex = watch ? 0 : -1;
-  $('#tabAnalysis').tabIndex = watch ? -1 : 0;
-  if (updateHash) history.replaceState(null, '', watch ? '#watchlist' : '#analysis');
+  $('#tabAnalysis').tabIndex = !watch && !trend ? 0 : -1;
+  $('#tabTrend').tabIndex = trend ? 0 : -1;
+  if (updateHash) history.replaceState(null, '', watch ? '#watchlist' : trend ? '#trend' : '#analysis');
 }
 $('#tabWatchlist').addEventListener('click', () => activateTab('watchlist'));
 $('#tabAnalysis').addEventListener('click', () => activateTab('analysis'));
+$('#tabTrend').addEventListener('click', () => activateTab('trend'));
 $('#topAnalysisLink').addEventListener('click', () => activateTab('analysis', false));
 $('.page-tabs').addEventListener('keydown', (event) => {
   if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
   event.preventDefault();
-  const target = event.target.id === 'tabWatchlist' ? $('#tabAnalysis') : $('#tabWatchlist');
+  const tabs = [$('#tabWatchlist'), $('#tabAnalysis'), $('#tabTrend')];
+  const index = tabs.indexOf(event.target);
+  if (index < 0) return;
+  const target = tabs[(index + (event.key === 'ArrowRight' ? 1 : 2)) % tabs.length];
   target.click();
   target.focus();
 });
-activateTab(['#analysis', '#method'].includes(location.hash) ? 'analysis' : 'watchlist', false);
+activateTab(location.hash === '#trend' ? 'trend' : ['#analysis', '#method'].includes(location.hash) ? 'analysis' : 'watchlist', false);
 
 function element(tag, className, content) {
   const node = document.createElement(tag);
@@ -272,6 +283,37 @@ $('#addWatchProject').addEventListener('click', () => {
   $('#watchStatus').textContent = `已加入「${name}」。`;
 });
 
+$('#runTrend').addEventListener('click', () => {
+  const project = projects.find((item) => item.name === $('#trendProject').value);
+  if (!project) { $('#trendStatus').textContent = '請先選擇建案。'; return; }
+  const result = analyzeTrend(project, transactions, trendEvidence);
+  $('#trendResult').hidden = false;
+  $('#trendStatus').textContent = `資料快照：${snapshot.generatedAt}；建設線索請點開官方來源查核最新狀態。`;
+  const ai = aiSummaries[project.name];
+  $('#trendSummary').replaceChildren();
+  $('#trendSummary').append(element('span', 'step-index', ai ? 'LLM 整理摘要' : '資料摘要'));
+  $('#trendSummary').append(element('h3', '', project.name));
+  $('#trendSummary').append(element('p', '', ai?.summary || (result.change === null ? '近三年足量的年度成交樣本不足，尚無法比較年度價格變化。' : `足量樣本的最早與最近年度成交單價中位數相差 ${result.change >= 0 ? '+' : ''}${number(result.change, 1)}%。這是歷史成交變化，不代表未來漲跌。`)));
+  const prices = $('#trendPrices');
+  prices.replaceChildren();
+  if (!result.years.length) prices.append(element('p', '', '近三年沒有可用成交。'));
+  for (const item of result.years) prices.append(element('p', 'trend-fact', `${item.year} 年：中位數 ${number(item.median, 1)} 萬／坪 · ${item.count} 筆${item.count < 5 ? '（樣本偏少）' : ''}`));
+  const infrastructure = $('#trendInfrastructure');
+  infrastructure.replaceChildren();
+  if (!result.leads.length) infrastructure.append(element('p', '', '目前沒有可依路名對應的官方建設線索；不代表附近沒有建設。'));
+  for (const lead of result.leads) {
+    const item = element('div', 'trend-lead');
+    item.append(element('strong', '', lead.title), element('small', '', `${lead.status} · ${lead.note}`));
+    const link = element('a', '', `查核${lead.source}資料 ↗`);
+    link.href = lead.url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    item.append(link);
+    infrastructure.append(item);
+  }
+  $('#trendCaution').textContent = ai?.caution || '同路名只代表可能值得查核，不代表基地靠近車站。完工與通車時程可能變動，利多也可能早已反映在開價中；利率、供給、人口與個案條件同樣影響價格。請以官方公告和現場步行確認，不以此推估報酬率。';
+});
+
 try {
   const response = await fetch('./data/zhonghe-presale.json');
   if (!response.ok) throw new Error('資料檔無法讀取');
@@ -285,6 +327,15 @@ try {
     option.value = project.name;
     $('#watchProject').append(option);
   }
+  $('#trendProject').replaceChildren(...[...$('#watchProject').options].map((option) => option.cloneNode(true)));
+  try {
+    const response = await fetch('./data/trend-evidence.json');
+    if (response.ok) trendEvidence = (await response.json()).items || [];
+  } catch { /* Trends still work without infrastructure leads. */ }
+  try {
+    const response = await fetch('./data/trend-ai.json');
+    if (response.ok) aiSummaries = (await response.json()).projects || {};
+  } catch { /* AI summaries are optional and generated offline. */ }
   try {
     const saved = JSON.parse(localStorage.getItem(watchStorageKey) || '[]');
     if (Array.isArray(saved)) watchNames = [...new Set(saved.filter((name) => typeof name === 'string' && projects.some((project) => project.name === name)))];
