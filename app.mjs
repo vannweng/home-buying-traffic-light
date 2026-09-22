@@ -1,5 +1,6 @@
 import { comparePrice, getProjects, summarizeProject } from './price-engine.mjs';
 import { analyzeTrend } from './trend-engine.mjs';
+import { CRITERIA, scoreAppreciation } from './appreciation-score.mjs';
 
 const $ = (selector) => document.querySelector(selector);
 const number = (value, digits = 1) => Number(value).toLocaleString('zh-TW', { maximumFractionDigits: digits, minimumFractionDigits: digits });
@@ -12,6 +13,8 @@ const watchStorageKey = 'zhonghe-watchlist-v1';
 let watchNames = [];
 let trendEvidence = [];
 let aiSummaries = {};
+const scoreStorageKey = 'zhonghe-appreciation-v1';
+let scoreAnswers = {};
 
 $('#top').insertBefore($('#watchlist'), $('#analysisPanel'));
 function activateTab(tab, updateHash = true) {
@@ -283,6 +286,54 @@ $('#addWatchProject').addEventListener('click', () => {
   $('#watchStatus').textContent = `已加入「${name}」。`;
 });
 
+function renderAppreciation(project, leads) {
+  const answers = scoreAnswers[project.name] || {};
+  const list = $('#appreciationCriteria');
+  list.replaceChildren();
+  for (const criterion of CRITERIA) {
+    const item = element('div', 'appreciation-item');
+    const main = element('div', 'appreciation-item-main');
+    main.append(element('span', 'appreciation-rank', String(criterion.rank)), element('strong', '', criterion.title), element('em', 'appreciation-tier', criterion.tier));
+    main.append(element('small', '', criterion.rank === 1 ? '安全底線' : `${criterion.weight} 分`));
+    const detail = element('p', '', `${criterion.reason}｜購屋者想法：「${criterion.psychology}」`);
+    if (criterion.rank === 1) {
+      for (const [label, url] of [['查淹水潛勢', 'https://www.wra.gov.tw/cp.aspx?n=6244'], ['查活動斷層', 'https://fault.gsmma.gov.tw/']]) {
+        const link = element('a', 'appreciation-source', `${label} ↗`);
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        detail.append(' ', link);
+      }
+    }
+    const controls = element('div', 'appreciation-choices');
+    controls.setAttribute('role', 'group');
+    controls.setAttribute('aria-label', `${criterion.title}評估`);
+    for (const [value, label] of [['yes', criterion.rank === 1 ? '已確認無重大風險' : '符合'], ['no', criterion.rank === 1 ? '發現重大風險' : '不符合'], ['unknown', '待查']]) {
+      const button = element('button', answers[criterion.rank] === value || (!answers[criterion.rank] && value === 'unknown') ? 'selected' : '', label);
+      button.type = 'button';
+      button.setAttribute('aria-pressed', String(answers[criterion.rank] === value || (!answers[criterion.rank] && value === 'unknown')));
+      button.addEventListener('click', () => {
+        scoreAnswers[project.name] = { ...answers, [criterion.rank]: value };
+        try { localStorage.setItem(scoreStorageKey, JSON.stringify(scoreAnswers)); }
+        catch { $('#appreciationNote').textContent = '瀏覽器無法儲存評估；重新整理後可能需要再填一次。'; }
+        renderAppreciation(project, leads);
+      });
+      controls.append(button);
+    }
+    item.append(main, detail, controls);
+    list.append(item);
+  }
+  const score = scoreAppreciation(answers);
+  const display = $('#appreciationScore');
+  display.replaceChildren();
+  display.classList.toggle('blocked', score.veto === 'no');
+  display.append(element('span', '', score.veto === 'no' ? '一票否決' : score.score === null ? '待查核' : '條件加權分數'));
+  display.append(element('strong', '', score.veto === 'no' ? '暫不評分' : score.score === null ? '—' : `${score.score} / 100`));
+  display.append(element('small', '', `已查核權重 ${score.assessed}% · 可能範圍 ${score.range[0]}–${score.range[1]} 分`));
+  const caution = score.veto === 'no' ? '已標記重大安全或嫌惡風險，先查證與排除，不應由其他加分項抵銷。' : score.veto !== 'yes' ? '先完成第 1 項安全底線查核，才會顯示單一分數。' : score.assessed < 70 ? '已查核權重未達 70%，先完成更多項目，避免少量資訊造成假精確分數。' : '此分數只反映你標記的條件，未檢驗價格是否已反映利多，也不代表未來房價漲幅。';
+  $('#appreciationNote').textContent = `${caution}${leads.length ? ' 官方資料顯示同路段有捷運線索，但第 2 項仍需自行查實際步行距離，不會自動給分。' : ''}`;
+}
+
 $('#runTrend').addEventListener('click', () => {
   const project = projects.find((item) => item.name === $('#trendProject').value);
   if (!project) { $('#trendStatus').textContent = '請先選擇建案。'; return; }
@@ -312,6 +363,7 @@ $('#runTrend').addEventListener('click', () => {
     infrastructure.append(item);
   }
   $('#trendCaution').textContent = ai?.caution || '同路名只代表可能值得查核，不代表基地靠近車站。完工與通車時程可能變動，利多也可能早已反映在開價中；利率、供給、人口與個案條件同樣影響價格。請以官方公告和現場步行確認，不以此推估報酬率。';
+  renderAppreciation(project, result.leads);
 });
 
 try {
@@ -328,6 +380,15 @@ try {
     $('#watchProject').append(option);
   }
   $('#trendProject').replaceChildren(...[...$('#watchProject').options].map((option) => option.cloneNode(true)));
+  try {
+    const saved = JSON.parse(localStorage.getItem(scoreStorageKey) || '{}');
+    if (saved && typeof saved === 'object' && !Array.isArray(saved)) {
+      for (const [name, answers] of Object.entries(saved)) {
+        if (!projects.some((project) => project.name === name) || !answers || typeof answers !== 'object') continue;
+        scoreAnswers[name] = Object.fromEntries(Object.entries(answers).filter(([rank, value]) => CRITERIA.some((item) => String(item.rank) === rank) && ['yes', 'no', 'unknown'].includes(value)));
+      }
+    }
+  } catch { scoreAnswers = {}; }
   try {
     const response = await fetch('./data/trend-evidence.json');
     if (response.ok) trendEvidence = (await response.json()).items || [];
