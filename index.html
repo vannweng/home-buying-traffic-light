@@ -53,6 +53,14 @@
       </div>
     </section>
 
+    <section id="watchlist" class="watchlist-section card">
+      <div class="watchlist-header"><div><span class="step-index">MY PROJECT LIST</span><h2>我的建案觀察列表</h2><p>自行加入中和區建案，並排查看最新一筆成交與近三年的價格分布。列表只保存在這台瀏覽器。</p></div><span id="watchCount" class="case-count">0 個建案</span></div>
+      <div class="watchlist-picker"><label for="watchProject">選擇建案</label><select id="watchProject"><option value="">資料載入中…</option></select><button id="addWatchProject" type="button">＋ 加入列表</button></div>
+      <p id="watchStatus" class="watch-status" role="status"></p>
+      <div id="watchList" class="watch-list"></div>
+      <p class="watch-method">三個價格值依近三年成交單價計算：便宜界線為第 25 百分位、合理參考價為中位數、昂貴界線為第 75 百分位。最新一筆 ≤ 便宜界線為綠燈、≥ 昂貴界線為紅燈，其餘為黃燈。每案至少需要 5 筆近三年成交才判燈。</p>
+    </section>
+
     <section id="method" class="method-section"><div><span class="step-index">HOW IT WORKS</span><h2>一盞燈背後，<br />有清楚的比較依據。</h2></div><div class="method-copy"><p>從中和區挑選至少三個不同建案，篩選相同建物類型、相近房屋坪數與首次成交年份前後 1 至 3 年的案例。先算每個建案的成交單價中位數，再算這些建案的中位數作為基準；未滿三案不亮燈。</p><div class="legend"><span><i class="green"></i>低於基準 · 綠燈</span><span><i class="amber"></i>基準至高出 15% · 黃燈</span><span><i class="red"></i>高出超過 15% · 紅燈</span></div><p class="method-small">預售屋尚無實際屋齡，因此以各案「首次公開成交年份」代表案齡，並非完工年份。同一路名也不保證基地緊鄰；資料有發布時間差，成交中位數不是可保證的議價底價。</p></div></section>
   </main>
   <footer><span>購屋紅綠燈 / 中和區試行版</span><span id="sourceFreshness">資料來源：新北市政府地政局</span></footer>

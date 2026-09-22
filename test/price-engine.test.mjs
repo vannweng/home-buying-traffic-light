@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { comparePrice, findComparableProjects, getProjects, median } from '../price-engine.mjs';
+import { comparePrice, findComparableProjects, getProjects, median, percentile, summarizeProject } from '../price-engine.mjs';
 
 const row = (name, unitPrice, date = '2026-04-01', homeArea = 30, type = '住宅大樓', street = '連城路') =>
   ({ id: `${name}-${unitPrice}`, name, address: `新北市中和區${street}`, street, type, date, homeArea, unitPrice });
@@ -69,4 +69,35 @@ test('median handles even and odd case counts', () => {
   assert.equal(median([90, 100, 110]), 100);
   assert.equal(median([90, 110]), 100);
   assert.equal(median([]), null);
+});
+
+test('watchlist uses the latest transaction and three-year percentiles', () => {
+  const sales = [80, 90, 100, 110, 120].map((unitPrice, index) => ({
+    ...row('觀察案', unitPrice, `2026-0${index + 1}-01`), totalPrice: unitPrice * 30, id: String(index),
+  }));
+  const result = summarizeProject({ name: '觀察案', transactions: sales, asOf: new Date('2026-09-22') });
+  assert.equal(result.latest.unitPrice, 120);
+  assert.equal(result.latest.date, '2026-05-01');
+  assert.equal(result.averageUnitPrice, 100);
+  assert.equal(result.averageTotalPrice, 3000);
+  assert.equal(result.averageHomeArea, 30);
+  assert.equal(result.cheapMax, 90);
+  assert.equal(result.reasonablePrice, 100);
+  assert.equal(result.expensiveMin, 110);
+  assert.equal(result.signal, 'red');
+  assert.equal(percentile([80, 90, 100, 110, 120], 0.25), 90);
+});
+
+test('watchlist does not classify sparse or stale transaction history', () => {
+  const sparse = [row('少量案', 80), row('少量案', 90)];
+  const result = summarizeProject({ name: '少量案', transactions: sparse, asOf: new Date('2026-09-22') });
+  assert.equal(result.count, 2);
+  assert.equal(result.signal, 'neutral');
+  assert.equal(result.cheapMax, null);
+  const stale = [row('舊案', 80, '2022-01-01')];
+  const old = summarizeProject({ name: '舊案', transactions: stale, asOf: new Date('2026-09-22') });
+  assert.equal(old.count, 0);
+  assert.equal(old.latest.date, '2022-01-01');
+  assert.equal(old.averageUnitPrice, null);
+  assert.equal(old.signal, 'neutral');
 });

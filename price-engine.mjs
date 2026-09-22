@@ -7,6 +7,38 @@ export function median(values) {
   return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
 }
 
+export function percentile(values, fraction) {
+  if (!values.length || fraction < 0 || fraction > 1) return null;
+  const sorted = [...values].sort((a, b) => a - b);
+  const position = (sorted.length - 1) * fraction;
+  const lower = Math.floor(position);
+  return sorted[lower] + (sorted[Math.ceil(position)] - sorted[lower]) * (position - lower);
+}
+
+export function summarizeProject({ name, transactions, asOf = new Date() }) {
+  const all = transactions.filter((row) => row.name === name && Number.isFinite(row.unitPrice) && row.unitPrice > 0)
+    .sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
+  if (!all.length) return null;
+  const now = new Date(asOf).getTime();
+  const recent = all.filter((row) => {
+    const age = now - new Date(`${row.date}T00:00:00`).getTime();
+    return age >= 0 && age <= THREE_YEARS_MS;
+  });
+  const average = (values) => values.reduce((sum, value) => sum + value, 0) / values.length;
+  const cheapMax = recent.length >= 5 ? percentile(recent.map((row) => row.unitPrice), 0.25) : null;
+  const reasonablePrice = recent.length >= 5 ? median(recent.map((row) => row.unitPrice)) : null;
+  const expensiveMin = recent.length >= 5 ? percentile(recent.map((row) => row.unitPrice), 0.75) : null;
+  const latest = all[0];
+  const latestIsRecent = recent.some((row) => row.id === latest.id);
+  const signal = cheapMax === null || !latestIsRecent ? 'neutral' : latest.unitPrice <= cheapMax ? 'green' : latest.unitPrice >= expensiveMin ? 'red' : 'amber';
+  return {
+    name, latest, count: recent.length, signal, cheapMax, reasonablePrice, expensiveMin,
+    averageUnitPrice: recent.length ? average(recent.map((row) => row.unitPrice)) : null,
+    averageTotalPrice: recent.length ? average(recent.map((row) => row.totalPrice)) : null,
+    averageHomeArea: recent.length ? average(recent.map((row) => row.homeArea)) : null,
+  };
+}
+
 export function getProjects(transactions) {
   const byName = new Map();
   for (const row of transactions) {

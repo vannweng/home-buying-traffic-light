@@ -1,4 +1,4 @@
-import { comparePrice, getProjects } from './price-engine.mjs';
+import { comparePrice, getProjects, summarizeProject } from './price-engine.mjs';
 
 const $ = (selector) => document.querySelector(selector);
 const number = (value, digits = 1) => Number(value).toLocaleString('zh-TW', { maximumFractionDigits: digits, minimumFractionDigits: digits });
@@ -7,6 +7,76 @@ let projects = [];
 let selected = null;
 let snapshot = null;
 let selectedNames = new Set();
+const watchStorageKey = 'zhonghe-watchlist-v1';
+let watchNames = [];
+
+function element(tag, className, content) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (content !== undefined) node.textContent = content;
+  return node;
+}
+
+function saveWatchlist() {
+  try { localStorage.setItem(watchStorageKey, JSON.stringify(watchNames)); }
+  catch { $('#watchStatus').textContent = '瀏覽器無法儲存列表；重新整理後可能需要再次加入。'; }
+}
+
+function watchMetric(label, value, detail = '') {
+  const metric = element('div', 'watch-metric');
+  metric.append(element('span', '', label), element('strong', '', value));
+  if (detail) metric.append(element('small', '', detail));
+  return metric;
+}
+
+function renderWatchlist() {
+  const list = $('#watchList');
+  list.replaceChildren();
+  $('#watchCount').textContent = `${watchNames.length} 個建案`;
+  if (!watchNames.length) {
+    list.append(element('p', 'watch-empty', '列表目前是空的。從上方挑選建案，即可把它加入追蹤。'));
+    return;
+  }
+  const signalLabels = { green: '便宜', amber: '合理', red: '昂貴', neutral: '資料不足' };
+  for (const name of watchNames) {
+    const summary = summarizeProject({ name, transactions });
+    if (!summary) continue;
+    const card = element('article', 'watch-card');
+    const heading = element('div', 'watch-card-heading');
+    const identity = element('div', 'watch-identity');
+    identity.append(element('h3', '', name), element('small', '', `${summary.count} 筆近三年成交`));
+    const remove = element('button', 'watch-remove', '移除 ×');
+    remove.type = 'button';
+    remove.setAttribute('aria-label', `從觀察列表移除 ${name}`);
+    remove.addEventListener('click', () => {
+      watchNames = watchNames.filter((item) => item !== name);
+      saveWatchlist();
+      renderWatchlist();
+      $('#watchStatus').textContent = `已移除「${name}」。`;
+    });
+    heading.append(identity, remove);
+    const latest = element('div', 'watch-latest');
+    const latestPrice = element('div', 'watch-latest-price');
+    latestPrice.append(element('span', '', '最新一筆成交單價'), element('strong', '', `${number(summary.latest.unitPrice, 1)} 萬／坪`));
+    latest.append(latestPrice, element('span', `watch-signal ${summary.signal}`, signalLabels[summary.signal]));
+    const bands = element('div', 'watch-bands');
+    bands.append(
+      watchMetric('便宜界線', summary.cheapMax === null ? '—' : `≤ ${number(summary.cheapMax, 1)}`, '萬／坪'),
+      watchMetric('合理參考價', summary.reasonablePrice === null ? '—' : number(summary.reasonablePrice, 1), '萬／坪（中位數）'),
+      watchMetric('昂貴界線', summary.expensiveMin === null ? '—' : `≥ ${number(summary.expensiveMin, 1)}`, '萬／坪'),
+    );
+    const averages = element('div', 'watch-averages');
+    averages.append(
+      watchMetric('三年平均單價', summary.averageUnitPrice === null ? '—' : `${number(summary.averageUnitPrice, 1)} 萬／坪`),
+      watchMetric('三年平均總價', summary.averageTotalPrice === null ? '—' : `${number(summary.averageTotalPrice, 0)} 萬`),
+      watchMetric('三年平均房屋坪數', summary.averageHomeArea === null ? '—' : `${number(summary.averageHomeArea, 1)} 坪`),
+    );
+    const foot = element('p', 'watch-foot', `最新交易日期 ${summary.latest.date} · 最新成交總價 ${number(summary.latest.totalPrice, 0)} 萬（含車位時依登錄原價）`);
+    card.append(heading, latest, bands, averages, foot);
+    if (summary.count < 5) card.append(element('p', 'watch-low-data', summary.count === 0 ? '近三年沒有符合條件的成交，暫不判燈。' : '近三年成交少於 5 筆，價格界線與燈號暫不顯示。'));
+    list.append(card);
+  }
+}
 
 function resetResult() {
   $('#resultEmpty').hidden = false;
@@ -154,15 +224,44 @@ $('#priceForm').addEventListener('submit', (event) => {
   if (window.innerWidth < 900) $('#resultContent').scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
+$('#addWatchProject').addEventListener('click', () => {
+  const name = $('#watchProject').value;
+  if (!name || !projects.some((project) => project.name === name)) {
+    $('#watchStatus').textContent = '請先選一個建案。';
+    return;
+  }
+  if (watchNames.includes(name)) {
+    $('#watchStatus').textContent = `「${name}」已在列表中。`;
+    return;
+  }
+  watchNames.push(name);
+  saveWatchlist();
+  renderWatchlist();
+  $('#watchStatus').textContent = `已加入「${name}」。`;
+});
+
 try {
   const response = await fetch('./data/zhonghe-presale.json');
   if (!response.ok) throw new Error('資料檔無法讀取');
   snapshot = await response.json();
   transactions = snapshot.transactions;
   projects = getProjects(transactions);
+  $('#watchProject').replaceChildren(element('option', '', '請選擇建案'));
+  $('#watchProject').firstElementChild.value = '';
+  for (const project of [...projects].sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'))) {
+    const option = element('option', '', project.name);
+    option.value = project.name;
+    $('#watchProject').append(option);
+  }
+  try {
+    const saved = JSON.parse(localStorage.getItem(watchStorageKey) || '[]');
+    if (Array.isArray(saved)) watchNames = [...new Set(saved.filter((name) => typeof name === 'string' && projects.some((project) => project.name === name)))];
+  } catch { watchNames = []; }
+  renderWatchlist();
   $('#dataStatus').textContent = `收錄 ${projects.length} 個建案、${transactions.length} 筆符合條件的成交 · 最新成交 ${snapshot.latestTransaction}`;
   $('#sourceFreshness').textContent = `新北市政府地政局預售屋實價 · 快照 ${snapshot.generatedAt} · 最新成交 ${snapshot.latestTransaction}`;
 } catch (error) {
   $('#dataStatus').textContent = '資料載入失敗。請依 README 使用本機網頁伺服器開啟，或稍後重試。';
+  $('#watchStatus').textContent = '建案資料載入失敗，列表暫時無法使用。';
   console.error(error);
 }
