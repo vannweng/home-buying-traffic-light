@@ -1,4 +1,4 @@
-import { comparePrice, getProjects, summarizeProject } from './price-engine.mjs';
+import { cheapestComparableNames, comparePrice, findComparableProjects, getProjects, summarizeProject } from './price-engine.mjs';
 import { analyzeTrend } from './trend-engine.mjs';
 import { CRITERIA, scoreAppreciation } from './appreciation-score.mjs';
 
@@ -9,6 +9,7 @@ let projects = [];
 let selected = null;
 let snapshot = null;
 let selectedNames = new Set();
+let comparisonCustomized = false;
 const watchStorageKey = 'zhonghe-watchlist-v1';
 let watchNames = [];
 let trendEvidence = [];
@@ -172,6 +173,7 @@ function renderSearch() {
 function chooseProject(project) {
   selected = project;
   selectedNames = new Set();
+  comparisonCustomized = false;
   resetResult();
   $('#selectedName').textContent = project.name;
   $('#selectedAddress').textContent = project.address;
@@ -199,6 +201,7 @@ function makeCandidate(candidate, included) {
   button.addEventListener('click', () => {
     if (selectedNames.has(candidate.name)) selectedNames.delete(candidate.name);
     else selectedNames.add(candidate.name);
+    comparisonCustomized = true;
     calculateAndRender();
   });
   main.append(name, detail);
@@ -206,10 +209,13 @@ function makeCandidate(candidate, included) {
   return item;
 }
 
-function calculateAndRender() {
+function calculateAndRender(autoSelect = false) {
   const askingUnit = Number($('#askingUnit').value);
   const area = Number($('#targetArea').value);
   const yearTolerance = Number($('#vintageTolerance').value);
+  if (autoSelect && !comparisonCustomized) {
+    selectedNames = new Set(cheapestComparableNames(findComparableProjects({ project: selected, projects, transactions, area, yearTolerance })));
+  }
   const result = comparePrice({ project: selected, projects, transactions, askingUnit, area, selectedNames: [...selectedNames], yearTolerance });
   selectedNames = new Set(result.selected.map((candidate) => candidate.name));
   renderResult(result, askingUnit, yearTolerance);
@@ -224,26 +230,26 @@ function renderResult(result, askingUnit, yearTolerance) {
   $('#askingDisplay').textContent = number(askingUnit, 1);
   $('#baselineDisplay').textContent = result.baseline === null ? '—' : number(result.baseline, 1);
   $('#differenceDisplay').textContent = result.difference === null ? '—' : `${result.difference > 0 ? '+' : ''}${number(result.difference, 1)}%`;
-  const titles = { green: '綠燈 · 低於成交基準', amber: '黃燈 · 接近或高於基準', red: '紅燈 · 高出基準逾 15%', neutral: result.candidates.length < 3 ? '資料不足 · 暫不判燈' : '待選三案 · 暫不判燈' };
+  const titles = { green: '綠燈 · 低於成交基準', amber: '黃燈 · 接近或高於基準', red: '紅燈 · 高出基準逾 15%', neutral: result.selected.length === 0 ? '黑燈 · 未選比較建案' : '黑燈 · 只有一案，暫不判燈' };
   const messages = {
     green: '這個開價低於可比成交案例的中位數。請繼續確認樓層、車位與付款條件。',
     amber: '這個開價介於成交基準與高出 15% 之間，值得帶著案例進一步議價。',
     red: '開價明顯高於可比成交案例。建議先確認差異原因，再決定出價。',
-    neutral: result.candidates.length < 3 ? '目前符合條件的不同建案不足三個，可調整年份差距或所看坪數。' : '請在下方加入至少三個不同的可比建案；不足三案時不提供紅黃綠燈。',
+    neutral: result.selected.length === 0 ? '請在下方加入至少兩個不同建案；0 案不提供紅黃綠燈。' : '目前只有一個可比建案，請再加入至少一案，避免單案價格決定燈號。',
   };
   $('#signalTitle').textContent = titles[result.signal];
   $('#signalDescription').textContent = messages[result.signal];
-  $('#confidenceNote').textContent = result.selected.length >= 3
-    ? `已用 ${result.selected.length} 個不同建案計算；每案先取自身成交中位數，再由各案中位數產生比較基準。`
-    : `目前加入 ${result.selected.length} 案，至少需要 3 個不同建案。預售屋以首次公開成交年份代表案齡，並非完工屋齡。`;
-  $('#casesCount').textContent = `${result.selected.length} / 3 已加入`;
-  $('#casesSummary').textContent = `候選案首次成交年份與「${selected.name}」相差不超過 ${yearTolerance} 年、建物類型相同、房屋坪數相差不超過 25%，且近三年有成交。同一路名排在前面；區內其他路段不代表基地緊鄰。`;
-  $('#comparisonStatus').textContent = result.candidates.length < 3
-    ? `目前只有 ${result.candidates.length} 個符合條件的不同建案；可改選前後年份或房屋坪數。資料不足時不亮燈。`
-    : result.selected.length < 3
-      ? `從下方 ${result.candidates.length} 個候選建案加入比較，還需選 ${3 - result.selected.length} 案。`
-      : `已選 ${result.selected.length} 案。點擊「已加入」可移除，燈號會立即重算。`;
-  $('#caseList').replaceChildren(...result.candidates.map((candidate) => makeCandidate(candidate, selectedNames.has(candidate.name))));
+  $('#confidenceNote').textContent = result.selected.length >= 2
+    ? `已用 ${result.selected.length} 個不同建案計算；每案先取自身成交中位數，再由各案中位數產生比較基準。選案越少，判讀越容易受單案差異影響。`
+    : `目前加入 ${result.selected.length} 案，至少需要 2 個不同建案。預售屋以首次公開成交年份代表案齡，並非完工屋齡。`;
+  $('#casesCount').textContent = `${result.selected.length} 案已加入`;
+  $('#casesSummary').textContent = `預設選入價格中位數最低的最多三案。候選案首次成交年份與「${selected.name}」相差不超過 ${yearTolerance} 年、建物類型相同、房屋坪數相差不超過 25%，且近三年有成交。你可改選任意數量；同路名不代表基地緊鄰。`;
+  $('#comparisonStatus').textContent = result.candidates.length === 0
+    ? '目前沒有符合條件的不同建案；可調整年份差距或房屋坪數。'
+    : result.selected.length < 2
+      ? `目前選入 ${result.selected.length} 案；至少選 2 案才判燈。`
+      : `已選 ${result.selected.length} 案。可再加入、移除，或清空比較；燈號會立即重算。`;
+  $('#caseList').replaceChildren(...[...result.candidates].sort((a, b) => a.baseline - b.baseline || a.name.localeCompare(b.name, 'zh-Hant')).map((candidate) => makeCandidate(candidate, selectedNames.has(candidate.name))));
   $('#mapsLink').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selected.address + ' ' + selected.name)}`;
 }
 
@@ -260,13 +266,13 @@ $('#clearSearch').addEventListener('click', () => { $('#projectSearch').value = 
 $('#changeProject').addEventListener('click', () => { $('#projectSearch').focus(); $('#projectSearch').select(); renderSearch(); });
 document.addEventListener('click', (event) => { if (!event.target.closest('.search-wrap, .project-options')) setSearchOpen(false); });
 $('#askingUnit').addEventListener('input', resetResult);
-$('#targetArea').addEventListener('input', () => { selectedNames = new Set(); resetResult(); });
+$('#targetArea').addEventListener('input', () => { selectedNames = new Set(); comparisonCustomized = false; resetResult(); });
 $('#vintageTolerance').addEventListener('change', () => { if (selected && $('#resultContent').hidden === false) calculateAndRender(); });
 $('#priceForm').addEventListener('submit', (event) => {
   event.preventDefault();
   if (!selected) { $('#projectSearch').focus(); renderSearch(); return; }
   if (!event.currentTarget.reportValidity()) return;
-  calculateAndRender();
+  calculateAndRender(true);
   if (window.innerWidth < 900) $('#resultContent').scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 

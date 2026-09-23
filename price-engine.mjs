@@ -88,8 +88,13 @@ export function comparePrice({ project, projects, transactions, askingUnit, area
   if (!Number.isFinite(askingUnit) || askingUnit <= 0) throw new Error('請輸入有效的每坪開價。');
   const candidates = findComparableProjects({ project, projects, transactions, area, yearTolerance, asOf });
   const selected = candidates.filter((candidate) => selectedNames.includes(candidate.name));
-  const baseline = selected.length >= 3 ? median(selected.map((candidate) => candidate.baseline)) : null;
+  const baseline = selected.length >= 2 ? median(selected.map((candidate) => candidate.baseline)) : null;
   const difference = baseline === null ? null : (askingUnit / baseline - 1) * 100;
   const signal = difference === null ? 'neutral' : difference < 0 ? 'green' : difference > 15 ? 'red' : 'amber';
   return { candidates, selected, baseline, difference, signal };
+}
+
+export function cheapestComparableNames(candidates, limit = 3) {
+  return [...candidates].sort((a, b) => a.baseline - b.baseline || a.name.localeCompare(b.name, 'zh-Hant'))
+    .slice(0, limit).map((candidate) => candidate.name);
 }

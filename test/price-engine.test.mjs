@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { comparePrice, findComparableProjects, getProjects, median, percentile, summarizeProject } from '../price-engine.mjs';
+import { cheapestComparableNames, comparePrice, findComparableProjects, getProjects, median, percentile, summarizeProject } from '../price-engine.mjs';
 
 const row = (name, unitPrice, date = '2026-04-01', homeArea = 30, type = '住宅大樓', street = '連城路') =>
   ({ id: `${name}-${unitPrice}`, name, address: `新北市中和區${street}`, street, type, date, homeArea, unitPrice });
@@ -31,13 +31,13 @@ test('finds different projects with similar year, type, size and recent sales', 
   assert.equal(candidates[1].sameStreet, false);
 });
 
-test('requires three distinct selected developments before showing any signal', () => {
+test('requires two distinct selected developments before showing a signal', () => {
   const two = comparePrice({ ...base, askingUnit: 100, selectedNames: ['乙案', '丙案'] });
-  assert.equal(two.signal, 'neutral');
-  assert.equal(two.baseline, null);
-  const repeated = comparePrice({ ...base, askingUnit: 100, selectedNames: ['乙案', '乙案', '丙案'] });
-  assert.equal(repeated.signal, 'neutral');
-  assert.equal(repeated.selected.length, 2);
+  assert.equal(two.signal, 'amber');
+  assert.equal(two.baseline, 97.5);
+  const one = comparePrice({ ...base, askingUnit: 100, selectedNames: ['乙案'] });
+  assert.equal(one.signal, 'neutral');
+  assert.equal(one.selected.length, 1);
 });
 
 test('weights each project once and applies the red, amber, green thresholds', () => {
@@ -62,7 +62,13 @@ test('changing the allowed first sale year removes an older selected project', (
     selectedNames: ['乙案', '丙案', '辛案'], asOf: new Date('2026-09-22'),
   });
   assert.equal(result.selected.some((item) => item.name === '辛案'), false);
-  assert.equal(result.signal, 'neutral');
+  assert.equal(result.signal, 'amber');
+});
+
+test('selects the three cheapest projects by each project median', () => {
+  const candidates = findComparableProjects(base);
+  assert.deepEqual(cheapestComparableNames(candidates), ['丙案', '乙案', '丁案']);
+  assert.deepEqual(cheapestComparableNames(candidates, 2), ['丙案', '乙案']);
 });
 
 test('median handles even and odd case counts', () => {
