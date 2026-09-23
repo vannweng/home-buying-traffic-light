@@ -232,25 +232,23 @@ function renderResult(result, askingUnit, yearTolerance) {
   $('#askingDisplay').textContent = number(askingUnit, 1);
   $('#baselineDisplay').textContent = result.baseline === null ? '—' : number(result.baseline, 1);
   $('#differenceDisplay').textContent = result.difference === null ? '—' : `${result.difference > 0 ? '+' : ''}${number(result.difference, 1)}%`;
-  const titles = { green: '綠燈 · 低於成交基準', amber: '黃燈 · 接近或高於基準', red: '紅燈 · 高出基準逾 15%', neutral: result.selected.length === 0 ? '黑燈 · 未選比較建案' : '黑燈 · 只有一案，暫不判燈' };
+  const titles = { green: '綠燈 · 低於成交基準', amber: '黃燈 · 接近或高於基準', red: '紅燈 · 高出基準逾 15%', neutral: '黑燈 · 沒有可用成交' };
   const messages = {
     green: '這個開價低於可比成交案例的中位數。請繼續確認樓層、車位與付款條件。',
     amber: '這個開價介於成交基準與高出 15% 之間，值得帶著案例進一步議價。',
     red: '開價明顯高於可比成交案例。建議先確認差異原因，再決定出價。',
-    neutral: result.selected.length === 0 ? '請在下方加入至少兩個不同建案；0 案不提供紅黃綠燈。' : '目前只有一個可比建案，請再加入至少一案，避免單案價格決定燈號。',
+    neutral: '本案與已加入建案都沒有近三年、相近坪數的可用成交，因此暫不提供紅黃綠燈。',
   };
   $('#signalTitle').textContent = titles[result.signal];
   $('#signalDescription').textContent = messages[result.signal];
-  $('#confidenceNote').textContent = result.selected.length >= 2
-    ? `已用 ${result.selected.length} 個不同建案計算；每案先取自身成交中位數，再由各案中位數產生比較基準。選案越少，判讀越容易受單案差異影響。`
-    : `目前加入 ${result.selected.length} 案，至少需要 2 個不同建案。預售屋以首次公開成交年份代表案齡，並非完工屋齡。`;
-  $('#casesCount').textContent = `${result.selected.length} 案已加入`;
-  $('#casesSummary').textContent = `預設選入價格中位數最低的最多三案。候選案必須與「${selected.name}」基地直線距離 0–300 公尺，且首次成交年份相差不超過 ${yearTolerance} 年、建物類型相同、房屋坪數相差不超過 25%，近三年有成交。你可改選任意數量。`;
+  $('#confidenceNote').textContent = result.benchmarkProjects.length
+    ? `已用 ${result.benchmarkProjects.length} 個建案計算${result.own ? '，包含本案自己的成交' : ''}；每案先取自身成交中位數，再由各案中位數產生比較基準。僅一案時可判燈，但更容易受單案條件影響。`
+    : '本案與已加入建案都沒有近三年、相近坪數的可用成交。預售屋以首次公開成交年份代表案齡，並非完工屋齡。';
+  $('#casesCount').textContent = `${result.selected.length} 案已加入${result.own ? ' · 本案已納入' : ''}`;
+  $('#casesSummary').textContent = `本案有符合條件的成交時會自動納入計算；其他候選案預設選入價格中位數最低的最多三案。候選案必須與「${selected.name}」基地直線距離 0–300 公尺，且首次成交年份相差不超過 ${yearTolerance} 年、建物類型相同、房屋坪數相差不超過 25%，近三年有成交。你可改選任意數量。`;
   $('#comparisonStatus').textContent = result.candidates.length === 0
     ? (hasCoordinates(selected) ? '目前沒有 0–300 公尺內且符合條件的不同建案；可調整年份差距或房屋坪數。' : '此建案尚未完成基地定位，暫時無法用距離篩選比較案。')
-    : result.selected.length < 2
-      ? `目前選入 ${result.selected.length} 案；至少選 2 案才判燈。`
-      : `已選 ${result.selected.length} 案。可再加入、移除，或清空比較；燈號會立即重算。`;
+    : `已選 ${result.selected.length} 案${result.own ? '，本案成交也已自動納入' : ''}。可再加入、移除，或清空比較；燈號會立即重算。`;
   $('#caseList').replaceChildren(...[...result.candidates].sort((a, b) => a.baseline - b.baseline || a.name.localeCompare(b.name, 'zh-Hant')).map((candidate) => makeCandidate(candidate, selectedNames.has(candidate.name))));
   $('#mapsLink').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selected.address + ' ' + selected.name)}`;
 }

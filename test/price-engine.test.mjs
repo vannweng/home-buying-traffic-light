@@ -32,13 +32,27 @@ test('finds different projects with similar year, type, size and recent sales', 
   assert.equal(candidates[1].sameStreet, false);
 });
 
-test('requires two distinct selected developments before showing a signal', () => {
+test('uses the subject sale and permits a signal from one development', () => {
+  const subjectOnly = comparePrice({ ...base, askingUnit: 100, selectedNames: [] });
+  assert.equal(subjectOnly.signal, 'amber');
+  assert.equal(subjectOnly.baseline, 100);
+  assert.equal(subjectOnly.own.name, '甲案');
+  assert.equal(subjectOnly.benchmarkProjects.length, 1);
   const two = comparePrice({ ...base, askingUnit: 100, selectedNames: ['乙案', '丙案'] });
   assert.equal(two.signal, 'amber');
-  assert.equal(two.baseline, 97.5);
+  assert.equal(two.baseline, 100);
   const one = comparePrice({ ...base, askingUnit: 100, selectedNames: ['乙案'] });
-  assert.equal(one.signal, 'neutral');
+  assert.equal(one.signal, 'amber');
   assert.equal(one.selected.length, 1);
+});
+
+test('does not classify when neither subject nor selected projects have usable sales', () => {
+  const stale = row('無交易本案', 100, '2020-01-01');
+  const onlyProject = withCoordinates(getProjects([stale]))[0];
+  const result = comparePrice({ project: onlyProject, projects: [onlyProject], transactions: [stale], askingUnit: 100, area: 30, asOf: new Date('2026-09-23') });
+  assert.equal(result.signal, 'neutral');
+  assert.equal(result.own, null);
+  assert.equal(result.benchmarkProjects.length, 0);
 });
 
 test('weights each project once and applies the red, amber, green thresholds', () => {

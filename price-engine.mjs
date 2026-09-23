@@ -63,18 +63,22 @@ export function getProjects(transactions) {
   return [...byName.values()].sort((a, b) => b.latest.localeCompare(a.latest) || a.name.localeCompare(b.name, 'zh-Hant'));
 }
 
+function recentSimilarSales({ project, transactions, area, asOf }) {
+  const now = new Date(asOf).getTime();
+  return transactions.filter((row) => {
+    const age = now - new Date(`${row.date}T00:00:00`).getTime();
+    return age >= 0 && age <= THREE_YEARS_MS && row.type === project.type &&
+      row.homeArea >= area * 0.75 && row.homeArea <= area * 1.25 && row.unitPrice > 0;
+  });
+}
+
 export function findComparableProjects({ project, projects, transactions, area, yearTolerance = 3, minDistanceMeters = 0, maxDistanceMeters = 300, asOf = new Date() }) {
   if (!project || !Number.isFinite(area) || area <= 0 || ![1, 2, 3].includes(yearTolerance) || !Number.isFinite(minDistanceMeters) || !Number.isFinite(maxDistanceMeters) || minDistanceMeters < 0 || maxDistanceMeters < minDistanceMeters) {
     throw new Error('請選擇建案、輸入有效坪數並設定年份差距。');
   }
   if (!hasCoordinates(project)) return [];
   const targetYear = Number(project.first?.slice(0, 4));
-  const now = new Date(asOf).getTime();
-  const eligible = transactions.filter((row) => {
-    const age = now - new Date(`${row.date}T00:00:00`).getTime();
-    return age >= 0 && age <= THREE_YEARS_MS && row.type === project.type &&
-      row.homeArea >= area * 0.75 && row.homeArea <= area * 1.25 && row.unitPrice > 0;
-  });
+  const eligible = recentSimilarSales({ project, transactions, area, asOf });
   return projects.map((candidate) => ({ candidate, distanceMeters: distanceMeters(project, candidate) }))
     .filter(({ candidate, distanceMeters: meters }) => candidate.name !== project.name && candidate.type === project.type &&
       Number.isFinite(meters) && meters >= minDistanceMeters && meters <= maxDistanceMeters &&
@@ -88,14 +92,18 @@ export function findComparableProjects({ project, projects, transactions, area, 
       b.latest.localeCompare(a.latest));
 }
 
-export function comparePrice({ project, projects, transactions, askingUnit, area, selectedNames = [], yearTolerance = 3, asOf = new Date() }) {
+export function comparePrice({ project, projects, transactions, askingUnit, area, selectedNames = [], yearTolerance = 3, minDistanceMeters = 0, maxDistanceMeters = 300, asOf = new Date() }) {
   if (!Number.isFinite(askingUnit) || askingUnit <= 0) throw new Error('請輸入有效的每坪開價。');
-  const candidates = findComparableProjects({ project, projects, transactions, area, yearTolerance, asOf });
+  const candidates = findComparableProjects({ project, projects, transactions, area, yearTolerance, minDistanceMeters, maxDistanceMeters, asOf });
   const selected = candidates.filter((candidate) => selectedNames.includes(candidate.name));
-  const baseline = selected.length >= 2 ? median(selected.map((candidate) => candidate.baseline)) : null;
+  const ownCases = recentSimilarSales({ project, transactions, area, asOf }).filter((row) => row.name === project.name)
+    .sort((a, b) => b.date.localeCompare(a.date)).slice(0, 30);
+  const own = ownCases.length ? { ...project, cases: ownCases, baseline: median(ownCases.map((row) => row.unitPrice)), isSubject: true } : null;
+  const benchmarkProjects = [...(own ? [own] : []), ...selected];
+  const baseline = benchmarkProjects.length ? median(benchmarkProjects.map((candidate) => candidate.baseline)) : null;
   const difference = baseline === null ? null : (askingUnit / baseline - 1) * 100;
   const signal = difference === null ? 'neutral' : difference < 0 ? 'green' : difference > 15 ? 'red' : 'amber';
-  return { candidates, selected, baseline, difference, signal };
+  return { candidates, selected, own, benchmarkProjects, baseline, difference, signal };
 }
 
 export function cheapestComparableNames(candidates, limit = 3) {
