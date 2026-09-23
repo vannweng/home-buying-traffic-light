@@ -14,8 +14,11 @@ ROOT = Path(__file__).resolve().parent.parent
 SOURCE = "https://www.dorts.ntpc.gov.tw/about/routeInfo/8pRG2lkJmb5z"
 PROGRESS = "https://www.dorts.ntpc.gov.tw/about/routeProgress/8pRG2lkJmb5z"
 STATIONS = [
-    ("連城路", "萬大中和線規劃中的中和、連城錦和及中和高中站", ("LG06", "LG07", "LG08", "連城路")),
-    ("莒光路", "萬大中和線規劃中的莒光站", ("LG08A", "莒光路")),
+    ("連城路", "萬大中和線規劃中的中和、連城錦和及中和高中站", ("LG06", "LG07", "LG08", "連城路"), [
+        {"code": "LG07", "name": "連城錦和站", "latitude": 24.992161, "longitude": 121.4773249,
+         "location": "錦和路東側之連城路下方", "coordinateNote": "座標依官方站位文字對應至連城路與錦和路一帶，僅供 300 公尺初篩；非官方測量座標。"},
+    ]),
+    ("莒光路", "萬大中和線規劃中的莒光站", ("LG08A", "莒光路"), []),
 ]
 
 
@@ -32,13 +35,14 @@ def fetch_text(url):
 def refresh_evidence():
     text = fetch_text(SOURCE)
     items = []
-    for street, title, required in STATIONS:
+    for street, title, required, stations in STATIONS:
         if not all(word in text for word in required):
             raise RuntimeError(f"官方頁面未能驗證 {street} 站點；保留既有快照。")
         items.append({"id": f"wanda-{street}", "street": street, "title": title,
                       "status": "官方路線頁列為工程站點；請查核最新進度與通車公告",
                       "source": "新北市政府捷運工程局", "url": SOURCE, "progressUrl": PROGRESS,
-                      "note": "僅為同路段線索；無基地座標，不能推算到站步行距離。"})
+                      "stations": stations,
+                      "note": "站點座標僅在官方站位文字可對應時提供，屬 300 公尺初篩；仍須以官方出入口圖與現場確認。"})
     path = ROOT / "data/trend-evidence.json"
     path.write_text(json.dumps({"updatedAt": date.today().isoformat(), "items": items}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return items

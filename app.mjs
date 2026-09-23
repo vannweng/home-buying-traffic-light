@@ -1,7 +1,7 @@
 import { cheapestComparableNames, comparePrice, findComparableProjects, getProjects, summarizeProject } from './price-engine.mjs';
 import { analyzeTrend } from './trend-engine.mjs';
 import { CRITERIA, scoreAppreciation } from './appreciation-score.mjs';
-import { addLocation, hasCoordinates } from './geo-engine.mjs';
+import { addLocation, distanceMeters, hasCoordinates } from './geo-engine.mjs';
 
 const $ = (selector) => document.querySelector(selector);
 const number = (value, digits = 1) => Number(value).toLocaleString('zh-TW', { maximumFractionDigits: digits, minimumFractionDigits: digits });
@@ -296,27 +296,37 @@ function nearbyNames(project, type) {
   return (project.nearby?.[type] || []).slice(0, 3).map((item) => `${item.name}（${item.distanceMeters}m）`);
 }
 
-function automaticAnswers(project) {
+function plannedTransitSites(project, leads) {
+  if (!hasCoordinates(project)) return [];
+  return leads.flatMap((lead) => (lead.stations || []).map((station) => ({ ...station, source: lead.source, distanceMeters: distanceMeters(project, { latitude: station.latitude, longitude: station.longitude }) })))
+    .filter((station) => Number.isFinite(station.distanceMeters) && station.distanceMeters <= 300)
+    .sort((a, b) => a.distanceMeters - b.distanceMeters);
+}
+
+function automaticAnswers(project, leads) {
   if (!hasCoordinates(project)) return Object.fromEntries(CRITERIA.map((criterion) => [criterion.rank, 'unknown']));
   const has = (type) => nearbyNames(project, type).length > 0;
+  const plannedTransit = plannedTransitSites(project, leads).length > 0;
   return {
-    1: 'unknown', 2: has('transit') ? 'yes' : 'no', 3: 'unknown', 4: has('grocery') ? 'yes' : 'no', 5: 'unknown',
+    1: 'unknown', 2: plannedTransit || has('transit') ? 'yes' : 'no', 3: 'unknown', 4: has('grocery') ? 'yes' : 'no', 5: 'unknown',
     6: 'unknown', 7: has('park') ? 'yes' : 'no', 8: 'unknown', 9: 'unknown', 10: 'unknown',
     11: has('mall') ? 'yes' : 'no', 12: has('hospital') ? 'yes' : 'no', 13: 'unknown',
   };
 }
 
-function automaticDetail(project, rank) {
+function automaticDetail(project, rank, leads) {
   const type = { 2: 'transit', 4: 'grocery', 7: 'park', 11: 'mall', 12: 'hospital' }[rank];
   if (!type) return '系統無法僅靠 0–300 公尺 POI 判斷，預填為待查。';
+  const planned = rank === 2 ? plannedTransitSites(project, leads) : [];
   const names = nearbyNames(project, type);
   if (!hasCoordinates(project)) return '基地尚未定位，系統預填為待查。';
+  if (planned.length) return `官方公共建設資料：萬大中和線 ${planned.map((station) => `${station.code} ${station.name}（約 ${Math.round(station.distanceMeters)}m，規劃／施工中）`).join('、')}；${planned[0].coordinateNote}`;
   if (!names.length) return 'OpenStreetMap 0–300 公尺快照未找到對應設施，系統暫選不符合；可自行查核後調整。';
   return `系統在 0–300 公尺快照找到：${names.join('、')}。`;
 }
 
 function renderAppreciation(project, leads) {
-  const automatic = automaticAnswers(project);
+  const automatic = automaticAnswers(project, leads);
   const manual = scoreAnswers[project.name] || {};
   const answers = { ...automatic, ...manual };
   const list = $('#appreciationCriteria');
@@ -326,7 +336,7 @@ function renderAppreciation(project, leads) {
     const main = element('div', 'appreciation-item-main');
     main.append(element('span', 'appreciation-rank', String(criterion.rank)), element('strong', '', criterion.title), element('em', 'appreciation-tier', criterion.tier));
     main.append(element('small', '', criterion.rank === 1 ? '安全底線' : `${criterion.weight} 分`));
-    const detail = element('p', '', `${criterion.reason}｜${automaticDetail(project, criterion.rank)}｜購屋者想法：「${criterion.psychology}」`);
+    const detail = element('p', '', `${criterion.reason}｜${automaticDetail(project, criterion.rank, leads)}｜購屋者想法：「${criterion.psychology}」`);
     if (criterion.rank === 1) {
       for (const [label, url] of [['查淹水潛勢', 'https://www.wra.gov.tw/cp.aspx?n=6244'], ['查活動斷層', 'https://fault.gsmma.gov.tw/']]) {
         const link = element('a', 'appreciation-source', `${label} ↗`);
@@ -362,7 +372,7 @@ function renderAppreciation(project, leads) {
   display.append(element('strong', '', score.veto === 'no' ? '暫不評分' : score.score === null ? '—' : `${score.score} / 100`));
   display.append(element('small', '', `已查核權重 ${score.assessed}% · 可能範圍 ${score.range[0]}–${score.range[1]} 分`));
   const caution = score.veto === 'no' ? '已標記重大安全或嫌惡風險，先查證與排除，不應由其他加分項抵銷。' : score.veto !== 'yes' ? '先完成第 1 項安全底線查核，才會顯示單一分數。' : score.assessed < 70 ? '已查核權重未達 70%，先完成更多項目，避免少量資訊造成假精確分數。' : '此分數只反映你標記的條件，未檢驗價格是否已反映利多，也不代表未來房價漲幅。';
-  $('#appreciationNote').textContent = `${caution}系統預填依 ${geoSnapshot.generatedAt || '未提供'} 的 OpenStreetMap 0–300 公尺快照；點選任一選項可覆寫。${leads.length ? ' 同路段的未來捷運線索仍需確認基地與站點距離，不會自動給分。' : ''}`;
+  $('#appreciationNote').textContent = `${caution}系統預填依 ${geoSnapshot.generatedAt || '未提供'} 的 OpenStreetMap 0–300 公尺快照及官方公共建設站位資料；點選任一選項可覆寫。規劃／施工中的站點不等於已通車，仍須以官方出入口圖與現場確認。`;
 }
 
 $('#runTrend').addEventListener('click', () => {

@@ -9,7 +9,17 @@
       "source": "新北市政府捷運工程局",
       "url": "https://www.dorts.ntpc.gov.tw/about/routeInfo/8pRG2lkJmb5z",
       "progressUrl": "https://www.dorts.ntpc.gov.tw/about/routeProgress/8pRG2lkJmb5z",
-      "note": "僅為同路段線索；無基地座標，不能推算到站步行距離。"
+      "stations": [
+        {
+          "code": "LG07",
+          "name": "連城錦和站",
+          "latitude": 24.992161,
+          "longitude": 121.4773249,
+          "location": "錦和路東側之連城路下方",
+          "coordinateNote": "座標依官方站位文字對應至連城路與錦和路一帶，僅供 300 公尺初篩；非官方測量座標。"
+        }
+      ],
+      "note": "站點座標僅在官方站位文字可對應時提供，屬 300 公尺初篩；仍須以官方出入口圖與現場確認。"
     },
     {
       "id": "wanda-莒光路",
@@ -19,7 +29,8 @@
       "source": "新北市政府捷運工程局",
       "url": "https://www.dorts.ntpc.gov.tw/about/routeInfo/8pRG2lkJmb5z",
       "progressUrl": "https://www.dorts.ntpc.gov.tw/about/routeProgress/8pRG2lkJmb5z",
-      "note": "僅為同路段線索；無基地座標，不能推算到站步行距離。"
+      "stations": [],
+      "note": "站點座標僅在官方站位文字可對應時提供，屬 300 公尺初篩；仍須以官方出入口圖與現場確認。"
     }
   ]
 }
