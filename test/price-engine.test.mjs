@@ -13,7 +13,8 @@ const transactions = [
   row('己案', 70, '2023-01-01'),
   row('庚案', 70, '2026-02-01', 30, '華廈'),
 ];
-const projects = getProjects(transactions);
+const withCoordinates = (list) => list.map((item) => ({ ...item, latitude: 25, longitude: 121.5 }));
+const projects = withCoordinates(getProjects(transactions));
 const project = projects.find((item) => item.name === '甲案');
 const base = { project, projects, transactions, area: 30, asOf: new Date('2026-09-22') };
 
@@ -56,8 +57,9 @@ test('changing the allowed first sale year removes an older selected project', (
   const older = row('辛案', 99, '2024-01-01');
   const newerTarget = row('新案', 100, '2026-01-01');
   const sample = [newerTarget, older, ...transactions.filter((item) => ['乙案', '丙案'].includes(item.name))];
+  const located = withCoordinates(getProjects(sample));
   const result = comparePrice({
-    project: getProjects(sample).find((item) => item.name === '新案'), projects: getProjects(sample),
+    project: located.find((item) => item.name === '新案'), projects: located,
     transactions: sample, askingUnit: 100, area: 30, yearTolerance: 1,
     selectedNames: ['乙案', '丙案', '辛案'], asOf: new Date('2026-09-22'),
   });
@@ -69,6 +71,11 @@ test('selects the three cheapest projects by each project median', () => {
   const candidates = findComparableProjects(base);
   assert.deepEqual(cheapestComparableNames(candidates), ['丙案', '乙案', '丁案']);
   assert.deepEqual(cheapestComparableNames(candidates, 2), ['丙案', '乙案']);
+});
+
+test('strictly excludes projects beyond 300 metres', () => {
+  const distant = projects.map((item) => item.name === '丁案' ? { ...item, latitude: 25.01 } : item);
+  assert.deepEqual(findComparableProjects({ ...base, projects: distant }).map((item) => item.name), ['乙案', '丙案']);
 });
 
 test('median handles even and odd case counts', () => {

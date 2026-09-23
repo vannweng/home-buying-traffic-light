@@ -1,3 +1,5 @@
+import { distanceMeters, hasCoordinates } from './geo-engine.mjs';
+
 const THREE_YEARS_MS = 1096 * 24 * 60 * 60 * 1000;
 
 export function median(values) {
@@ -61,10 +63,11 @@ export function getProjects(transactions) {
   return [...byName.values()].sort((a, b) => b.latest.localeCompare(a.latest) || a.name.localeCompare(b.name, 'zh-Hant'));
 }
 
-export function findComparableProjects({ project, projects, transactions, area, yearTolerance = 3, asOf = new Date() }) {
-  if (!project || !Number.isFinite(area) || area <= 0 || ![1, 2, 3].includes(yearTolerance)) {
+export function findComparableProjects({ project, projects, transactions, area, yearTolerance = 3, minDistanceMeters = 0, maxDistanceMeters = 300, asOf = new Date() }) {
+  if (!project || !Number.isFinite(area) || area <= 0 || ![1, 2, 3].includes(yearTolerance) || !Number.isFinite(minDistanceMeters) || !Number.isFinite(maxDistanceMeters) || minDistanceMeters < 0 || maxDistanceMeters < minDistanceMeters) {
     throw new Error('請選擇建案、輸入有效坪數並設定年份差距。');
   }
+  if (!hasCoordinates(project)) return [];
   const targetYear = Number(project.first?.slice(0, 4));
   const now = new Date(asOf).getTime();
   const eligible = transactions.filter((row) => {
@@ -72,12 +75,13 @@ export function findComparableProjects({ project, projects, transactions, area, 
     return age >= 0 && age <= THREE_YEARS_MS && row.type === project.type &&
       row.homeArea >= area * 0.75 && row.homeArea <= area * 1.25 && row.unitPrice > 0;
   });
-  return projects.filter((candidate) =>
-    candidate.name !== project.name && candidate.type === project.type &&
-    Math.abs(Number(candidate.first.slice(0, 4)) - targetYear) <= yearTolerance
-  ).map((candidate) => {
+  return projects.map((candidate) => ({ candidate, distanceMeters: distanceMeters(project, candidate) }))
+    .filter(({ candidate, distanceMeters: meters }) => candidate.name !== project.name && candidate.type === project.type &&
+      Number.isFinite(meters) && meters >= minDistanceMeters && meters <= maxDistanceMeters &&
+      Math.abs(Number(candidate.first.slice(0, 4)) - targetYear) <= yearTolerance
+    ).map(({ candidate, distanceMeters: meters }) => {
     const cases = eligible.filter((row) => row.name === candidate.name).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 30);
-    return { ...candidate, cases, baseline: median(cases.map((row) => row.unitPrice)), sameStreet: Boolean(project.street && candidate.street === project.street) };
+    return { ...candidate, cases, baseline: median(cases.map((row) => row.unitPrice)), distanceMeters: meters, sameStreet: Boolean(project.street && candidate.street === project.street) };
   }).filter((candidate) => candidate.cases.length > 0)
     .sort((a, b) => Number(b.sameStreet) - Number(a.sameStreet) ||
       Math.abs(Number(a.first.slice(0, 4)) - targetYear) - Math.abs(Number(b.first.slice(0, 4)) - targetYear) ||

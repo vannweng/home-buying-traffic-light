@@ -1,0 +1,1623 @@
+{
+  "generatedAt": "2026-09-23",
+  "radiusMeters": 300,
+  "geocoder": "OpenStreetMap Nominatim",
+  "poiSource": "OpenStreetMap Overpass API",
+  "projects": {
+    "大同新紀元": {
+      "address": "新北市中和區連城路與錦和路交叉路口",
+      "lat": 24.992161,
+      "lon": 121.4773249,
+      "query": "新北市中和區連城路",
+      "label": "連城路, 嘉慶里, 中和區, 中坑, 新北市, 23552, 臺灣",
+      "nearby": {
+        "transit": [],
+        "grocery": [],
+        "school": [
+          {
+            "name": "中和高中",
+            "distanceMeters": 285,
+            "osmType": "relation",
+            "osmId": 5365502
+          }
+        ],
+        "park": [],
+        "hospital": [],
+        "mall": [],
+        "temple": []
+      }
+    },
+    "好植": {
+      "address": "新北市中和區景新街6號",
+      "lat": 24.9867157,
+      "lon": 121.5144408,
+      "query": "新北市中和區景新街",
+      "label": "景新街, 崇南里, 中和區, 潭漧, 新北市, 23578, 臺灣",
+      "nearby": {
+        "transit": [],
+        "grocery": [
+          {
+            "name": "全聯福利中心",
+            "distanceMeters": 67,
+            "osmType": "node",
+            "osmId": 2625629075
+          },
+          {
+            "name": "蝦皮店到店",
+            "distanceMeters": 143,
+            "osmType": "node",
+            "osmId": 9491209685
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 181,
+            "osmType": "node",
+            "osmId": 2630791280
+          },
+          {
+            "name": "美廉社",
+            "distanceMeters": 191,
+            "osmType": "node",
+            "osmId": 2630791514
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 227,
+            "osmType": "node",
+            "osmId": 2731450085
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 228,
+            "osmType": "node",
+            "osmId": 2625627540
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 235,
+            "osmType": "node",
+            "osmId": 2630748048
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 254,
+            "osmType": "node",
+            "osmId": 13984824728
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 257,
+            "osmType": "node",
+            "osmId": 2969975409
+          },
+          {
+            "name": "美廉社",
+            "distanceMeters": 275,
+            "osmType": "node",
+            "osmId": 9983295495
+          },
+          {
+            "name": "OK超商",
+            "distanceMeters": 276,
+            "osmType": "node",
+            "osmId": 8029920825
+          }
+        ],
+        "school": [],
+        "park": [
+          {
+            "name": "景新公園",
+            "distanceMeters": 244,
+            "osmType": "way",
+            "osmId": 268317320
+          },
+          {
+            "name": "天山公園",
+            "distanceMeters": 293,
+            "osmType": "way",
+            "osmId": 577448201
+          }
+        ],
+        "hospital": [],
+        "mall": [],
+        "temple": [
+          {
+            "name": "未命名設施",
+            "distanceMeters": 215,
+            "osmType": "node",
+            "osmId": 5323079022
+          },
+          {
+            "name": "三介廟",
+            "distanceMeters": 234,
+            "osmType": "way",
+            "osmId": 268317348
+          },
+          {
+            "name": "雙和真理堂",
+            "distanceMeters": 241,
+            "osmType": "node",
+            "osmId": 5330349522
+          }
+        ]
+      }
+    },
+    "偉鉅中山?匯": {
+      "address": "新北市中和區永和路8巷旁",
+      "lat": 25.0033006,
+      "lon": 121.5004443,
+      "query": "新北市中和區永和路8巷",
+      "label": "永和路8巷, 福祥里, 中和區, 枋寮, 新北市, 23554, 臺灣",
+      "nearby": {
+        "transit": [],
+        "grocery": [
+          {
+            "name": "印尼便利商店TOKO INDO ISABELLA",
+            "distanceMeters": 87,
+            "osmType": "node",
+            "osmId": 2924915295
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 124,
+            "osmType": "node",
+            "osmId": 4111314906
+          },
+          {
+            "name": "大全聯",
+            "distanceMeters": 132,
+            "osmType": "node",
+            "osmId": 2708095316
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 163,
+            "osmType": "node",
+            "osmId": 4107546495
+          },
+          {
+            "name": "萊爾富",
+            "distanceMeters": 169,
+            "osmType": "node",
+            "osmId": 3689523252
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 179,
+            "osmType": "node",
+            "osmId": 3328449243
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 203,
+            "osmType": "node",
+            "osmId": 7728564423
+          },
+          {
+            "name": "蝦皮店到店",
+            "distanceMeters": 226,
+            "osmType": "node",
+            "osmId": 9588074539
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 238,
+            "osmType": "node",
+            "osmId": 4045352635
+          },
+          {
+            "name": "萊爾富",
+            "distanceMeters": 243,
+            "osmType": "node",
+            "osmId": 2924918297
+          },
+          {
+            "name": "全聯福利中心",
+            "distanceMeters": 264,
+            "osmType": "node",
+            "osmId": 4045352261
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 266,
+            "osmType": "node",
+            "osmId": 3441073825
+          },
+          {
+            "name": "萊爾富",
+            "distanceMeters": 277,
+            "osmType": "node",
+            "osmId": 3328450046
+          },
+          {
+            "name": "OK超商",
+            "distanceMeters": 291,
+            "osmType": "node",
+            "osmId": 3430332158
+          }
+        ],
+        "school": [],
+        "park": [
+          {
+            "name": "廟美綠林小徑",
+            "distanceMeters": 178,
+            "osmType": "way",
+            "osmId": 289004432
+          },
+          {
+            "name": "未命名設施",
+            "distanceMeters": 228,
+            "osmType": "way",
+            "osmId": 1198233841
+          },
+          {
+            "name": "福祥公園",
+            "distanceMeters": 257,
+            "osmType": "way",
+            "osmId": 1499176919
+          }
+        ],
+        "hospital": [
+          {
+            "name": "中祥醫院附設居家護理所",
+            "distanceMeters": 158,
+            "osmType": "node",
+            "osmId": 4748285621
+          },
+          {
+            "name": "怡和醫院",
+            "distanceMeters": 248,
+            "osmType": "node",
+            "osmId": 3328449233
+          }
+        ],
+        "mall": [],
+        "temple": [
+          {
+            "name": "中和福祥宮",
+            "distanceMeters": 57,
+            "osmType": "node",
+            "osmId": 5372146601
+          },
+          {
+            "name": "耶和華見證人",
+            "distanceMeters": 176,
+            "osmType": "node",
+            "osmId": 5661164136
+          },
+          {
+            "name": "中和和美宮",
+            "distanceMeters": 212,
+            "osmType": "node",
+            "osmId": 3440530248
+          },
+          {
+            "name": "福和宮",
+            "distanceMeters": 218,
+            "osmType": "way",
+            "osmId": 217431115
+          },
+          {
+            "name": "未命名設施",
+            "distanceMeters": 289,
+            "osmType": "node",
+            "osmId": 13006523001
+          }
+        ]
+      }
+    },
+    "和雅琚": {
+      "address": "新北市中和區福祥路91號旁",
+      "lat": 25.0034547,
+      "lon": 121.4994531,
+      "query": "新北市中和區福祥路",
+      "label": "福祥路, 福善里, 中和區, 枋寮, 新北市, 235070, 臺灣",
+      "nearby": {
+        "transit": [],
+        "grocery": [
+          {
+            "name": "大全聯",
+            "distanceMeters": 36,
+            "osmType": "node",
+            "osmId": 2708095316
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 65,
+            "osmType": "node",
+            "osmId": 4111314906
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 91,
+            "osmType": "node",
+            "osmId": 4107546495
+          },
+          {
+            "name": "萊爾富",
+            "distanceMeters": 167,
+            "osmType": "node",
+            "osmId": 3689523252
+          },
+          {
+            "name": "印尼便利商店TOKO INDO ISABELLA",
+            "distanceMeters": 170,
+            "osmType": "node",
+            "osmId": 2924915295
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 184,
+            "osmType": "node",
+            "osmId": 3328449243
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 192,
+            "osmType": "node",
+            "osmId": 4045352635
+          },
+          {
+            "name": "OK超商",
+            "distanceMeters": 202,
+            "osmType": "node",
+            "osmId": 3430332158
+          },
+          {
+            "name": "全聯福利中心",
+            "distanceMeters": 220,
+            "osmType": "node",
+            "osmId": 4045352261
+          },
+          {
+            "name": "萊爾富",
+            "distanceMeters": 223,
+            "osmType": "node",
+            "osmId": 3328450046
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 247,
+            "osmType": "node",
+            "osmId": 3399243969
+          },
+          {
+            "name": "萊爾富",
+            "distanceMeters": 255,
+            "osmType": "node",
+            "osmId": 2924918297
+          },
+          {
+            "name": "全聯福利中心",
+            "distanceMeters": 292,
+            "osmType": "node",
+            "osmId": 13006523010
+          }
+        ],
+        "school": [],
+        "park": [
+          {
+            "name": "未命名設施",
+            "distanceMeters": 218,
+            "osmType": "way",
+            "osmId": 1198233841
+          },
+          {
+            "name": "福祥公園",
+            "distanceMeters": 229,
+            "osmType": "way",
+            "osmId": 1499176919
+          },
+          {
+            "name": "廟美綠林小徑",
+            "distanceMeters": 257,
+            "osmType": "way",
+            "osmId": 289004432
+          }
+        ],
+        "hospital": [
+          {
+            "name": "怡和醫院",
+            "distanceMeters": 197,
+            "osmType": "node",
+            "osmId": 3328449233
+          },
+          {
+            "name": "中祥醫院附設居家護理所",
+            "distanceMeters": 259,
+            "osmType": "node",
+            "osmId": 4748285621
+          }
+        ],
+        "mall": [],
+        "temple": [
+          {
+            "name": "耶和華見證人",
+            "distanceMeters": 95,
+            "osmType": "node",
+            "osmId": 5661164136
+          },
+          {
+            "name": "中和和美宮",
+            "distanceMeters": 134,
+            "osmType": "node",
+            "osmId": 3440530248
+          },
+          {
+            "name": "中和福祥宮",
+            "distanceMeters": 154,
+            "osmType": "node",
+            "osmId": 5372146601
+          },
+          {
+            "name": "福和宮",
+            "distanceMeters": 295,
+            "osmType": "way",
+            "osmId": 217431115
+          }
+        ]
+      }
+    },
+    "昇陽國旭": {
+      "address": "新北市中和區秀朗路三段秀朗路三段10巷口",
+      "unmatched": true
+    },
+    "綻賞": {
+      "address": "新北市中和區連城路307號旁",
+      "lat": 24.992161,
+      "lon": 121.4773249,
+      "query": "新北市中和區連城路",
+      "label": "連城路, 嘉慶里, 中和區, 中坑, 新北市, 23552, 臺灣",
+      "nearby": {
+        "transit": [],
+        "grocery": [],
+        "school": [
+          {
+            "name": "中和高中",
+            "distanceMeters": 285,
+            "osmType": "relation",
+            "osmId": 5365502
+          }
+        ],
+        "park": [],
+        "hospital": [],
+        "mall": [],
+        "temple": []
+      }
+    },
+    "?捷橙品": {
+      "address": "新北市中和區景平路旁",
+      "lat": 24.9923579,
+      "lon": 121.5155696,
+      "query": "新北市中和區景平路",
+      "label": "景平路, 秀明里, 中和區, 潭漧, 新北市, 23510, 臺灣",
+      "nearby": {
+        "transit": [
+          {
+            "name": "景平",
+            "distanceMeters": 65,
+            "osmType": "node",
+            "osmId": 2866571176
+          }
+        ],
+        "grocery": [
+          {
+            "name": "大全聯",
+            "distanceMeters": 60,
+            "osmType": "node",
+            "osmId": 2639372626
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 65,
+            "osmType": "node",
+            "osmId": 10814243249
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 79,
+            "osmType": "node",
+            "osmId": 2639372748
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 84,
+            "osmType": "node",
+            "osmId": 2639391178
+          },
+          {
+            "name": "萊爾富",
+            "distanceMeters": 124,
+            "osmType": "node",
+            "osmId": 6427032798
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 168,
+            "osmType": "node",
+            "osmId": 6422643936
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 175,
+            "osmType": "node",
+            "osmId": 2630795346
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 182,
+            "osmType": "node",
+            "osmId": 2639373768
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 246,
+            "osmType": "node",
+            "osmId": 10814243248
+          }
+        ],
+        "school": [
+          {
+            "name": "智光商工",
+            "distanceMeters": 272,
+            "osmType": "relation",
+            "osmId": 5365489
+          }
+        ],
+        "park": [
+          {
+            "name": "景德公園",
+            "distanceMeters": 120,
+            "osmType": "way",
+            "osmId": 629399886
+          },
+          {
+            "name": "中興三村公園",
+            "distanceMeters": 229,
+            "osmType": "way",
+            "osmId": 777516400
+          },
+          {
+            "name": "未命名設施",
+            "distanceMeters": 290,
+            "osmType": "way",
+            "osmId": 912772510
+          }
+        ],
+        "hospital": [],
+        "mall": [
+          {
+            "name": "東森購物",
+            "distanceMeters": 63,
+            "osmType": "node",
+            "osmId": 12101814491
+          }
+        ],
+        "temple": []
+      }
+    },
+    "成家心悅": {
+      "address": "新北市中和區中山路2段131巷10弄6號旁",
+      "lat": 25.0021828,
+      "lon": 121.5021763,
+      "query": "新北市中和區中山路2段131巷10弄",
+      "label": "中山路二段131巷10弄, 枋寮里, 中和區, 枋寮, 新北市, 23554, 臺灣",
+      "nearby": {
+        "transit": [],
+        "grocery": [
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 116,
+            "osmType": "node",
+            "osmId": 7728564423
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 122,
+            "osmType": "node",
+            "osmId": 7728568804
+          },
+          {
+            "name": "印尼便利商店TOKO INDO ISABELLA",
+            "distanceMeters": 140,
+            "osmType": "node",
+            "osmId": 2924915295
+          },
+          {
+            "name": "蝦皮店到店",
+            "distanceMeters": 147,
+            "osmType": "node",
+            "osmId": 9588074539
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 217,
+            "osmType": "node",
+            "osmId": 3441073825
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 248,
+            "osmType": "node",
+            "osmId": 3328449243
+          },
+          {
+            "name": "萊爾富",
+            "distanceMeters": 262,
+            "osmType": "node",
+            "osmId": 2924918297
+          },
+          {
+            "name": "OK超商",
+            "distanceMeters": 262,
+            "osmType": "node",
+            "osmId": 7728568803
+          },
+          {
+            "name": "OK超商",
+            "distanceMeters": 267,
+            "osmType": "node",
+            "osmId": 3172604470
+          }
+        ],
+        "school": [
+          {
+            "name": "南山中學",
+            "distanceMeters": 238,
+            "osmType": "relation",
+            "osmId": 4562152
+          },
+          {
+            "name": "漳和國中",
+            "distanceMeters": 290,
+            "osmType": "relation",
+            "osmId": 4562153
+          }
+        ],
+        "park": [
+          {
+            "name": "廟美綠林小徑",
+            "distanceMeters": 84,
+            "osmType": "way",
+            "osmId": 289004432
+          }
+        ],
+        "hospital": [
+          {
+            "name": "中祥醫院附設居家護理所",
+            "distanceMeters": 115,
+            "osmType": "node",
+            "osmId": 4748285621
+          }
+        ],
+        "mall": [],
+        "temple": [
+          {
+            "name": "福和宮",
+            "distanceMeters": 84,
+            "osmType": "way",
+            "osmId": 217431115
+          },
+          {
+            "name": "未命名設施",
+            "distanceMeters": 144,
+            "osmType": "node",
+            "osmId": 13006523001
+          },
+          {
+            "name": "中和廣濟宮",
+            "distanceMeters": 179,
+            "osmType": "way",
+            "osmId": 1100733860
+          },
+          {
+            "name": "中和福祥宮",
+            "distanceMeters": 187,
+            "osmType": "node",
+            "osmId": 5372146601
+          }
+        ]
+      }
+    },
+    "藏富HOUSE": {
+      "address": "新北市中和區景平路159巷旁",
+      "lat": 24.991188,
+      "lon": 121.5129276,
+      "query": "新北市中和區景平路159巷",
+      "label": "景平路159巷, 景平里, 中和區, 潭漧, 新北市, 23510, 臺灣",
+      "nearby": {
+        "transit": [],
+        "grocery": [
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 120,
+            "osmType": "node",
+            "osmId": 2630767099
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 150,
+            "osmType": "node",
+            "osmId": 6422643936
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 159,
+            "osmType": "node",
+            "osmId": 2630795346
+          },
+          {
+            "name": "家樂福超市",
+            "distanceMeters": 178,
+            "osmType": "node",
+            "osmId": 2736679442
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 198,
+            "osmType": "node",
+            "osmId": 10814243248
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 239,
+            "osmType": "node",
+            "osmId": 4242503847
+          },
+          {
+            "name": "OK超商",
+            "distanceMeters": 259,
+            "osmType": "node",
+            "osmId": 8029920825
+          },
+          {
+            "name": "萊爾富",
+            "distanceMeters": 276,
+            "osmType": "node",
+            "osmId": 6190366140
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 300,
+            "osmType": "node",
+            "osmId": 10814243249
+          }
+        ],
+        "school": [],
+        "park": [
+          {
+            "name": "景德公園",
+            "distanceMeters": 278,
+            "osmType": "way",
+            "osmId": 629399886
+          }
+        ],
+        "hospital": [],
+        "mall": [
+          {
+            "name": "東森購物",
+            "distanceMeters": 262,
+            "osmType": "node",
+            "osmId": 12101814491
+          }
+        ],
+        "temple": []
+      }
+    },
+    "華固得月": {
+      "address": "新北市中和區中原街26號旁",
+      "lat": 25.0103714,
+      "lon": 121.4862702,
+      "query": "新北市中和區中原街",
+      "label": "中原街 (單號), 中原里, 中和區, 埔墘, 新北市, 220083, 臺灣",
+      "nearby": {
+        "transit": [],
+        "grocery": [
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 90,
+            "osmType": "node",
+            "osmId": 5875839488
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 176,
+            "osmType": "node",
+            "osmId": 13075331432
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 192,
+            "osmType": "node",
+            "osmId": 13075331431
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 209,
+            "osmType": "node",
+            "osmId": 3683807228
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 211,
+            "osmType": "node",
+            "osmId": 3683800294
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 246,
+            "osmType": "node",
+            "osmId": 3683807227
+          }
+        ],
+        "school": [],
+        "park": [
+          {
+            "name": "未命名設施",
+            "distanceMeters": 78,
+            "osmType": "way",
+            "osmId": 1246064523
+          },
+          {
+            "name": "未命名設施",
+            "distanceMeters": 123,
+            "osmType": "way",
+            "osmId": 1246064525
+          },
+          {
+            "name": "未命名設施",
+            "distanceMeters": 125,
+            "osmType": "way",
+            "osmId": 1246064524
+          },
+          {
+            "name": "光之公園",
+            "distanceMeters": 190,
+            "osmType": "way",
+            "osmId": 724449071
+          },
+          {
+            "name": "風之公園",
+            "distanceMeters": 205,
+            "osmType": "relation",
+            "osmId": 10036593
+          },
+          {
+            "name": "左岸綠公園",
+            "distanceMeters": 297,
+            "osmType": "way",
+            "osmId": 544724105
+          }
+        ],
+        "hospital": [],
+        "mall": [],
+        "temple": []
+      }
+    },
+    "民有琚": {
+      "address": "新北市中和區民有街42號旁",
+      "lat": 25.0042457,
+      "lon": 121.4760388,
+      "query": "新北市中和區民有街",
+      "label": "民有街, 金門縣政府太武山莊眷舍, 民有里, 中和區, 穗和, 新北市, 235010, 臺灣",
+      "nearby": {
+        "transit": [],
+        "grocery": [
+          {
+            "name": "未命名設施",
+            "distanceMeters": 72,
+            "osmType": "node",
+            "osmId": 10069947217
+          },
+          {
+            "name": "蝦皮店到店",
+            "distanceMeters": 119,
+            "osmType": "node",
+            "osmId": 9362998864
+          },
+          {
+            "name": "家樂福超市",
+            "distanceMeters": 135,
+            "osmType": "way",
+            "osmId": 606421300
+          },
+          {
+            "name": "萊爾富",
+            "distanceMeters": 137,
+            "osmType": "node",
+            "osmId": 5749618156
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 218,
+            "osmType": "node",
+            "osmId": 4836075609
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 226,
+            "osmType": "node",
+            "osmId": 4836075611
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 243,
+            "osmType": "node",
+            "osmId": 8118272760
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 253,
+            "osmType": "node",
+            "osmId": 5749618151
+          }
+        ],
+        "school": [],
+        "park": [
+          {
+            "name": "民享藝文特區",
+            "distanceMeters": 82,
+            "osmType": "way",
+            "osmId": 463818561
+          },
+          {
+            "name": "員山公園",
+            "distanceMeters": 289,
+            "osmType": "relation",
+            "osmId": 6944854
+          }
+        ],
+        "hospital": [],
+        "mall": [],
+        "temple": [
+          {
+            "name": "中和員山廣福宮",
+            "distanceMeters": 140,
+            "osmType": "node",
+            "osmId": 4590375398
+          },
+          {
+            "name": "慈濟靜思堂",
+            "distanceMeters": 142,
+            "osmType": "way",
+            "osmId": 230834598
+          }
+        ]
+      }
+    },
+    "泰隆丰和": {
+      "address": "新北市中和區橋和路322號旁",
+      "lat": 25.0049407,
+      "lon": 121.4883073,
+      "query": "新北市中和區橋和路",
+      "label": "橋和路, 中原里, 中和區, 枋寮, 新北市, 23557, 臺灣",
+      "nearby": {
+        "transit": [
+          {
+            "name": "橋和",
+            "distanceMeters": 199,
+            "osmType": "node",
+            "osmId": 5444300911
+          }
+        ],
+        "grocery": [
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 101,
+            "osmType": "node",
+            "osmId": 6389095975
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 174,
+            "osmType": "node",
+            "osmId": 6389095976
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 175,
+            "osmType": "node",
+            "osmId": 3594595048
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 252,
+            "osmType": "node",
+            "osmId": 3683800322
+          },
+          {
+            "name": "萊爾富",
+            "distanceMeters": 258,
+            "osmType": "node",
+            "osmId": 4045381175
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 262,
+            "osmType": "node",
+            "osmId": 6389095977
+          }
+        ],
+        "school": [],
+        "park": [],
+        "hospital": [],
+        "mall": [],
+        "temple": []
+      }
+    },
+    "欽禾": {
+      "address": "新北市中和區新生街52號對面",
+      "lat": 25.0005397,
+      "lon": 121.4836646,
+      "query": "新北市中和區新生街",
+      "label": "新生街, 信和里, 中和區, 中坑, 新北市, 23511, 臺灣",
+      "nearby": {
+        "transit": [],
+        "grocery": [
+          {
+            "name": "美廉社",
+            "distanceMeters": 13,
+            "osmType": "node",
+            "osmId": 3708200047
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 27,
+            "osmType": "node",
+            "osmId": 3708200052
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 67,
+            "osmType": "node",
+            "osmId": 2614374658
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 130,
+            "osmType": "node",
+            "osmId": 6389095978
+          },
+          {
+            "name": "萊爾富",
+            "distanceMeters": 145,
+            "osmType": "node",
+            "osmId": 3708200049
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 162,
+            "osmType": "node",
+            "osmId": 4169713712
+          },
+          {
+            "name": "全聯福利中心",
+            "distanceMeters": 198,
+            "osmType": "node",
+            "osmId": 2392735282
+          },
+          {
+            "name": "全聯福利中心",
+            "distanceMeters": 255,
+            "osmType": "way",
+            "osmId": 1340110307
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 258,
+            "osmType": "node",
+            "osmId": 2392735277
+          }
+        ],
+        "school": [
+          {
+            "name": "積穗國小",
+            "distanceMeters": 225,
+            "osmType": "relation",
+            "osmId": 5365498
+          }
+        ],
+        "park": [
+          {
+            "name": "民樂人行廣場",
+            "distanceMeters": 164,
+            "osmType": "way",
+            "osmId": 353461494
+          }
+        ],
+        "hospital": [],
+        "mall": [],
+        "temple": [
+          {
+            "name": "天德宮",
+            "distanceMeters": 167,
+            "osmType": "node",
+            "osmId": 6416219074
+          }
+        ]
+      }
+    },
+    "寶和植青": {
+      "address": "新北市中和區南山路320巷",
+      "lat": 24.9864463,
+      "lon": 121.5075196,
+      "query": "新北市中和區南山路320巷",
+      "label": "南山路320巷, 福南里, 中和區, 潭漧, 新北市, 23570, 臺灣",
+      "nearby": {
+        "transit": [],
+        "grocery": [
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 57,
+            "osmType": "node",
+            "osmId": 4242503834
+          },
+          {
+            "name": "蝦皮店到店",
+            "distanceMeters": 85,
+            "osmType": "node",
+            "osmId": 9362998873
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 111,
+            "osmType": "node",
+            "osmId": 2964696703
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 143,
+            "osmType": "node",
+            "osmId": 1912994535
+          },
+          {
+            "name": "萊爾富",
+            "distanceMeters": 196,
+            "osmType": "node",
+            "osmId": 13413775721
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 202,
+            "osmType": "node",
+            "osmId": 1912989459
+          }
+        ],
+        "school": [
+          {
+            "name": "中和國中",
+            "distanceMeters": 196,
+            "osmType": "relation",
+            "osmId": 5365503
+          },
+          {
+            "name": "興南國小",
+            "distanceMeters": 221,
+            "osmType": "relation",
+            "osmId": 8417405
+          }
+        ],
+        "park": [
+          {
+            "name": "未命名設施",
+            "distanceMeters": 216,
+            "osmType": "way",
+            "osmId": 182491657
+          },
+          {
+            "name": "未命名設施",
+            "distanceMeters": 275,
+            "osmType": "way",
+            "osmId": 1434056176
+          }
+        ],
+        "hospital": [],
+        "mall": [],
+        "temple": [
+          {
+            "name": "新生命小組教會中和禮拜堂",
+            "distanceMeters": 52,
+            "osmType": "node",
+            "osmId": 12385837731
+          }
+        ]
+      }
+    },
+    "忠孝芯城": {
+      "address": "新北市中和區忠孝街62巷",
+      "lat": 24.9836231,
+      "lon": 121.51246,
+      "query": "新北市中和區忠孝街62巷",
+      "label": "忠孝街62巷, 華南里, 中和區, 潭漧, 新北市, 23570, 臺灣",
+      "nearby": {
+        "transit": [],
+        "grocery": [
+          {
+            "name": "美廉社",
+            "distanceMeters": 100,
+            "osmType": "node",
+            "osmId": 10823001119
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 136,
+            "osmType": "node",
+            "osmId": 10823001118
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 202,
+            "osmType": "node",
+            "osmId": 8118272745
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 294,
+            "osmType": "node",
+            "osmId": 2969975409
+          }
+        ],
+        "school": [],
+        "park": [],
+        "hospital": [],
+        "mall": [],
+        "temple": [
+          {
+            "name": "雙和真理堂",
+            "distanceMeters": 288,
+            "osmType": "node",
+            "osmId": 5330349522
+          }
+        ]
+      }
+    },
+    "景安文匯": {
+      "address": "新北市中和區中興街263巷旁",
+      "lat": 24.9880378,
+      "lon": 121.500555,
+      "query": "新北市中和區中興街263巷",
+      "label": "中興街263巷, 中興里, 中和區, 中坑, 新北市, 23561, 臺灣",
+      "nearby": {
+        "transit": [],
+        "grocery": [],
+        "school": [
+          {
+            "name": "復興國小",
+            "distanceMeters": 185,
+            "osmType": "relation",
+            "osmId": 5365495
+          }
+        ],
+        "park": [
+          {
+            "name": "中興公園",
+            "distanceMeters": 75,
+            "osmType": "way",
+            "osmId": 429791324
+          },
+          {
+            "name": "遊樂場(右)",
+            "distanceMeters": 155,
+            "osmType": "way",
+            "osmId": 278136789
+          },
+          {
+            "name": "遊戲活動區",
+            "distanceMeters": 180,
+            "osmType": "way",
+            "osmId": 278136798
+          },
+          {
+            "name": "遊戲場(左)",
+            "distanceMeters": 209,
+            "osmType": "way",
+            "osmId": 278136785
+          },
+          {
+            "name": "機汽車停車區",
+            "distanceMeters": 215,
+            "osmType": "way",
+            "osmId": 278136795
+          }
+        ],
+        "hospital": [],
+        "mall": [],
+        "temple": [
+          {
+            "name": "中和樂天宮",
+            "distanceMeters": 176,
+            "osmType": "way",
+            "osmId": 292559650
+          },
+          {
+            "name": "游氏宗祠",
+            "distanceMeters": 298,
+            "osmType": "way",
+            "osmId": 368933083
+          }
+        ]
+      }
+    },
+    "蒲陽.南山": {
+      "address": "新北市中和區南山路81巷",
+      "lat": 24.9981179,
+      "lon": 121.5028414,
+      "query": "新北市中和區南山路81巷",
+      "label": "南山路81巷, 南山里, 中和區, 枋寮, 新北市, 235068, 臺灣",
+      "nearby": {
+        "transit": [],
+        "grocery": [
+          {
+            "name": "蝦皮店到店",
+            "distanceMeters": 87,
+            "osmType": "node",
+            "osmId": 9362998861
+          },
+          {
+            "name": "美廉社",
+            "distanceMeters": 93,
+            "osmType": "node",
+            "osmId": 2924918333
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 103,
+            "osmType": "node",
+            "osmId": 2924918332
+          },
+          {
+            "name": "萊爾富",
+            "distanceMeters": 106,
+            "osmType": "node",
+            "osmId": 2924917848
+          },
+          {
+            "name": "裕豐商行",
+            "distanceMeters": 182,
+            "osmType": "node",
+            "osmId": 3464721415
+          },
+          {
+            "name": "全家便利商店",
+            "distanceMeters": 188,
+            "osmType": "node",
+            "osmId": 2924915546
+          },
+          {
+            "name": "OK超商",
+            "distanceMeters": 195,
+            "osmType": "node",
+            "osmId": 3172604470
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 199,
+            "osmType": "node",
+            "osmId": 2924915548
+          },
+          {
+            "name": "全聯福利中心",
+            "distanceMeters": 235,
+            "osmType": "node",
+            "osmId": 2924915550
+          },
+          {
+            "name": "日日春便利商店",
+            "distanceMeters": 274,
+            "osmType": "node",
+            "osmId": 2924915289
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 293,
+            "osmType": "node",
+            "osmId": 2924917839
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 299,
+            "osmType": "node",
+            "osmId": 4327988755
+          }
+        ],
+        "school": [
+          {
+            "name": "中和國小",
+            "distanceMeters": 214,
+            "osmType": "relation",
+            "osmId": 5365492
+          }
+        ],
+        "park": [
+          {
+            "name": "未命名設施",
+            "distanceMeters": 191,
+            "osmType": "way",
+            "osmId": 1415828871
+          },
+          {
+            "name": "和園",
+            "distanceMeters": 217,
+            "osmType": "way",
+            "osmId": 278136369
+          },
+          {
+            "name": "未命名設施",
+            "distanceMeters": 277,
+            "osmType": "way",
+            "osmId": 311768060
+          }
+        ],
+        "hospital": [],
+        "mall": [],
+        "temple": [
+          {
+            "name": "未命名設施",
+            "distanceMeters": 134,
+            "osmType": "node",
+            "osmId": 3172604791
+          },
+          {
+            "name": "中和行道會",
+            "distanceMeters": 286,
+            "osmType": "node",
+            "osmId": 2924917843
+          }
+        ]
+      }
+    },
+    "尼斯公爵": {
+      "address": "新北市中和區成功路20號旁",
+      "lat": 24.9905426,
+      "lon": 121.5258203,
+      "query": "新北市中和區成功路",
+      "label": "成功路, 秀景里, 中和區, 潭漧, 新北市, 235085, 臺灣",
+      "nearby": {
+        "transit": [
+          {
+            "name": "秀朗橋",
+            "distanceMeters": 96,
+            "osmType": "node",
+            "osmId": 2083320436
+          }
+        ],
+        "grocery": [
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 68,
+            "osmType": "node",
+            "osmId": 3104991580
+          },
+          {
+            "name": "全聯福利中心",
+            "distanceMeters": 156,
+            "osmType": "node",
+            "osmId": 6973572085
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 206,
+            "osmType": "node",
+            "osmId": 3108633901
+          }
+        ],
+        "school": [],
+        "park": [
+          {
+            "name": "民本公園",
+            "distanceMeters": 139,
+            "osmType": "way",
+            "osmId": 1198202534
+          }
+        ],
+        "hospital": [],
+        "mall": [],
+        "temple": []
+      }
+    },
+    "寶亞南山公?": {
+      "address": "新北市中和區南山路272號旁",
+      "lat": 24.9908913,
+      "lon": 121.5055573,
+      "query": "新北市中和區南山路",
+      "label": "南山路, 吉興里, 中和區, 枋寮, 新北市, 235058, 臺灣",
+      "nearby": {
+        "transit": [
+          {
+            "name": "景安",
+            "distanceMeters": 279,
+            "osmType": "node",
+            "osmId": 4571424110
+          }
+        ],
+        "grocery": [
+          {
+            "name": "蝦皮店到店",
+            "distanceMeters": 99,
+            "osmType": "node",
+            "osmId": 9362998872
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 133,
+            "osmType": "node",
+            "osmId": 12043241943
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 163,
+            "osmType": "node",
+            "osmId": 2201909995
+          },
+          {
+            "name": "7-Eleven",
+            "distanceMeters": 201,
+            "osmType": "node",
+            "osmId": 6180492025
+          },
+          {
+            "name": "全聯福利中心",
+            "distanceMeters": 220,
+            "osmType": "way",
+            "osmId": 543452010
+          },
+          {
+            "name": "萊爾富",
+            "distanceMeters": 262,
+            "osmType": "node",
+            "osmId": 12845334341
+          },
+          {
+            "name": "家樂福超市",
+            "distanceMeters": 267,
+            "osmType": "node",
+            "osmId": 1963001372
+          },
+          {
+            "name": "家樂福",
+            "distanceMeters": 274,
+            "osmType": "node",
+            "osmId": 3727698330
+          }
+        ],
+        "school": [],
+        "park": [
+          {
+            "name": "未命名設施",
+            "distanceMeters": 189,
+            "osmType": "way",
+            "osmId": 315152245
+          }
+        ],
+        "hospital": [],
+        "mall": [],
+        "temple": [
+          {
+            "name": "埤仔頭福德宮",
+            "distanceMeters": 181,
+            "osmType": "way",
+            "osmId": 558696353
+          },
+          {
+            "name": "未命名設施",
+            "distanceMeters": 199,
+            "osmType": "node",
+            "osmId": 3212444638
+          },
+          {
+            "name": "埤仔頭福德宮",
+            "distanceMeters": 208,
+            "osmType": "node",
+            "osmId": 3065313955
+          },
+          {
+            "name": "中和基督教會",
+            "distanceMeters": 263,
+            "osmType": "node",
+            "osmId": 1963001367
+          }
+        ]
+      }
+    }
+  }
+}

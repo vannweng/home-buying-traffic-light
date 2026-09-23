@@ -1,6 +1,7 @@
 import { cheapestComparableNames, comparePrice, findComparableProjects, getProjects, summarizeProject } from './price-engine.mjs';
 import { analyzeTrend } from './trend-engine.mjs';
 import { CRITERIA, scoreAppreciation } from './appreciation-score.mjs';
+import { addLocation, hasCoordinates } from './geo-engine.mjs';
 
 const $ = (selector) => document.querySelector(selector);
 const number = (value, digits = 1) => Number(value).toLocaleString('zh-TW', { maximumFractionDigits: digits, minimumFractionDigits: digits });
@@ -14,6 +15,7 @@ const watchStorageKey = 'zhonghe-watchlist-v1';
 let watchNames = [];
 let trendEvidence = [];
 let aiSummaries = {};
+let geoSnapshot = {};
 const scoreStorageKey = 'zhonghe-appreciation-v1';
 let scoreAnswers = {};
 
@@ -190,7 +192,7 @@ function makeCandidate(candidate, included) {
   const name = document.createElement('strong');
   name.textContent = candidate.name;
   const detail = document.createElement('small');
-  detail.textContent = `${candidate.sameStreet ? '同一路名' : '中和區內'} · 首次成交 ${candidate.first.slice(0, 4)} 年 · ${candidate.cases.length} 筆相近坪數成交`;
+  detail.textContent = `距離 ${Math.round(candidate.distanceMeters)} 公尺 · 首次成交 ${candidate.first.slice(0, 4)} 年 · ${candidate.cases.length} 筆相近坪數成交`;
   const price = document.createElement('b');
   price.textContent = `${number(candidate.baseline, 1)} 萬 / 坪`;
   const button = document.createElement('button');
@@ -216,7 +218,7 @@ function calculateAndRender(autoSelect = false) {
   if (autoSelect && !comparisonCustomized) {
     selectedNames = new Set(cheapestComparableNames(findComparableProjects({ project: selected, projects, transactions, area, yearTolerance })));
   }
-  const result = comparePrice({ project: selected, projects, transactions, askingUnit, area, selectedNames: [...selectedNames], yearTolerance });
+  const result = comparePrice({ project: selected, projects, transactions, askingUnit, area, selectedNames: [...selectedNames], yearTolerance, minDistanceMeters: 0, maxDistanceMeters: 300 });
   selectedNames = new Set(result.selected.map((candidate) => candidate.name));
   renderResult(result, askingUnit, yearTolerance);
 }
@@ -243,9 +245,9 @@ function renderResult(result, askingUnit, yearTolerance) {
     ? `已用 ${result.selected.length} 個不同建案計算；每案先取自身成交中位數，再由各案中位數產生比較基準。選案越少，判讀越容易受單案差異影響。`
     : `目前加入 ${result.selected.length} 案，至少需要 2 個不同建案。預售屋以首次公開成交年份代表案齡，並非完工屋齡。`;
   $('#casesCount').textContent = `${result.selected.length} 案已加入`;
-  $('#casesSummary').textContent = `預設選入價格中位數最低的最多三案。候選案首次成交年份與「${selected.name}」相差不超過 ${yearTolerance} 年、建物類型相同、房屋坪數相差不超過 25%，且近三年有成交。你可改選任意數量；同路名不代表基地緊鄰。`;
+  $('#casesSummary').textContent = `預設選入價格中位數最低的最多三案。候選案必須與「${selected.name}」基地直線距離 0–300 公尺，且首次成交年份相差不超過 ${yearTolerance} 年、建物類型相同、房屋坪數相差不超過 25%，近三年有成交。你可改選任意數量。`;
   $('#comparisonStatus').textContent = result.candidates.length === 0
-    ? '目前沒有符合條件的不同建案；可調整年份差距或房屋坪數。'
+    ? (hasCoordinates(selected) ? '目前沒有 0–300 公尺內且符合條件的不同建案；可調整年份差距或房屋坪數。' : '此建案尚未完成基地定位，暫時無法用距離篩選比較案。')
     : result.selected.length < 2
       ? `目前選入 ${result.selected.length} 案；至少選 2 案才判燈。`
       : `已選 ${result.selected.length} 案。可再加入、移除，或清空比較；燈號會立即重算。`;
@@ -292,8 +294,33 @@ $('#addWatchProject').addEventListener('click', () => {
   $('#watchStatus').textContent = `已加入「${name}」。`;
 });
 
+function nearbyNames(project, type) {
+  return (project.nearby?.[type] || []).slice(0, 3).map((item) => `${item.name}（${item.distanceMeters}m）`);
+}
+
+function automaticAnswers(project) {
+  if (!hasCoordinates(project)) return Object.fromEntries(CRITERIA.map((criterion) => [criterion.rank, 'unknown']));
+  const has = (type) => nearbyNames(project, type).length > 0;
+  return {
+    1: 'unknown', 2: has('transit') ? 'yes' : 'no', 3: 'unknown', 4: has('grocery') ? 'yes' : 'no', 5: 'unknown',
+    6: 'unknown', 7: has('park') ? 'yes' : 'no', 8: 'unknown', 9: 'unknown', 10: 'unknown',
+    11: has('mall') ? 'yes' : 'no', 12: has('hospital') ? 'yes' : 'no', 13: 'unknown',
+  };
+}
+
+function automaticDetail(project, rank) {
+  const type = { 2: 'transit', 4: 'grocery', 7: 'park', 11: 'mall', 12: 'hospital' }[rank];
+  if (!type) return '系統無法僅靠 0–300 公尺 POI 判斷，預填為待查。';
+  const names = nearbyNames(project, type);
+  if (!hasCoordinates(project)) return '基地尚未定位，系統預填為待查。';
+  if (!names.length) return 'OpenStreetMap 0–300 公尺快照未找到對應設施，系統暫選不符合；可自行查核後調整。';
+  return `系統在 0–300 公尺快照找到：${names.join('、')}。`;
+}
+
 function renderAppreciation(project, leads) {
-  const answers = scoreAnswers[project.name] || {};
+  const automatic = automaticAnswers(project);
+  const manual = scoreAnswers[project.name] || {};
+  const answers = { ...automatic, ...manual };
   const list = $('#appreciationCriteria');
   list.replaceChildren();
   for (const criterion of CRITERIA) {
@@ -301,7 +328,7 @@ function renderAppreciation(project, leads) {
     const main = element('div', 'appreciation-item-main');
     main.append(element('span', 'appreciation-rank', String(criterion.rank)), element('strong', '', criterion.title), element('em', 'appreciation-tier', criterion.tier));
     main.append(element('small', '', criterion.rank === 1 ? '安全底線' : `${criterion.weight} 分`));
-    const detail = element('p', '', `${criterion.reason}｜購屋者想法：「${criterion.psychology}」`);
+    const detail = element('p', '', `${criterion.reason}｜${automaticDetail(project, criterion.rank)}｜購屋者想法：「${criterion.psychology}」`);
     if (criterion.rank === 1) {
       for (const [label, url] of [['查淹水潛勢', 'https://www.wra.gov.tw/cp.aspx?n=6244'], ['查活動斷層', 'https://fault.gsmma.gov.tw/']]) {
         const link = element('a', 'appreciation-source', `${label} ↗`);
@@ -315,11 +342,11 @@ function renderAppreciation(project, leads) {
     controls.setAttribute('role', 'group');
     controls.setAttribute('aria-label', `${criterion.title}評估`);
     for (const [value, label] of [['yes', criterion.rank === 1 ? '已確認無重大風險' : '符合'], ['no', criterion.rank === 1 ? '發現重大風險' : '不符合'], ['unknown', '待查']]) {
-      const button = element('button', answers[criterion.rank] === value || (!answers[criterion.rank] && value === 'unknown') ? 'selected' : '', label);
+      const button = element('button', answers[criterion.rank] === value ? 'selected' : '', label);
       button.type = 'button';
-      button.setAttribute('aria-pressed', String(answers[criterion.rank] === value || (!answers[criterion.rank] && value === 'unknown')));
+      button.setAttribute('aria-pressed', String(answers[criterion.rank] === value));
       button.addEventListener('click', () => {
-        scoreAnswers[project.name] = { ...answers, [criterion.rank]: value };
+        scoreAnswers[project.name] = { ...manual, [criterion.rank]: value };
         try { localStorage.setItem(scoreStorageKey, JSON.stringify(scoreAnswers)); }
         catch { $('#appreciationNote').textContent = '瀏覽器無法儲存評估；重新整理後可能需要再填一次。'; }
         renderAppreciation(project, leads);
@@ -337,7 +364,7 @@ function renderAppreciation(project, leads) {
   display.append(element('strong', '', score.veto === 'no' ? '暫不評分' : score.score === null ? '—' : `${score.score} / 100`));
   display.append(element('small', '', `已查核權重 ${score.assessed}% · 可能範圍 ${score.range[0]}–${score.range[1]} 分`));
   const caution = score.veto === 'no' ? '已標記重大安全或嫌惡風險，先查證與排除，不應由其他加分項抵銷。' : score.veto !== 'yes' ? '先完成第 1 項安全底線查核，才會顯示單一分數。' : score.assessed < 70 ? '已查核權重未達 70%，先完成更多項目，避免少量資訊造成假精確分數。' : '此分數只反映你標記的條件，未檢驗價格是否已反映利多，也不代表未來房價漲幅。';
-  $('#appreciationNote').textContent = `${caution}${leads.length ? ' 官方資料顯示同路段有捷運線索，但第 2 項仍需自行查實際步行距離，不會自動給分。' : ''}`;
+  $('#appreciationNote').textContent = `${caution}系統預填依 ${geoSnapshot.generatedAt || '未提供'} 的 OpenStreetMap 0–300 公尺快照；點選任一選項可覆寫。${leads.length ? ' 同路段的未來捷運線索仍需確認基地與站點距離，不會自動給分。' : ''}`;
 }
 
 $('#runTrend').addEventListener('click', () => {
@@ -377,7 +404,11 @@ try {
   if (!response.ok) throw new Error('資料檔無法讀取');
   snapshot = await response.json();
   transactions = snapshot.transactions;
-  projects = getProjects(transactions);
+  try {
+    const geoResponse = await fetch('./data/zhonghe-geo.json');
+    if (geoResponse.ok) geoSnapshot = await geoResponse.json();
+  } catch { geoSnapshot = {}; }
+  projects = addLocation(getProjects(transactions), geoSnapshot);
   $('#watchProject').replaceChildren(element('option', '', '請選擇建案'));
   $('#watchProject').firstElementChild.value = '';
   for (const project of [...projects].sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'))) {
