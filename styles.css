@@ -88,3 +88,13 @@ html,body{max-width:100%;overflow-x:hidden}main,.topbar,footer,.page-tabs,.card,
   .watch-table th:first-child,.watch-table td:first-child{width:29%;min-width:0;max-width:none}.watch-table th:nth-child(2),.watch-table td:nth-child(2){width:19%}.watch-table th:nth-child(3),.watch-table td:nth-child(3){width:31%}.watch-table th:nth-child(4),.watch-table td:nth-child(4){width:15%}.watch-table th:nth-child(7),.watch-table td:nth-child(7){width:6%}
   .watch-table th,.watch-table td{white-space:normal;overflow:hidden;overflow-wrap:anywhere;padding:6px 4px}.watch-table th{font-size:9px}.watch-table td{font-size:10px}.watch-price{font-size:15px}.watch-table .watch-signal{min-width:0;padding:4px 5px;font-size:10px}.watch-table .watch-remove{padding:3px 4px;font-size:0}.watch-table .watch-remove::after{content:'×';font-size:14px;line-height:1}.watch-line{gap:3px}.watch-line span{min-width:12px}.watch-line strong{font-size:10px}
 }
+/* Restore every column inside an isolated horizontal scroller, without letting it resize the page. */
+@media(max-width:700px){
+  .watch-table-scroll{display:block;width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;contain:layout paint;isolation:isolate;-webkit-overflow-scrolling:touch}
+  .watch-table-inner{display:block;width:650px;min-width:650px;max-width:none}
+  .watch-table-scroll .watch-table{display:table;width:650px;min-width:650px;max-width:none;table-layout:fixed}
+  .watch-table th:nth-child(5),.watch-table td:nth-child(5),.watch-table th:nth-child(6),.watch-table td:nth-child(6){display:table-cell}
+  .watch-table th:first-child,.watch-table td:first-child{width:92px;min-width:92px;max-width:92px;white-space:normal}
+  .watch-table th:nth-child(2),.watch-table td:nth-child(2){width:auto}.watch-table th:nth-child(3),.watch-table td:nth-child(3){width:auto}.watch-table th:nth-child(4),.watch-table td:nth-child(4){width:auto}.watch-table th:nth-child(7),.watch-table td:nth-child(7){width:auto}
+  .watch-table th,.watch-table td{white-space:nowrap;overflow:visible;padding:6px 6px}.watch-table th{font-size:10px}.watch-table td{font-size:11px}.watch-price{font-size:16px}.watch-table .watch-signal{min-width:47px;padding:3px 6px;font-size:10px}.watch-table .watch-remove{padding:3px 5px;font-size:10px}.watch-table .watch-remove::after{content:none}
+}

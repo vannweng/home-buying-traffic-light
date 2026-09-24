@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260924-10" />
+  <link rel="stylesheet" href="styles.css?v=20260924-11" />
 </head>
 <body>
   <header class="topbar">
@@ -60,7 +60,7 @@
       <div class="watchlist-header"><div><span class="step-index">MY PROJECT LIST</span><h2>我的建案觀察列表</h2><p>自行加入中和區建案，並排查看最新一筆成交與近三年的價格分布。列表只保存在這台瀏覽器。</p></div><span id="watchCount" class="case-count">0 個建案</span></div>
       <div class="watchlist-picker"><label for="watchProject">選擇建案</label><select id="watchProject"><option value="">資料載入中…</option></select><button id="addWatchProject" type="button">＋ 加入列表</button></div>
       <p id="watchStatus" class="watch-status" role="status"></p>
-      <div class="watch-table-scroll"><table class="watch-table"><thead><tr><th scope="col">建案</th><th scope="col">最新成交 <span>萬／坪</span></th><th scope="col">近三年價格 <span>萬／坪</span></th><th scope="col">紅綠燈</th><th scope="col">三年平均</th><th scope="col">最新日期</th><th scope="col"><span class="sr-only">操作</span></th></tr></thead><tbody id="watchList"></tbody></table></div>
+      <div class="watch-table-scroll"><div class="watch-table-inner"><table class="watch-table"><thead><tr><th scope="col">建案</th><th scope="col">最新成交 <span>萬／坪</span></th><th scope="col">近三年價格 <span>萬／坪</span></th><th scope="col">紅綠燈</th><th scope="col">三年平均</th><th scope="col">最新日期</th><th scope="col"><span class="sr-only">操作</span></th></tr></thead><tbody id="watchList"></tbody></table></div></div>
       <p class="watch-method">三個價格值依近三年成交單價計算：便宜界線為第 25 百分位、合理參考價為中位數、昂貴界線為第 75 百分位。最新一筆 ≤ 便宜界線為綠燈、≥ 昂貴界線為紅燈，其餘為黃燈。每案至少需要 5 筆近三年成交才判燈。</p>
     </section>
 
