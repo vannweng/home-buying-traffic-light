@@ -8,8 +8,8 @@ test('weights total 100 and safety is outside the weighted score', () => {
   assert.equal(CRITERIA[0].weight, 0);
 });
 
-test('safety selection is excluded while insufficient weighted evidence has no score', () => {
-  assert.equal(scoreAppreciation({ 2: 'yes' }).score, null);
+test('safety selection is excluded while partial evidence still has a current score', () => {
+  assert.equal(scoreAppreciation({ 2: 'yes' }).score, 18);
   assert.deepEqual(scoreAppreciation({ 2: 'yes' }).range, [18, 100]);
   assert.equal(scoreAppreciation({ 1: 'yes', 2: 'yes' }).safetySelection, 'yes');
 });

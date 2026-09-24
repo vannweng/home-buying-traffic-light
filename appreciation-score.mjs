@@ -22,5 +22,7 @@ export function scoreAppreciation(answers = {}) {
   const earned = weighted.reduce((sum, item) => sum + (answers[item.rank] === 'yes' ? item.weight : 0), 0);
   const assessed = weighted.reduce((sum, item) => sum + (['yes', 'no'].includes(answers[item.rank]) ? item.weight : 0), 0);
   const range = [earned, earned + 100 - assessed];
-  return { safetySelection: answers[1] || null, earned, assessed, range, score: assessed >= 70 ? earned : null };
+  // Always surface the current evidence-backed score. The assessed weight and
+  // range expose uncertainty instead of hiding a score below a coverage gate.
+  return { safetySelection: answers[1] || null, earned, assessed, range, score: earned };
 }

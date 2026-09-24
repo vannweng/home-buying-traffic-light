@@ -382,10 +382,10 @@ function renderAppreciation(project, leads) {
   const display = $('#appreciationScore');
   display.replaceChildren();
   display.classList.remove('blocked');
-  display.append(element('span', '', score.score === null ? '待查核' : '條件加權分數'));
-  display.append(element('strong', '', score.score === null ? '—' : `${score.score} / 100`));
+  display.append(element('span', '', '目前加權分數'));
+  display.append(element('strong', '', `${score.score} / 100`));
   display.append(element('small', '', `已查核權重 ${score.assessed}% · 可能範圍 ${score.range[0]}–${score.range[1]} 分`));
-  const caution = score.assessed < 70 ? '已查核權重未達 70%，先完成更多項目，避免少量資訊造成假精確分數。' : '此分數只反映你標記的條件，未檢驗價格是否已反映利多，也不代表未來房價漲幅。';
+  const caution = score.assessed < 70 ? '已查核權重尚低，分數只反映目前已知條件；請搭配可能範圍判讀，不代表完整評估。' : '此分數只反映你標記的條件，未檢驗價格是否已反映利多，也不代表未來房價漲幅。';
   $('#appreciationNote').textContent = `${caution}警示：嫌惡設施與地質安全尚未由系統確認，且刻意排除在本分數之外；請自行查核。系統預填依 ${geoSnapshot.generatedAt || '未提供'} 的 OpenStreetMap 0–300 公尺快照及官方公共建設站位資料；點選任一選項可覆寫。規劃／施工中的站點不等於已通車，仍須以官方出入口圖與現場確認。`;
 }
 
@@ -449,7 +449,7 @@ try {
     }
   } catch { scoreAnswers = {}; }
   try {
-    const response = await fetch('./data/trend-evidence.json');
+    const response = await fetch('./data/trend-evidence.json', { cache: 'no-store' });
     if (response.ok) trendEvidence = (await response.json()).items || [];
   } catch { /* Trends still work without infrastructure leads. */ }
   try {
