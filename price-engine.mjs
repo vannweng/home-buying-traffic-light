@@ -34,7 +34,7 @@ export function summarizeProject({ name, transactions, asOf = new Date() }) {
   const latestIsRecent = recent.some((row) => row.id === latest.id);
   const signal = cheapMax === null || !latestIsRecent ? 'neutral' : latest.unitPrice <= cheapMax ? 'green' : latest.unitPrice >= expensiveMin ? 'red' : 'amber';
   return {
-    name, latest, count: recent.length, signal, cheapMax, reasonablePrice, expensiveMin,
+    name, latest, count: all.length, recentCount: recent.length, signal, cheapMax, reasonablePrice, expensiveMin,
     averageUnitPrice: recent.length ? average(recent.map((row) => row.unitPrice)) : null,
     averageTotalPrice: recent.length ? average(recent.map((row) => row.totalPrice)) : null,
     averageHomeArea: recent.length ? average(recent.map((row) => row.homeArea)) : null,

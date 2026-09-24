@@ -123,7 +123,8 @@ test('watchlist does not classify sparse or stale transaction history', () => {
   assert.equal(result.cheapMax, null);
   const stale = [row('舊案', 80, '2022-01-01')];
   const old = summarizeProject({ name: '舊案', transactions: stale, asOf: new Date('2026-09-22') });
-  assert.equal(old.count, 0);
+  assert.equal(old.count, 1);
+  assert.equal(old.recentCount, 0);
   assert.equal(old.latest.date, '2022-01-01');
   assert.equal(old.averageUnitPrice, null);
   assert.equal(old.signal, 'neutral');
