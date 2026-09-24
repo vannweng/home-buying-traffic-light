@@ -6,6 +6,8 @@
       "street": "連城路",
       "title": "萬大中和線規劃中的中和、連城錦和及中和高中站",
       "status": "官方路線頁列為工程站點；請查核最新進度與通車公告",
+      "stage": "施工中",
+      "criteria": [2],
       "source": "新北市政府捷運工程局",
       "url": "https://www.dorts.ntpc.gov.tw/about/routeInfo/8pRG2lkJmb5z",
       "progressUrl": "https://www.dorts.ntpc.gov.tw/about/routeProgress/8pRG2lkJmb5z",
@@ -16,6 +18,8 @@
           "latitude": 24.992161,
           "longitude": 121.4773249,
           "location": "錦和路東側之連城路下方",
+          "stage": "施工中",
+          "criteria": [2],
           "coordinateNote": "座標依官方站位文字對應至連城路與錦和路一帶，僅供 300 公尺初篩；非官方測量座標。"
         }
       ],
@@ -26,6 +30,8 @@
       "street": "莒光路",
       "title": "萬大中和線規劃中的莒光站",
       "status": "官方路線頁列為工程站點；請查核最新進度與通車公告",
+      "stage": "施工中",
+      "criteria": [2],
       "source": "新北市政府捷運工程局",
       "url": "https://www.dorts.ntpc.gov.tw/about/routeInfo/8pRG2lkJmb5z",
       "progressUrl": "https://www.dorts.ntpc.gov.tw/about/routeProgress/8pRG2lkJmb5z",

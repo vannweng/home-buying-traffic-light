@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Refresh official transit evidence; optionally generate one LLM summary offline."""
+"""Refresh official public-construction evidence; optionally generate one LLM summary offline."""
 
 import argparse
 import html
@@ -15,7 +15,7 @@ SOURCE = "https://www.dorts.ntpc.gov.tw/about/routeInfo/8pRG2lkJmb5z"
 PROGRESS = "https://www.dorts.ntpc.gov.tw/about/routeProgress/8pRG2lkJmb5z"
 STATIONS = [
     ("連城路", "萬大中和線規劃中的中和、連城錦和及中和高中站", ("LG06", "LG07", "LG08", "連城路"), [
-        {"code": "LG07", "name": "連城錦和站", "latitude": 24.992161, "longitude": 121.4773249,
+        {"code": "LG07", "name": "連城錦和站", "latitude": 24.992161, "longitude": 121.4773249, "stage": "施工中", "criteria": [2],
          "location": "錦和路東側之連城路下方", "coordinateNote": "座標依官方站位文字對應至連城路與錦和路一帶，僅供 300 公尺初篩；非官方測量座標。"},
     ]),
     ("莒光路", "萬大中和線規劃中的莒光站", ("LG08A", "莒光路"), []),
@@ -40,6 +40,7 @@ def refresh_evidence():
             raise RuntimeError(f"官方頁面未能驗證 {street} 站點；保留既有快照。")
         items.append({"id": f"wanda-{street}", "street": street, "title": title,
                       "status": "官方路線頁列為工程站點；請查核最新進度與通車公告",
+                      "stage": "施工中", "criteria": [2],
                       "source": "新北市政府捷運工程局", "url": SOURCE, "progressUrl": PROGRESS,
                       "stations": stations,
                       "note": "站點座標僅在官方站位文字可對應時提供，屬 300 公尺初篩；仍須以官方出入口圖與現場確認。"})

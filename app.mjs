@@ -1,7 +1,8 @@
 import { cheapestComparableNames, comparePrice, findComparableProjects, getProjects, summarizeProject } from './price-engine.mjs';
 import { analyzeTrend } from './trend-engine.mjs';
 import { CRITERIA, scoreAppreciation } from './appreciation-score.mjs';
-import { addLocation, distanceMeters, hasCoordinates } from './geo-engine.mjs';
+import { addLocation, hasCoordinates } from './geo-engine.mjs';
+import { officialFutureFacilities } from './future-evidence.mjs';
 
 const $ = (selector) => document.querySelector(selector);
 const number = (value, digits = 1) => Number(value).toLocaleString('zh-TW', { maximumFractionDigits: digits, minimumFractionDigits: digits });
@@ -296,31 +297,25 @@ function nearbyNames(project, type) {
   return (project.nearby?.[type] || []).slice(0, 3).map((item) => `${item.name}（${item.distanceMeters}m）`);
 }
 
-function plannedTransitSites(project, leads) {
-  if (!hasCoordinates(project)) return [];
-  return leads.flatMap((lead) => (lead.stations || []).map((station) => ({ ...station, source: lead.source, distanceMeters: distanceMeters(project, { latitude: station.latitude, longitude: station.longitude }) })))
-    .filter((station) => Number.isFinite(station.distanceMeters) && station.distanceMeters <= 300)
-    .sort((a, b) => a.distanceMeters - b.distanceMeters);
-}
-
 function automaticAnswers(project, leads) {
   if (!hasCoordinates(project)) return Object.fromEntries(CRITERIA.map((criterion) => [criterion.rank, 'unknown']));
   const has = (type) => nearbyNames(project, type).length > 0;
-  const plannedTransit = plannedTransitSites(project, leads).length > 0;
-  return {
-    1: 'unknown', 2: plannedTransit || has('transit') ? 'yes' : 'no', 3: 'unknown', 4: has('grocery') ? 'yes' : 'no', 5: 'unknown',
-    6: 'unknown', 7: has('park') ? 'yes' : 'no', 8: 'unknown', 9: 'unknown', 10: 'unknown',
-    11: has('mall') ? 'yes' : 'no', 12: has('hospital') ? 'yes' : 'no', 13: 'unknown',
-  };
+  const hasOfficialFuture = (rank) => officialFutureFacilities(project, leads, rank).length > 0;
+  const currentPoiType = { 2: 'transit', 4: 'grocery', 7: 'park', 11: 'mall', 12: 'hospital' };
+  return Object.fromEntries(CRITERIA.map((criterion) => {
+    if (hasOfficialFuture(criterion.rank)) return [criterion.rank, 'yes'];
+    if (currentPoiType[criterion.rank]) return [criterion.rank, has(currentPoiType[criterion.rank]) ? 'yes' : 'no'];
+    return [criterion.rank, 'unknown'];
+  }));
 }
 
 function automaticDetail(project, rank, leads) {
-  const type = { 2: 'transit', 4: 'grocery', 7: 'park', 11: 'mall', 12: 'hospital' }[rank];
-  if (!type) return '系統無法僅靠 0–300 公尺 POI 判斷，預填為待查。';
-  const planned = rank === 2 ? plannedTransitSites(project, leads) : [];
-  const names = nearbyNames(project, type);
+  const planned = officialFutureFacilities(project, leads, rank);
   if (!hasCoordinates(project)) return '基地尚未定位，系統預填為待查。';
-  if (planned.length) return `官方公共建設資料：萬大中和線 ${planned.map((station) => `${station.code} ${station.name}（約 ${Math.round(station.distanceMeters)}m，規劃／施工中）`).join('、')}；${planned[0].coordinateNote}`;
+  if (planned.length) return `官方公共建設資料：${planned.map((site) => `${site.code ? `${site.code} ` : ''}${site.name}（約 ${Math.round(site.distanceMeters)}m，規劃／施工中）`).join('、')}；${planned[0].coordinateNote || '以官方公開資料為準，仍須查核最新公告。'}`;
+  const type = { 2: 'transit', 4: 'grocery', 7: 'park', 11: 'mall', 12: 'hospital' }[rank];
+  if (!type) return '尚無可定位的官方規劃／施工中建設資料，系統預填為待查。';
+  const names = nearbyNames(project, type);
   if (!names.length) return 'OpenStreetMap 0–300 公尺快照未找到對應設施，系統暫選不符合；可自行查核後調整。';
   return `系統在 0–300 公尺快照找到：${names.join('、')}。`;
 }
