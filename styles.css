@@ -80,3 +80,11 @@ html,body{max-width:100%;overflow-x:hidden}main,.topbar,footer,.page-tabs,.card,
   .hero{padding:24px 0 20px}.hero h1{font-size:34px;margin:12px 0}.hero p{font-size:12px;line-height:1.65}.workspace{gap:12px}.entry-panel,.signal-card,.cases-card{padding:14px}.step-heading h2,.cases-header h2{font-size:18px}.step-heading p{margin-bottom:14px;font-size:11px}.form-divider{margin:16px 0}.primary-button{height:44px;margin-top:16px}.method-section{margin:22px 0 16px;padding-top:18px}.method-section h2{font-size:22px;margin:7px 0}.method-copy p{font-size:11px;line-height:1.65}footer{padding:14px 10px 20px;font-size:9px}
 }
 @media(max-width:700px){.watchlist-section,.trend-section,.notes-section{padding-top:7px}.entry-panel,.signal-card,.cases-card{padding-top:7px}.trend-grid article{padding-top:7px}.appreciation-panel{padding-top:7px}.note-card{padding-top:6px}}
+/* iOS must not fit the whole page to the wide watchlist table. On phones, make it a true in-viewport summary. */
+@media(max-width:700px){
+  html,body{width:100%;overflow-x:clip}.watchlist-section{width:100%;max-width:100%;overflow:hidden}
+  .watch-table-scroll{width:100%;max-width:100%;overflow:hidden}.watch-table{width:100%;min-width:0;max-width:100%;table-layout:fixed}
+  .watch-table th:nth-child(5),.watch-table td:nth-child(5),.watch-table th:nth-child(6),.watch-table td:nth-child(6){display:none}
+  .watch-table th:first-child,.watch-table td:first-child{width:29%;min-width:0;max-width:none}.watch-table th:nth-child(2),.watch-table td:nth-child(2){width:19%}.watch-table th:nth-child(3),.watch-table td:nth-child(3){width:31%}.watch-table th:nth-child(4),.watch-table td:nth-child(4){width:15%}.watch-table th:nth-child(7),.watch-table td:nth-child(7){width:6%}
+  .watch-table th,.watch-table td{white-space:normal;overflow:hidden;overflow-wrap:anywhere;padding:6px 4px}.watch-table th{font-size:9px}.watch-table td{font-size:10px}.watch-price{font-size:15px}.watch-table .watch-signal{min-width:0;padding:4px 5px;font-size:10px}.watch-table .watch-remove{padding:3px 4px;font-size:0}.watch-table .watch-remove::after{content:'×';font-size:14px;line-height:1}.watch-line{gap:3px}.watch-line span{min-width:12px}.watch-line strong{font-size:10px}
+}
