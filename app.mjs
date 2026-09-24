@@ -22,6 +22,10 @@ let scoreAnswers = {};
 const notesStorageKey = 'zhonghe-viewing-notes-v1';
 let viewingNotes = [];
 let editingNoteId = null;
+let quickRatings = {};
+let activeMetric = 'layout';
+const breakerFields = ['breakerLight', 'breakerDark', 'breakerBeam', 'breakerDistance', 'breakerStairwell'];
+const metricLabels = { layout: '格局動線', condition: '屋況管線', management: '社區管理', quiet: '環境安寧', preference: '直覺偏好' };
 
 $('#top').insertBefore($('#watchlist'), $('#analysisPanel'));
 function activateTab(tab, updateHash = true) {
@@ -84,13 +88,69 @@ function noteDecision(note) {
   return { failed, score, budget, ratings: ratings.length };
 }
 
+function updateNoteCalculation() {
+  const total = Number($('#noteTotal').value) || 0;
+  const parking = Number($('#noteParkingPrice').value) || 0;
+  const deed = Number($('#noteDeedArea').value) || 0;
+  const main = Number($('#noteMainArea').value) || 0;
+  if (!total || !deed) { $('#noteCalc').textContent = '填入總價與坪數後，自動算單價與公設比'; return; }
+  const unit = (total - parking) / deed;
+  const publicRatio = main && main <= deed ? ((deed - main) / deed) * 100 : null;
+  $('#noteCalc').textContent = `扣車位單價 ${number(unit, 1)} 萬／坪${publicRatio === null ? '' : ` · 公設比 ${number(publicRatio, 1)}%`}`;
+}
+
+function paintQuickRatings() {
+  for (const box of document.querySelectorAll('[data-rating]')) {
+    const value = quickRatings[box.dataset.rating];
+    for (const button of box.querySelectorAll('[data-score]')) button.classList.toggle('selected', Number(button.dataset.score) === Number(value));
+  }
+}
+
+function renderComparison() {
+  const columns = $('#comparisonColumns');
+  columns.replaceChildren();
+  const notes = viewingNotes.slice(0, 12);
+  for (const note of notes) {
+    const values = [
+      note.project,
+      note.deedArea && note.total ? `${number(((Number(note.total) || 0) - (Number(note.parkingPrice) || 0)) / Number(note.deedArea), 1)} 萬／坪${note.mainArea ? ` · ${number(((Number(note.deedArea) - Number(note.mainArea)) / Number(note.deedArea)) * 100, 0)}%` : ''}` : '未填',
+      breakerFields.some((field) => note.breakers?.[field]) ? '踩雷' : '未發現',
+      ...Object.keys(metricLabels).map((key) => note.ratings?.[key] ? `${note.ratings[key]} / 5` : '未評'),
+    ];
+    const card = element('div', 'comparison-property');
+    values.forEach((value, index) => card.append(element('span', index === 0 ? 'comparison-name' : '', value)));
+    columns.append(card);
+  }
+  if (!notes.length) columns.append(element('p', 'comparison-empty', '先儲存兩筆以上看屋筆記，即可開始比對。'));
+  const picker = $('#metricPicker');
+  picker.replaceChildren();
+  for (const [key, label] of Object.entries(metricLabels)) {
+    const button = element('button', key === activeMetric ? 'active' : '', label);
+    button.type = 'button';
+    button.addEventListener('click', () => { activeMetric = key; renderComparison(); });
+    picker.append(button);
+  }
+  const ranking = $('#metricRanking');
+  ranking.replaceChildren();
+  const ranked = notes.filter((note) => Number(note.ratings?.[activeMetric])).sort((a, b) => Number(b.ratings[activeMetric]) - Number(a.ratings[activeMetric]));
+  if (!ranked.length) ranking.append(element('p', 'comparison-empty', `尚無「${metricLabels[activeMetric]}」評分。`));
+  ranked.forEach((note, index) => {
+    const item = element('div', 'metric-rank');
+    item.append(element('b', '', `#${index + 1}`), element('strong', '', note.project), element('span', '', `${note.ratings[activeMetric]} / 5`), element('small', '', note.text || '尚無備註'));
+    ranking.append(item);
+  });
+}
+
 function resetNoteForm(message = '') {
   editingNoteId = null;
+  quickRatings = {};
   $('#noteForm').reset();
   $('#noteDate').value = new Date().toISOString().slice(0, 10);
   $('#noteSubmit').textContent = '儲存看屋筆記';
   $('#cancelNoteEdit').hidden = true;
   $('#noteStatus').textContent = message;
+  paintQuickRatings();
+  updateNoteCalculation();
 }
 
 function editViewingNote(note) {
@@ -98,12 +158,19 @@ function editViewingNote(note) {
   $('#noteProject').value = note.project || '';
   $('#noteSize').value = note.size || '';
   $('#noteTotal').value = note.total || '';
-  $('#noteLocation').value = note.location || '';
+  $('#noteParkingPrice').value = note.parkingPrice || '';
+  $('#noteDeedArea').value = note.deedArea || '';
+  $('#noteMainArea').value = note.mainArea || '';
   $('#noteDate').value = note.date || '';
   $('#noteText').value = note.text || '';
   for (const field of tierOneFields) $(`[name="${field}"]`).checked = Boolean(note.tierOne?.[field]);
   for (const field of tierTwoFields) $(`[name="${field}"]`).value = note.tierTwo?.[field] || '';
   for (const field of tierThreeFields) $(`[name="${field}"]`).value = note.tierThree?.[field] || '';
+  for (const field of breakerFields) $(`[name="${field}"]`).checked = Boolean(note.breakers?.[field]);
+  for (const input of document.querySelectorAll('[name="tags"]')) input.checked = (note.tags || []).includes(input.value);
+  quickRatings = { ...(note.ratings || {}) };
+  paintQuickRatings();
+  updateNoteCalculation();
   $('#noteSubmit').textContent = '儲存修改';
   $('#cancelNoteEdit').hidden = false;
   $('#noteStatus').textContent = `正在修改「${note.project}」。`;
@@ -144,10 +211,13 @@ function renderViewingNotes() {
     else status.append(element('strong', 'note-pass', 'Tier 1 通過'));
     status.append(element('span', '', decision.score === null ? 'Tier 2：尚未評分' : `Tier 2：${decision.score} 分${decision.score < 75 ? ' · 未達 75 分' : ' · 達標'}`));
     status.append(element('span', '', `Tier 3 裝修預備金：${number(decision.budget, 0)} 萬`));
+    if (breakerFields.some((field) => note.breakers?.[field])) status.append(element('strong', 'note-reject', '踩雷物件'));
     card.append(header, status);
+    if (note.tags?.length) card.append(element('p', 'note-card-tags', note.tags.map((tag) => `#${tag}`).join(' ')));
     if (note.text) card.append(element('p', 'note-card-text', note.text));
     list.append(card);
   }
+  renderComparison();
 }
 
 $('#noteForm').addEventListener('submit', (event) => {
@@ -157,6 +227,7 @@ $('#noteForm').addEventListener('submit', (event) => {
   const tierOne = Object.fromEntries(tierOneFields.map((field) => [field, fields.get(field) === 'on']));
   const tierTwo = Object.fromEntries(tierTwoFields.map((field) => [field, fields.get(field)]));
   const tierThree = Object.fromEntries(tierThreeFields.map((field) => [field, fields.get(field)]));
+  const breakers = Object.fromEntries(breakerFields.map((field) => [field, fields.get(field) === 'on']));
   const project = String(fields.get('noteProject') || '').trim();
   if (!project) return;
   const note = {
@@ -164,10 +235,13 @@ $('#noteForm').addEventListener('submit', (event) => {
     project,
     size: String(fields.get('noteSize') || '').trim(),
     total: String(fields.get('noteTotal') || '').trim(),
+    parkingPrice: String(fields.get('noteParkingPrice') || '').trim(),
+    deedArea: String(fields.get('noteDeedArea') || '').trim(),
+    mainArea: String(fields.get('noteMainArea') || '').trim(),
     location: String(fields.get('noteLocation') || '').trim(),
     date: String(fields.get('noteDate') || ''),
     text: String(fields.get('noteText') || '').trim(),
-    tierOne, tierTwo, tierThree,
+    tierOne, tierTwo, tierThree, breakers, ratings: { ...quickRatings }, tags: fields.getAll('tags'),
   };
   const wasEditing = Boolean(editingNoteId);
   if (wasEditing) viewingNotes = viewingNotes.map((item) => item.id === editingNoteId ? note : item);
@@ -178,6 +252,13 @@ $('#noteForm').addEventListener('submit', (event) => {
 });
 
 $('#cancelNoteEdit').addEventListener('click', () => resetNoteForm('已取消修改。'));
+for (const input of ['#noteTotal', '#noteParkingPrice', '#noteDeedArea', '#noteMainArea']) $(input).addEventListener('input', updateNoteCalculation);
+document.querySelectorAll('.rating-buttons button').forEach((button) => button.addEventListener('click', () => {
+  quickRatings[button.closest('[data-rating]').dataset.rating] = Number(button.dataset.score);
+  paintQuickRatings();
+}));
+$('#compareCards').addEventListener('click', () => { $('#compareCardView').hidden = false; $('#compareMetricView').hidden = true; $('#compareCards').classList.add('active'); $('#compareMetrics').classList.remove('active'); });
+$('#compareMetrics').addEventListener('click', () => { $('#compareCardView').hidden = true; $('#compareMetricView').hidden = false; $('#compareMetrics').classList.add('active'); $('#compareCards').classList.remove('active'); renderComparison(); });
 
 function saveWatchlist() {
   try { localStorage.setItem(watchStorageKey, JSON.stringify(watchNames)); }
