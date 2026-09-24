@@ -21,6 +21,7 @@ const scoreStorageKey = 'zhonghe-appreciation-v1';
 let scoreAnswers = {};
 const notesStorageKey = 'zhonghe-viewing-notes-v1';
 let viewingNotes = [];
+let editingNoteId = null;
 
 $('#top').insertBefore($('#watchlist'), $('#analysisPanel'));
 function activateTab(tab, updateHash = true) {
@@ -83,6 +84,33 @@ function noteDecision(note) {
   return { failed, score, budget, ratings: ratings.length };
 }
 
+function resetNoteForm(message = '') {
+  editingNoteId = null;
+  $('#noteForm').reset();
+  $('#noteDate').value = new Date().toISOString().slice(0, 10);
+  $('#noteSubmit').textContent = '儲存看屋筆記';
+  $('#cancelNoteEdit').hidden = true;
+  $('#noteStatus').textContent = message;
+}
+
+function editViewingNote(note) {
+  editingNoteId = note.id;
+  $('#noteProject').value = note.project || '';
+  $('#noteSize').value = note.size || '';
+  $('#noteTotal').value = note.total || '';
+  $('#noteLocation').value = note.location || '';
+  $('#noteDate').value = note.date || '';
+  $('#noteText').value = note.text || '';
+  for (const field of tierOneFields) $(`[name="${field}"]`).checked = Boolean(note.tierOne?.[field]);
+  for (const field of tierTwoFields) $(`[name="${field}"]`).value = note.tierTwo?.[field] || '';
+  for (const field of tierThreeFields) $(`[name="${field}"]`).value = note.tierThree?.[field] || '';
+  $('#noteSubmit').textContent = '儲存修改';
+  $('#cancelNoteEdit').hidden = false;
+  $('#noteStatus').textContent = `正在修改「${note.project}」。`;
+  $('#noteForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  $('#noteProject').focus();
+}
+
 function renderViewingNotes() {
   const list = $('#noteList');
   list.replaceChildren();
@@ -98,6 +126,10 @@ function renderViewingNotes() {
     const details = [note.size, note.total ? `${number(note.total, 0)} 萬` : '', note.location, note.date].filter(Boolean).join(' · ');
     header.append(element('div', '', undefined));
     header.firstChild.append(element('h4', '', note.project), element('p', '', details || '尚未補充坪數、位置或日期'));
+    const actions = element('div', 'note-card-actions');
+    const edit = element('button', 'note-edit', '修改');
+    edit.type = 'button';
+    edit.addEventListener('click', () => editViewingNote(note));
     const remove = element('button', 'note-delete', '刪除');
     remove.type = 'button';
     remove.addEventListener('click', () => {
@@ -105,7 +137,8 @@ function renderViewingNotes() {
       saveViewingNotes();
       renderViewingNotes();
     });
-    header.append(remove);
+    actions.append(edit, remove);
+    header.append(actions);
     const status = element('div', 'note-summary');
     if (decision.failed.length) status.append(element('strong', 'note-reject', `建議跳過 · Tier 1 有 ${decision.failed.length} 項未通過`));
     else status.append(element('strong', 'note-pass', 'Tier 1 通過'));
@@ -126,8 +159,8 @@ $('#noteForm').addEventListener('submit', (event) => {
   const tierThree = Object.fromEntries(tierThreeFields.map((field) => [field, fields.get(field)]));
   const project = String(fields.get('noteProject') || '').trim();
   if (!project) return;
-  viewingNotes.unshift({
-    id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+  const note = {
+    id: editingNoteId || `${Date.now()}-${Math.random().toString(16).slice(2)}`,
     project,
     size: String(fields.get('noteSize') || '').trim(),
     total: String(fields.get('noteTotal') || '').trim(),
@@ -135,13 +168,16 @@ $('#noteForm').addEventListener('submit', (event) => {
     date: String(fields.get('noteDate') || ''),
     text: String(fields.get('noteText') || '').trim(),
     tierOne, tierTwo, tierThree,
-  });
+  };
+  const wasEditing = Boolean(editingNoteId);
+  if (wasEditing) viewingNotes = viewingNotes.map((item) => item.id === editingNoteId ? note : item);
+  else viewingNotes.unshift(note);
   saveViewingNotes();
-  form.reset();
-  $('#noteDate').value = new Date().toISOString().slice(0, 10);
-  $('#noteStatus').textContent = '已儲存到這台裝置。';
+  resetNoteForm(wasEditing ? '已更新這筆看屋筆記。' : '已儲存到這台裝置。');
   renderViewingNotes();
 });
+
+$('#cancelNoteEdit').addEventListener('click', () => resetNoteForm('已取消修改。'));
 
 function saveWatchlist() {
   try { localStorage.setItem(watchStorageKey, JSON.stringify(watchNames)); }
