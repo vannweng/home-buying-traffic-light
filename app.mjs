@@ -320,38 +320,57 @@ function automaticDetail(project, rank, leads) {
   return `系統在 0–300 公尺快照找到：${names.join('、')}。`;
 }
 
+function saveScoreAnswers() {
+  try { localStorage.setItem(scoreStorageKey, JSON.stringify(scoreAnswers)); }
+  catch { $('#appreciationNote').textContent = '瀏覽器無法儲存評估；重新整理後可能需要再次填寫。'; }
+}
+
+function renderSafetyConfirmation(project, manual, leads) {
+  const safety = $('#appreciationSafety');
+  safety.replaceChildren();
+  const copy = element('div', 'appreciation-safety-copy');
+  copy.append(element('strong', '', '警示：尚未自行確認是否有嫌惡設施與地質安全風險。'), element('p', '', '此項不會自動判定、不列入增值分數，也不影響燈號。請另以官方圖資、基地周邊與現場查核；若要自行記錄，可在下方選擇。'));
+  const controls = element('div', 'appreciation-choices safety-choices');
+  controls.setAttribute('role', 'group');
+  controls.setAttribute('aria-label', '嫌惡設施與地質安全自行確認，不納入分數');
+  for (const [value, label] of [['yes', '已確認無重大風險'], ['no', '發現重大風險'], ['unknown', '待查']]) {
+    const button = element('button', manual[1] === value ? 'selected' : '', label);
+    button.type = 'button';
+    button.setAttribute('aria-pressed', String(manual[1] === value));
+    button.addEventListener('click', () => {
+      scoreAnswers[project.name] = { ...manual, 1: value };
+      saveScoreAnswers();
+      renderAppreciation(project, leads);
+    });
+    controls.append(button);
+  }
+  safety.append(copy, controls);
+}
+
 function renderAppreciation(project, leads) {
   const automatic = automaticAnswers(project, leads);
   const manual = scoreAnswers[project.name] || {};
   const answers = { ...automatic, ...manual };
+  renderSafetyConfirmation(project, manual, leads);
   const list = $('#appreciationCriteria');
   list.replaceChildren();
   for (const criterion of CRITERIA) {
+    if (criterion.rank === 1) continue;
     const item = element('div', 'appreciation-item');
     const main = element('div', 'appreciation-item-main');
     main.append(element('span', 'appreciation-rank', String(criterion.rank)), element('strong', '', criterion.title), element('em', 'appreciation-tier', criterion.tier));
-    main.append(element('small', '', criterion.rank === 1 ? '安全底線' : `${criterion.weight} 分`));
+    main.append(element('small', '', `${criterion.weight} 分`));
     const detail = element('p', '', `${criterion.reason}｜${automaticDetail(project, criterion.rank, leads)}｜購屋者想法：「${criterion.psychology}」`);
-    if (criterion.rank === 1) {
-      for (const [label, url] of [['查淹水潛勢', 'https://www.wra.gov.tw/cp.aspx?n=6244'], ['查活動斷層', 'https://fault.gsmma.gov.tw/']]) {
-        const link = element('a', 'appreciation-source', `${label} ↗`);
-        link.href = url;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        detail.append(' ', link);
-      }
-    }
     const controls = element('div', 'appreciation-choices');
     controls.setAttribute('role', 'group');
     controls.setAttribute('aria-label', `${criterion.title}評估`);
-    for (const [value, label] of [['yes', criterion.rank === 1 ? '已確認無重大風險' : '符合'], ['no', criterion.rank === 1 ? '發現重大風險' : '不符合'], ['unknown', '待查']]) {
+    for (const [value, label] of [['yes', '符合'], ['no', '不符合'], ['unknown', '待查']]) {
       const button = element('button', answers[criterion.rank] === value ? 'selected' : '', label);
       button.type = 'button';
       button.setAttribute('aria-pressed', String(answers[criterion.rank] === value));
       button.addEventListener('click', () => {
         scoreAnswers[project.name] = { ...manual, [criterion.rank]: value };
-        try { localStorage.setItem(scoreStorageKey, JSON.stringify(scoreAnswers)); }
-        catch { $('#appreciationNote').textContent = '瀏覽器無法儲存評估；重新整理後可能需要再填一次。'; }
+        saveScoreAnswers();
         renderAppreciation(project, leads);
       });
       controls.append(button);
@@ -362,12 +381,12 @@ function renderAppreciation(project, leads) {
   const score = scoreAppreciation(answers);
   const display = $('#appreciationScore');
   display.replaceChildren();
-  display.classList.toggle('blocked', score.veto === 'no');
-  display.append(element('span', '', score.veto === 'no' ? '一票否決' : score.score === null ? '待查核' : '條件加權分數'));
-  display.append(element('strong', '', score.veto === 'no' ? '暫不評分' : score.score === null ? '—' : `${score.score} / 100`));
+  display.classList.remove('blocked');
+  display.append(element('span', '', score.score === null ? '待查核' : '條件加權分數'));
+  display.append(element('strong', '', score.score === null ? '—' : `${score.score} / 100`));
   display.append(element('small', '', `已查核權重 ${score.assessed}% · 可能範圍 ${score.range[0]}–${score.range[1]} 分`));
-  const caution = score.veto === 'no' ? '已標記重大安全或嫌惡風險，先查證與排除，不應由其他加分項抵銷。' : score.veto !== 'yes' ? '先完成第 1 項安全底線查核，才會顯示單一分數。' : score.assessed < 70 ? '已查核權重未達 70%，先完成更多項目，避免少量資訊造成假精確分數。' : '此分數只反映你標記的條件，未檢驗價格是否已反映利多，也不代表未來房價漲幅。';
-  $('#appreciationNote').textContent = `${caution}系統預填依 ${geoSnapshot.generatedAt || '未提供'} 的 OpenStreetMap 0–300 公尺快照及官方公共建設站位資料；點選任一選項可覆寫。規劃／施工中的站點不等於已通車，仍須以官方出入口圖與現場確認。`;
+  const caution = score.assessed < 70 ? '已查核權重未達 70%，先完成更多項目，避免少量資訊造成假精確分數。' : '此分數只反映你標記的條件，未檢驗價格是否已反映利多，也不代表未來房價漲幅。';
+  $('#appreciationNote').textContent = `${caution}警示：嫌惡設施與地質安全尚未由系統確認，且刻意排除在本分數之外；請自行查核。系統預填依 ${geoSnapshot.generatedAt || '未提供'} 的 OpenStreetMap 0–300 公尺快照及官方公共建設站位資料；點選任一選項可覆寫。規劃／施工中的站點不等於已通車，仍須以官方出入口圖與現場確認。`;
 }
 
 $('#runTrend').addEventListener('click', () => {

@@ -8,19 +8,19 @@ test('weights total 100 and safety is outside the weighted score', () => {
   assert.equal(CRITERIA[0].weight, 0);
 });
 
-test('unverified safety or too little evidence never receives a single score', () => {
+test('safety selection is excluded while insufficient weighted evidence has no score', () => {
   assert.equal(scoreAppreciation({ 2: 'yes' }).score, null);
   assert.deepEqual(scoreAppreciation({ 2: 'yes' }).range, [18, 100]);
-  assert.equal(scoreAppreciation({ 1: 'yes', 2: 'yes' }).score, null);
+  assert.equal(scoreAppreciation({ 1: 'yes', 2: 'yes' }).safetySelection, 'yes');
 });
 
-test('safety failure vetoes even a perfect weighted checklist', () => {
+test('safety answer never changes the weighted result', () => {
   const answers = Object.fromEntries(CRITERIA.map((item) => [item.rank, 'yes']));
   answers[1] = 'no';
   const result = scoreAppreciation(answers);
   assert.equal(result.earned, 100);
-  assert.equal(result.score, null);
-  assert.equal(result.veto, 'no');
+  assert.equal(result.score, 100);
+  assert.equal(result.safetySelection, 'no');
 });
 
 test('sufficient reviewed weight produces score and unknown range', () => {

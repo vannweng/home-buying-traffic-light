@@ -18,10 +18,9 @@ export const CRITERIA = [
 export function scoreAppreciation(answers = {}) {
   const invalid = Object.entries(answers).some(([rank, value]) => !CRITERIA.some((item) => String(item.rank) === rank) || !['yes', 'no', 'unknown'].includes(value));
   if (invalid) throw new Error('評估答案格式不符。');
-  const veto = answers[1] || 'unknown';
   const weighted = CRITERIA.filter((item) => item.weight);
   const earned = weighted.reduce((sum, item) => sum + (answers[item.rank] === 'yes' ? item.weight : 0), 0);
   const assessed = weighted.reduce((sum, item) => sum + (['yes', 'no'].includes(answers[item.rank]) ? item.weight : 0), 0);
   const range = [earned, earned + 100 - assessed];
-  return { veto, earned, assessed, range, score: veto === 'yes' && assessed >= 70 ? earned : null };
+  return { safetySelection: answers[1] || null, earned, assessed, range, score: assessed >= 70 ? earned : null };
 }
