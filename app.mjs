@@ -19,38 +19,45 @@ let aiSummaries = {};
 let geoSnapshot = {};
 const scoreStorageKey = 'zhonghe-appreciation-v1';
 let scoreAnswers = {};
+const notesStorageKey = 'zhonghe-viewing-notes-v1';
+let viewingNotes = [];
 
 $('#top').insertBefore($('#watchlist'), $('#analysisPanel'));
 function activateTab(tab, updateHash = true) {
   const watch = tab === 'watchlist';
   const trend = tab === 'trend';
+  const notes = tab === 'notes';
   $('#watchlist').hidden = !watch;
-  $('#analysisPanel').hidden = watch || trend;
-  $('#method').hidden = watch || trend;
+  $('#analysisPanel').hidden = watch || trend || notes;
+  $('#method').hidden = watch || trend || notes;
   $('#trendPanel').hidden = !trend;
+  $('#notesPanel').hidden = !notes;
   $('#tabWatchlist').setAttribute('aria-selected', String(watch));
-  $('#tabAnalysis').setAttribute('aria-selected', String(!watch && !trend));
+  $('#tabAnalysis').setAttribute('aria-selected', String(!watch && !trend && !notes));
   $('#tabTrend').setAttribute('aria-selected', String(trend));
+  $('#tabNotes').setAttribute('aria-selected', String(notes));
   $('#tabWatchlist').tabIndex = watch ? 0 : -1;
-  $('#tabAnalysis').tabIndex = !watch && !trend ? 0 : -1;
+  $('#tabAnalysis').tabIndex = !watch && !trend && !notes ? 0 : -1;
   $('#tabTrend').tabIndex = trend ? 0 : -1;
-  if (updateHash) history.replaceState(null, '', watch ? '#watchlist' : trend ? '#trend' : '#analysis');
+  $('#tabNotes').tabIndex = notes ? 0 : -1;
+  if (updateHash) history.replaceState(null, '', watch ? '#watchlist' : trend ? '#trend' : notes ? '#notes' : '#analysis');
 }
 $('#tabWatchlist').addEventListener('click', () => activateTab('watchlist'));
 $('#tabAnalysis').addEventListener('click', () => activateTab('analysis'));
 $('#tabTrend').addEventListener('click', () => activateTab('trend'));
+$('#tabNotes').addEventListener('click', () => activateTab('notes'));
 $('#topAnalysisLink').addEventListener('click', () => activateTab('analysis', false));
 $('.page-tabs').addEventListener('keydown', (event) => {
   if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
   event.preventDefault();
-  const tabs = [$('#tabWatchlist'), $('#tabAnalysis'), $('#tabTrend')];
+  const tabs = [$('#tabWatchlist'), $('#tabAnalysis'), $('#tabTrend'), $('#tabNotes')];
   const index = tabs.indexOf(event.target);
   if (index < 0) return;
   const target = tabs[(index + (event.key === 'ArrowRight' ? 1 : 2)) % tabs.length];
   target.click();
   target.focus();
 });
-activateTab(location.hash === '#trend' ? 'trend' : ['#analysis', '#method'].includes(location.hash) ? 'analysis' : 'watchlist', false);
+activateTab(location.hash === '#trend' ? 'trend' : location.hash === '#notes' ? 'notes' : ['#analysis', '#method'].includes(location.hash) ? 'analysis' : 'watchlist', false);
 
 function element(tag, className, content) {
   const node = document.createElement(tag);
@@ -58,6 +65,83 @@ function element(tag, className, content) {
   if (content !== undefined) node.textContent = content;
   return node;
 }
+
+const tierOneFields = ['t1Budget', 't1Area', 't1Parking', 't1Commute'];
+const tierTwoFields = ['t2Light', 't2Management', 't2Layout', 't2Bathroom'];
+const tierThreeFields = ['t3KitchenBath', 't3Floor', 't3Electric'];
+
+function saveViewingNotes() {
+  try { localStorage.setItem(notesStorageKey, JSON.stringify(viewingNotes)); }
+  catch { $('#noteStatus').textContent = '瀏覽器無法儲存筆記；請複製文字另存。'; }
+}
+
+function noteDecision(note) {
+  const failed = tierOneFields.filter((field) => !note.tierOne?.[field]);
+  const ratings = tierTwoFields.map((field) => Number(note.tierTwo?.[field])).filter((value) => value >= 1 && value <= 5);
+  const score = ratings.length ? Math.round((ratings.reduce((total, value) => total + value, 0) / (ratings.length * 5)) * 100) : null;
+  const budget = tierThreeFields.reduce((total, field) => total + (Number(note.tierThree?.[field]) || 0), 0);
+  return { failed, score, budget, ratings: ratings.length };
+}
+
+function renderViewingNotes() {
+  const list = $('#noteList');
+  list.replaceChildren();
+  $('#noteCount').textContent = `${viewingNotes.length} 筆`;
+  if (!viewingNotes.length) {
+    list.append(element('p', 'note-empty', '還沒有看屋筆記。先記下第一個你實際走訪過的空間。'));
+    return;
+  }
+  for (const note of viewingNotes) {
+    const decision = noteDecision(note);
+    const card = element('article', `note-card${decision.failed.length ? ' rejected' : ''}`);
+    const header = element('div', 'note-card-header');
+    const details = [note.size, note.total ? `${number(note.total, 0)} 萬` : '', note.location, note.date].filter(Boolean).join(' · ');
+    header.append(element('div', '', undefined));
+    header.firstChild.append(element('h4', '', note.project), element('p', '', details || '尚未補充坪數、位置或日期'));
+    const remove = element('button', 'note-delete', '刪除');
+    remove.type = 'button';
+    remove.addEventListener('click', () => {
+      viewingNotes = viewingNotes.filter((item) => item.id !== note.id);
+      saveViewingNotes();
+      renderViewingNotes();
+    });
+    header.append(remove);
+    const status = element('div', 'note-summary');
+    if (decision.failed.length) status.append(element('strong', 'note-reject', `建議跳過 · Tier 1 有 ${decision.failed.length} 項未通過`));
+    else status.append(element('strong', 'note-pass', 'Tier 1 通過'));
+    status.append(element('span', '', decision.score === null ? 'Tier 2：尚未評分' : `Tier 2：${decision.score} 分${decision.score < 75 ? ' · 未達 75 分' : ' · 達標'}`));
+    status.append(element('span', '', `Tier 3 裝修預備金：${number(decision.budget, 0)} 萬`));
+    card.append(header, status);
+    if (note.text) card.append(element('p', 'note-card-text', note.text));
+    list.append(card);
+  }
+}
+
+$('#noteForm').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const fields = new FormData(form);
+  const tierOne = Object.fromEntries(tierOneFields.map((field) => [field, fields.get(field) === 'on']));
+  const tierTwo = Object.fromEntries(tierTwoFields.map((field) => [field, fields.get(field)]));
+  const tierThree = Object.fromEntries(tierThreeFields.map((field) => [field, fields.get(field)]));
+  const project = String(fields.get('noteProject') || '').trim();
+  if (!project) return;
+  viewingNotes.unshift({
+    id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    project,
+    size: String(fields.get('noteSize') || '').trim(),
+    total: String(fields.get('noteTotal') || '').trim(),
+    location: String(fields.get('noteLocation') || '').trim(),
+    date: String(fields.get('noteDate') || ''),
+    text: String(fields.get('noteText') || '').trim(),
+    tierOne, tierTwo, tierThree,
+  });
+  saveViewingNotes();
+  form.reset();
+  $('#noteDate').value = new Date().toISOString().slice(0, 10);
+  $('#noteStatus').textContent = '已儲存到這台裝置。';
+  renderViewingNotes();
+});
 
 function saveWatchlist() {
   try { localStorage.setItem(watchStorageKey, JSON.stringify(watchNames)); }
@@ -439,6 +523,11 @@ try {
     $('#watchProject').append(option);
   }
   $('#trendProject').replaceChildren(...[...$('#watchProject').options].map((option) => option.cloneNode(true)));
+  $('#noteProjectOptions').replaceChildren(...projects.map((project) => {
+    const option = document.createElement('option');
+    option.value = project.name;
+    return option;
+  }));
   try {
     const saved = JSON.parse(localStorage.getItem(scoreStorageKey) || '{}');
     if (saved && typeof saved === 'object' && !Array.isArray(saved)) {
@@ -460,7 +549,15 @@ try {
     const saved = JSON.parse(localStorage.getItem(watchStorageKey) || '[]');
     if (Array.isArray(saved)) watchNames = [...new Set(saved.filter((name) => typeof name === 'string' && projects.some((project) => project.name === name)))];
   } catch { watchNames = []; }
+  try {
+    const saved = JSON.parse(localStorage.getItem(notesStorageKey) || '[]');
+    if (Array.isArray(saved)) {
+      viewingNotes = saved.filter((note) => note && typeof note.project === 'string' && note.project.trim()).slice(0, 100);
+    }
+  } catch { viewingNotes = []; }
+  $('#noteDate').value = new Date().toISOString().slice(0, 10);
   renderWatchlist();
+  renderViewingNotes();
   $('#dataStatus').textContent = `收錄 ${projects.length} 個建案、${transactions.length} 筆符合條件的成交 · 最新成交 ${snapshot.latestTransaction}`;
   $('#sourceFreshness').textContent = `新北市政府地政局預售屋實價 · 快照 ${snapshot.generatedAt} · 最新成交 ${snapshot.latestTransaction}`;
 } catch (error) {
