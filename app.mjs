@@ -26,6 +26,26 @@ let quickRatings = {};
 let activeMetric = 'layout';
 const breakerFields = ['breakerLight', 'breakerDark', 'breakerBeam', 'breakerDistance', 'breakerStairwell'];
 const metricLabels = { layout: '格局動線', condition: '屋況管線', management: '社區管理', quiet: '環境安寧', preference: '直覺偏好' };
+const themeStorageKey = 'home-buying-theme-v1';
+
+function applyTheme(theme) {
+  const dark = theme === 'dark';
+  document.body.dataset.theme = dark ? 'dark' : 'light';
+  document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', dark ? '#101713' : '#102d27');
+  $('#themeToggle').setAttribute('aria-pressed', String(dark));
+  $('#themeToggle').setAttribute('aria-label', dark ? '切換亮色模式' : '切換深色模式');
+  $('#themeToggle').firstElementChild.textContent = dark ? '☀' : '☾';
+  $('#themeToggle').lastElementChild.textContent = dark ? '亮色' : '深色';
+}
+
+try { applyTheme(localStorage.getItem(themeStorageKey) === 'dark' ? 'dark' : 'light'); }
+catch { applyTheme('light'); }
+$('#themeToggle').addEventListener('click', () => {
+  const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  try { localStorage.setItem(themeStorageKey, next); } catch { /* Theme still changes for this visit. */ }
+});
 
 $('#top').insertBefore($('#watchlist'), $('#analysisPanel'));
 function activateTab(tab, updateHash = true) {
