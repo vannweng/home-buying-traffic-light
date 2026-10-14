@@ -104,6 +104,28 @@ body[data-theme="dark"]{--ink:#e6f1e9;--green:#6bc79a;--red:#f18478;--amber:#f2c
 body[data-theme="dark"] .topbar,body[data-theme="dark"] .page-tabs,body[data-theme="dark"] footer{border-color:#304238}body[data-theme="dark"] .region-pill{background:#21352a;color:#9ed7b4}body[data-theme="dark"] .theme-toggle{border-color:#496355;background:#1b2a22;color:#e5f1e8}
 body[data-theme="dark"] .card,body[data-theme="dark"] .watch-table-scroll,body[data-theme="dark"] .trend-grid article,body[data-theme="dark"] .note-card,body[data-theme="dark"] .note-tier,body[data-theme="dark"] .quick-block{background:#17231c;border-color:#304238;box-shadow:none}
 body[data-theme="dark"] input,body[data-theme="dark"] select,body[data-theme="dark"] textarea,body[data-theme="dark"] .watch-table .watch-remove,body[data-theme="dark"] .note-edit,body[data-theme="dark"] .note-delete,body[data-theme="dark"] .note-actions .note-cancel{background:#111a15;color:#e6f1e9;border-color:#40594a}
+/* Composite fields and search results must share the active theme. */
+body[data-theme="dark"] .search-wrap,
+body[data-theme="dark"] .input-unit{background:#111a15;border-color:#40594a}
+body[data-theme="dark"] .search-wrap:focus-within,
+body[data-theme="dark"] .input-unit:focus-within{border-color:var(--green);box-shadow:0 0 0 3px rgba(107,199,154,.16)}
+body[data-theme="dark"] .search-wrap input,
+body[data-theme="dark"] .input-unit input{background:transparent;color:var(--ink)}
+body[data-theme="dark"] input::placeholder,
+body[data-theme="dark"] textarea::placeholder{color:var(--muted);opacity:1}
+body[data-theme="dark"] .search-wrap button{color:var(--muted)}
+body[data-theme="dark"] .search-wrap button:hover,
+body[data-theme="dark"] .search-wrap button:focus-visible{color:var(--ink)}
+body[data-theme="dark"] .project-options,
+body[data-theme="dark"] .project-option{background:var(--paper);color:var(--ink);border-color:var(--line)}
+body[data-theme="dark"] .project-option strong{color:var(--ink)}
+body[data-theme="dark"] .project-option:hover,
+body[data-theme="dark"] .project-option:focus{background:#24342a}
+body[data-theme="dark"] .project-option:focus-visible{outline:2px solid var(--green);outline-offset:-2px}
+body[data-theme="dark"] .selected-project{background:#21362a;color:var(--ink);border-color:#40594a}
+body[data-theme="dark"] .selected-kicker{color:var(--green)}
+body[data-theme="dark"] .primary-button{background:var(--green);color:#111a15}
+body[data-theme="dark"] .primary-button:hover{background:#9ed7b4}
 body[data-theme="dark"] .watch-table th,body[data-theme="dark"] .watch-table th:first-child,body[data-theme="dark"] .comparison-labels{background:#24342a;color:#c5d7ca;border-color:#3a5142}body[data-theme="dark"] .watch-table td,body[data-theme="dark"] .watch-table td:first-child,body[data-theme="dark"] .comparison-property{background:#17231c;color:#e1ece3;border-color:#304238}body[data-theme="dark"] .watch-table tbody tr:hover td,body[data-theme="dark"] .watch-table tbody tr:hover td:first-child{background:#1d2d24}
 body[data-theme="dark"] .watch-table th span,body[data-theme="dark"] .watch-identity small,body[data-theme="dark"] .watch-line span,body[data-theme="dark"] .watch-method,body[data-theme="dark"] .notes-heading p,body[data-theme="dark"] .trend-heading p,body[data-theme="dark"] .note-card-header p,body[data-theme="dark"] .note-card-text,body[data-theme="dark"] .note-tier p,body[data-theme="dark"] .quick-block legend small{color:#aabdb0}
 body[data-theme="dark"] .watch-price,body[data-theme="dark"] .watch-identity strong,body[data-theme="dark"] .comparison-property .comparison-name{color:#e6f1e9}body[data-theme="dark"] .quick-rating-grid>div,body[data-theme="dark"] .note-ratings label,body[data-theme="dark"] .note-costs label{background:#1e2c24}body[data-theme="dark"] .rating-buttons button,body[data-theme="dark"] .quick-toggle-grid span,body[data-theme="dark"] .note-tags span{background:#152019;border-color:#40594a;color:#d3e2d6}

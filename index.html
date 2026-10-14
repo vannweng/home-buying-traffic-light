@@ -1,97 +1,69 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#102d27" />
-  <title>購屋紅綠燈｜中和區預售屋開價比一比</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260929-1" />
+  <meta name="theme-color" content="#f7f5fb" data-light="#f7f5fb" data-dark="#15121f" />
+  <meta name="description" content="生活實驗室，收錄購屋紅綠燈、投資發大財、一天一英文等練習作品。把想學的、想搞懂的，做成小工具。" />
+  <title>生活實驗室｜把好奇心做成小工具</title>
+  <script src="assets/theme.js"></script>
+  <link rel="stylesheet" href="assets/lab.css" />
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#top"><span class="brand-mark"><i></i><i></i><i></i></span>購屋紅綠燈</a>
-    <div class="top-right"><span class="region-pill">首站 · 新北市中和區</span><a href="#method" id="topAnalysisLink" class="top-link">判讀方式 ↗</a><button id="themeToggle" class="theme-toggle" type="button" aria-label="切換深色模式" aria-pressed="false"><span aria-hidden="true">☾</span><span class="theme-toggle-label">深色</span></button></div>
-  </header>
-  <main id="top">
-    <nav class="page-tabs" role="tablist" aria-label="主要功能"><button id="tabWatchlist" type="button" role="tab" aria-controls="watchlist" aria-selected="true">建案觀察</button><button id="tabAnalysis" type="button" role="tab" aria-controls="analysisPanel" aria-selected="false">開價判讀</button><button id="tabTrend" type="button" role="tab" aria-controls="trendPanel" aria-selected="false">趨勢分析</button><button id="tabNotes" type="button" role="tab" aria-controls="notesPanel" aria-selected="false">看屋筆記</button></nav>
-    <div id="analysisPanel" role="tabpanel" aria-labelledby="tabAnalysis" hidden>
-    <section class="hero">
-      <div class="hero-content">
-        <div class="eyebrow"><span class="eyebrow-line"></span> ZHONGHE / PRICE SIGNAL</div>
-        <h1>這個開價，<br /><em>到底合理嗎？</em></h1>
-        <p>找出中和區的預售建案，輸入業務報的價格。我們用公開成交紀錄整理比較基準，讓你知道該追問什麼、從哪裡開始談。</p>
-        <div class="hero-meta"><span>01 搜尋建案</span><b>→</b><span>02 輸入開價</span><b>→</b><span>03 查看燈號與案例</span></div>
-      </div>
-      <div class="hero-art" aria-hidden="true"><div class="art-grid"></div><div class="art-ring ring-one"></div><div class="art-ring ring-two"></div><div class="art-core"><span class="art-light red"></span><span class="art-light amber"></span><span class="art-light green"></span></div><div class="art-label">MAKE AN INFORMED OFFER <span>↗</span></div></div>
-    </section>
-
-    <section class="workspace">
-      <div class="entry-panel card">
-        <div class="step-heading"><span class="step-index">01 / START HERE</span><h2>選一個你正在看的建案</h2><p>先從中和區有公開預售成交紀錄的建案開始。</p></div>
-        <label class="field-label" for="projectSearch">搜尋建案名稱或路名</label>
-        <div class="search-wrap"><span class="search-icon" aria-hidden="true">⌕</span><input id="projectSearch" autocomplete="off" placeholder="例如：連城路、大同新紀元" aria-controls="projectOptions" aria-expanded="false" /><button id="clearSearch" type="button" aria-label="清除搜尋">×</button></div>
-        <div id="projectOptions" class="project-options" role="listbox" hidden></div>
-        <p id="dataStatus" class="field-hint">正在讀取中和區官方成交資料…</p>
-        <div id="selectedProject" class="selected-project" hidden><div><span class="selected-kicker">已選建案</span><strong id="selectedName"></strong><small id="selectedAddress"></small></div><button type="button" id="changeProject" class="text-button">更換</button></div>
-        <form id="priceForm">
-          <div class="form-divider"></div>
-          <div class="step-heading second"><span class="step-index">02 / YOUR ASKING PRICE</span><h2>輸入你拿到的開價</h2><p>請確認是同一種坪數與價格口徑，避免車位讓單價失真。</p></div>
-          <div class="fields"><div class="field"><label class="field-label" for="askingUnit">每坪開價 <span>必填</span></label><div class="input-unit"><input id="askingUnit" type="number" inputmode="decimal" min="1" max="500" step="0.01" placeholder="例如 85" required /><span>萬 / 坪</span></div></div><div class="field"><label class="field-label" for="targetArea">房屋坪數 <span>必填</span></label><div class="input-unit"><input id="targetArea" type="number" inputmode="decimal" min="8" max="150" step="0.01" placeholder="不含車位" required /><span>坪</span></div></div></div>
-          <p class="field-hint">如果業務只報總價，先扣除車位價，再除以不含車位的房屋坪數。</p>
-          <button class="primary-button" type="submit">開始比價 <span>↗</span></button>
-        </form>
-      </div>
-
-      <div class="results-panel">
-        <section id="resultEmpty" class="empty-state card"><div class="empty-orb"><span></span><span></span><span></span></div><span class="step-index">THE SIGNAL</span><h2>你的結果，會從這裡開始。</h2><p>選擇建案並輸入每坪開價，我們會展示成交基準、價差與使用的案例。</p><div class="empty-lines"><i></i><i></i><i></i></div></section>
-        <section id="resultContent" hidden>
-          <article id="signalCard" class="signal-card card"><div class="signal-top"><span class="step-index">03 / PRICE SIGNAL</span><span id="resultDate"></span></div><div class="signal-title-row"><div id="signalLamp" class="signal-lamp neutral"><i></i><i></i><i></i></div><div><span id="resultProject" class="signal-project"></span><h2 id="signalTitle"></h2><p id="signalDescription"></p></div></div><div class="signal-stats"><div><span>你的每坪開價</span><strong id="askingDisplay">—</strong><small>萬 / 坪</small></div><div><span>可比成交基準</span><strong id="baselineDisplay">—</strong><small>萬 / 坪</small></div><div><span>高低價差</span><strong id="differenceDisplay">—</strong><small>相對成交基準</small></div></div><div id="confidenceNote" class="confidence-note"></div></article>
-          <article class="cases-card card"><div class="cases-header"><div><span class="step-index">04 / COMPARE PROJECTS</span><h2>比較建案</h2></div><span id="casesCount" class="case-count">0 案已加入</span></div><p id="casesSummary" class="cases-summary"></p><label class="tolerance-control" for="vintageTolerance">首次成交年份差距 <select id="vintageTolerance"><option value="1">前後 1 年</option><option value="2">前後 2 年</option><option value="3" selected>前後 3 年</option></select></label><p id="comparisonStatus" class="comparison-status" role="status"></p><div id="caseList" class="case-list"></div><a class="source-link" href="https://data.ntpc.gov.tw/datasets/9238ccc2-9701-4ca7-a0a0-ebe4a0669685" target="_blank" rel="noopener noreferrer">前往新北市政府資料來源 ↗</a></article>
-          <article class="visit-card card"><div class="visit-icon">↗</div><div><span class="step-index">BEFORE YOU VISIT</span><h2>地圖上看過，現場再走一次</h2><p>確認基地周圍道路、噪音與設施。街景拍攝時間可能早於建案公開時間。</p><a id="mapsLink" href="#" target="_blank" rel="noopener noreferrer" class="maps-button">在 Google Maps 查看基地 ↗</a></div></article>
-        </section>
-      </div>
-    </section>
+  <a class="skip-link" href="#main">跳到主要內容</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./" aria-label="生活實驗室首頁">
+        <span class="brand-icon"><svg aria-hidden="true"><use href="assets/icons.svg#flask" /></svg><i></i></span>
+        <span>生活<span class="brand-accent">實驗室</span></span>
+      </a>
+      <nav class="header-actions" aria-label="網站導覽">
+        <a class="explore-link" href="#works">探索作品 <span aria-hidden="true">↘</span></a>
+        <button class="theme-button" type="button" data-theme-toggle aria-label="切換至暗色模式" aria-pressed="false">
+          <svg aria-hidden="true" data-theme-icon="moon"><use href="assets/icons.svg#moon" /></svg>
+          <svg aria-hidden="true" data-theme-icon="sun" hidden><use href="assets/icons.svg#sun" /></svg>
+          <span data-theme-label>暗色</span>
+        </button>
+      </nav>
     </div>
-
-    <section id="watchlist" class="watchlist-section card">
-      <div class="watchlist-header"><div><span class="step-index">MY PROJECT LIST</span><h2>我的建案觀察列表</h2><p>自行加入中和區建案，並排查看最新一筆成交與近三年的價格分布。列表只保存在這台瀏覽器。</p></div><span id="watchCount" class="case-count">0 個建案</span></div>
-      <div class="watchlist-picker"><label for="watchProject">選擇建案</label><select id="watchProject"><option value="">資料載入中…</option></select><button id="addWatchProject" type="button">＋ 加入列表</button></div>
-      <p id="watchStatus" class="watch-status" role="status"></p>
-      <div class="watch-table-scroll"><div class="watch-table-inner"><table class="watch-table"><thead><tr><th scope="col">建案</th><th scope="col">最新成交 <span>萬／坪</span></th><th scope="col">近三年價格 <span>萬／坪</span></th><th scope="col">紅綠燈</th><th scope="col">三年平均</th><th scope="col">最新日期</th><th scope="col"><span class="sr-only">操作</span></th></tr></thead><tbody id="watchList"></tbody></table></div></div>
-      <p class="watch-method">三個價格值依近三年成交單價計算：便宜界線為第 25 百分位、合理參考價為中位數、昂貴界線為第 75 百分位。最新一筆 ≤ 便宜界線為綠燈、≥ 昂貴界線為紅燈，其餘為黃燈。每案至少需要 5 筆近三年成交才判燈。</p>
+  </header>
+  <main id="main" class="site-main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <span class="eyebrow"><span class="status-dot"></span> 練習作品・持續探索中</span>
+        <h1 id="hero-title">把想學的、<br />想搞懂的，<br /><span class="headline-accent">做成小工具。</span></h1>
+        <p class="hero-description">這裡收錄我的練習作品，<br class="mobile-break" />從購屋判讀到投資與英文學習。</p>
+        <a class="primary-link" href="#works">探索練習作品 <svg aria-hidden="true"><use href="assets/icons.svg#arrow" /></svg></a>
+        <div class="hero-meta"><span><b>03</b> 個練習主題</span><span class="meta-divider"></span><span><i class="status-dot"></i><b>01</b> 件可體驗</span></div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <span class="visual-orbit orbit-one"></span><span class="visual-orbit orbit-two"></span>
+        <img src="assets/lab-illustration.svg" width="600" height="540" alt="" fetchpriority="high" />
+        <span class="visual-note"><span>✦</span> 讓好奇心，有個去處。</span>
+      </div>
     </section>
-
-    <section id="trendPanel" class="trend-section card" role="tabpanel" aria-labelledby="tabTrend" hidden>
-      <div class="trend-heading"><span class="step-index">FUTURE OUTLOOK / ZHONGHE</span><h2>AI 趨勢分析</h2><p>用公開成交與官方建設線索，整理值得追問的未來情境。這不是房價預測或投資保證。</p></div>
-      <div class="trend-controls"><label for="trendProject">選擇建案</label><select id="trendProject"><option value="">資料載入中…</option></select><button id="runTrend" type="button">查看趨勢線索 ↗</button></div>
-      <p id="trendStatus" class="field-hint" role="status"></p>
-      <div id="trendResult" hidden><div class="trend-summary" id="trendSummary"></div><div class="trend-grid"><article><span class="step-index">成交變化</span><h3>公開交易趨勢</h3><div id="trendPrices"></div></article><article><span class="step-index">公共建設</span><h3>附近發展線索</h3><div id="trendInfrastructure"></div></article></div><section class="appreciation-panel" aria-labelledby="appreciationTitle"><div class="appreciation-intro"><div><span class="step-index">13 FACTORS / WEIGHTED CHECKLIST</span><h3 id="appreciationTitle">未來增值潛力評估</h3><p>依你提供的優先排名加權；僅是待查條件的決策輔助分數，不是預測漲幅。請根據實地、官方資料與建案文件標記。</p></div><div id="appreciationScore" class="appreciation-score" aria-live="polite"></div></div><div id="appreciationSafety" class="appreciation-safety"></div><div id="appreciationCriteria" class="appreciation-criteria"></div><p id="appreciationNote" class="appreciation-note"></p></section><div class="trend-caution"><strong>判讀提醒</strong><p id="trendCaution"></p></div></div>
+    <section id="works" class="works" aria-labelledby="works-title">
+      <div class="section-heading"><div><span class="section-kicker">THE EXPERIMENTS</span><h2 id="works-title">挑一個，開始探索。</h2></div><p>從生活裡的問題出發，<br />慢慢把想法做出來。</p></div>
+      <div class="works-grid">
+        <a class="work-card home-card" href="home-buying/" aria-labelledby="home-title" aria-describedby="home-description home-status">
+          <div class="card-top"><span class="work-icon"><svg aria-hidden="true"><use href="assets/icons.svg#house" /></svg></span><span class="topic-tag">購屋工具</span></div>
+          <div class="card-content"><span class="work-number">01 / HOME</span><h3 id="home-title">購屋紅綠燈</h3><p id="home-description">用公開成交紀錄比一比開價，<br />把建案觀察與看屋筆記一起收好。</p></div>
+          <div class="card-bottom"><span class="card-link">進入購屋紅綠燈 <svg aria-hidden="true"><use href="assets/icons.svg#arrow" /></svg></span><span id="home-status" class="work-status"><i class="status-dot"></i>可體驗</span></div>
+        </a>
+        <a class="work-card investment-card" href="investment/" aria-labelledby="investment-title" aria-describedby="investment-description investment-status">
+          <div class="card-top"><span class="work-icon"><svg aria-hidden="true"><use href="assets/icons.svg#chart" /></svg></span><span class="topic-tag">投資探索</span></div>
+          <div class="card-content"><span class="work-number">02 / INVEST</span><h3 id="investment-title">投資發大財</h3><p id="investment-description">探索不同的投資方式，<br />整理想學的觀念與方法。</p></div>
+          <div class="card-bottom"><span class="card-link">看看作品方向 <svg aria-hidden="true"><use href="assets/icons.svg#arrow" /></svg></span><span id="investment-status" class="work-status planning">規劃中</span></div>
+        </a>
+        <a class="work-card english-card" href="english/" aria-labelledby="english-title" aria-describedby="english-description english-status">
+          <div class="card-top"><span class="work-icon"><svg aria-hidden="true"><use href="assets/icons.svg#book" /></svg></span><span class="topic-tag">英文學習</span></div>
+          <div class="card-content"><span class="work-number">03 / ENGLISH</span><h3 id="english-title">一天一英文</h3><p id="english-description">從每天的一點練習開始，<br />探索適合自己的英文學習方式。</p></div>
+          <div class="card-bottom"><span class="card-link">看看作品方向 <svg aria-hidden="true"><use href="assets/icons.svg#arrow" /></svg></span><span id="english-status" class="work-status planning">規劃中</span></div>
+        </a>
+      </div>
     </section>
-
-    <section id="notesPanel" class="notes-section card" role="tabpanel" aria-labelledby="tabNotes" hidden>
-      <div class="notes-heading"><span class="step-index">VIEWING NOTES / DECISION FRAMEWORK</span><h2>看屋筆記</h2><p>可記錄多個建案、不同坪數、位置與空間。Tier 1 先篩掉不能接受的條件；Tier 2 再以 1～5 分評估核心體驗；Tier 3 則直接換算裝修預算。</p></div>
-      <form id="noteForm" class="note-form">
-        <div class="note-basics"><label>物件名稱<input id="noteProject" name="noteProject" list="noteProjectOptions" maxlength="80" placeholder="例如：大同新紀元" required /></label><datalist id="noteProjectOptions"></datalist><label>格局／位置<input id="noteSize" name="noteSize" maxlength="60" placeholder="3 房 2 廳／A 棟 12 樓" /></label><label>看屋日期<input id="noteDate" name="noteDate" type="date" /></label></div>
-        <div class="quick-numbers"><label>總價 <span>萬元</span><input id="noteTotal" name="noteTotal" type="number" min="0" step="1" inputmode="numeric" placeholder="2,680" /></label><label>車位價 <span>萬元</span><input id="noteParkingPrice" name="noteParkingPrice" type="number" min="0" step="1" inputmode="numeric" placeholder="180" /></label><label>權狀坪數<input id="noteDeedArea" name="noteDeedArea" type="number" min="0" step="0.1" inputmode="decimal" placeholder="42.6" /></label><label>主建物坪數<input id="noteMainArea" name="noteMainArea" type="number" min="0" step="0.1" inputmode="decimal" placeholder="25.8" /></label><output id="noteCalc" class="note-calc">填入總價與坪數後，自動算單價與公設比</output></div>
-        <fieldset class="quick-block deal-breakers"><legend>一票否決警示 <small>有任一項即標示踩雷物件</small></legend><div class="quick-toggle-grid"><label><input type="checkbox" name="breakerLight" /><span>採光通風死角</span></label><label><input type="checkbox" name="breakerDark" /><span>嚴重暗房</span></label><label><input type="checkbox" name="breakerBeam" /><span>壓樑難解</span></label><label><input type="checkbox" name="breakerDistance" /><span>棟距壓迫</span></label><label><input type="checkbox" name="breakerStairwell" /><span>梯間雜物</span></label></div></fieldset>
-        <fieldset class="quick-block"><legend>現場 5 階評分 <small>點選分數，優先記下當下感受</small></legend><div class="quick-rating-grid"><div data-rating="layout"><span>格局動線</span><div class="rating-buttons"><button type="button" data-score="1">1</button><button type="button" data-score="2">2</button><button type="button" data-score="3">3</button><button type="button" data-score="4">4</button><button type="button" data-score="5">5</button></div></div><div data-rating="condition"><span>屋況管線</span><div class="rating-buttons"><button type="button" data-score="1">1</button><button type="button" data-score="2">2</button><button type="button" data-score="3">3</button><button type="button" data-score="4">4</button><button type="button" data-score="5">5</button></div></div><div data-rating="management"><span>社區管理</span><div class="rating-buttons"><button type="button" data-score="1">1</button><button type="button" data-score="2">2</button><button type="button" data-score="3">3</button><button type="button" data-score="4">4</button><button type="button" data-score="5">5</button></div></div><div data-rating="quiet"><span>環境安寧</span><div class="rating-buttons"><button type="button" data-score="1">1</button><button type="button" data-score="2">2</button><button type="button" data-score="3">3</button><button type="button" data-score="4">4</button><button type="button" data-score="5">5</button></div></div><div data-rating="preference"><span>直覺偏好</span><div class="rating-buttons"><button type="button" data-score="1">1</button><button type="button" data-score="2">2</button><button type="button" data-score="3">3</button><button type="button" data-score="4">4</button><button type="button" data-score="5">5</button></div></div></div></fieldset>
-        <fieldset class="quick-block"><legend>快速標籤 <small>可複選</small></legend><div class="note-tags"><label><input type="checkbox" name="tags" value="採光極佳" /><span>#採光極佳</span></label><label><input type="checkbox" name="tags" value="前後陽台" /><span>#前後陽台</span></label><label><input type="checkbox" name="tags" value="水痕壁癌" /><span>#水痕壁癌</span></label><label><input type="checkbox" name="tags" value="需全室換線" /><span>#需全室換線</span></label><label><input type="checkbox" name="tags" value="無天然氣" /><span>#無天然氣</span></label><label><input type="checkbox" name="tags" value="捷運步行10分內" /><span>#捷運步行10分內</span></label></div></fieldset>
-        <section class="note-tier tier-one"><div class="note-tier-title"><span>Tier 1</span><div><h3>硬性門檻</h3><p>一票否決：任一項不合格，這筆看屋記錄會標示為「建議跳過」。</p></div></div><div class="note-checks" data-tier="one"><label><input type="checkbox" name="t1Budget" /> 總價在房貸寬限上限內</label><label><input type="checkbox" name="t1Area" /> 實內坪數符合底線</label><label><input type="checkbox" name="t1Parking" /> 必備坡道平面車位（若需要）</label><label><input type="checkbox" name="t1Commute" /> 通勤時間在上限內</label></div></section>
-        <section class="note-tier tier-two"><div class="note-tier-title"><span>Tier 2</span><div><h3>核心體驗 <small>1～5 分</small></h3><p>總分未達 75 分，建議淘汰。未評分的項目不納入分母。</p></div></div><div class="note-ratings"><label>通風與全室採光面數<select name="t2Light"><option value="">未評</option><option value="1">1 分</option><option value="2">2 分</option><option value="3">3 分</option><option value="4">4 分</option><option value="5">5 分</option></select></label><label>管理基金與梯間整潔<select name="t2Management"><option value="">未評</option><option value="1">1 分</option><option value="2">2 分</option><option value="3">3 分</option><option value="4">4 分</option><option value="5">5 分</option></select></label><label>樑柱不吃實坪、無暗房<select name="t2Layout"><option value="">未評</option><option value="1">1 分</option><option value="2">2 分</option><option value="3">3 分</option><option value="4">4 分</option><option value="5">5 分</option></select></label><label>衛浴開窗或單層排氣<select name="t2Bathroom"><option value="">未評</option><option value="1">1 分</option><option value="2">2 分</option><option value="3">3 分</option><option value="4">4 分</option><option value="5">5 分</option></select></label></div></section>
-        <section class="note-tier tier-three"><div class="note-tier-title"><span>Tier 3</span><div><h3>裝修修正項 <small>成本轉化</small></h3><p>不扣分，填入預估金額後直接加總為裝修預備金。</p></div></div><div class="note-costs"><label>衛浴、廚具拆除重做 <input name="t3KitchenBath" type="number" min="0" step="1" placeholder="萬元" /><small>萬元</small></label><label>地磚／木地板修整 <input name="t3Floor" type="number" min="0" step="1" placeholder="萬元" /><small>萬元</small></label><label>全室電路抽換重拉 <input name="t3Electric" type="number" min="0" step="1" placeholder="萬元" /><small>萬元</small></label></div></section>
-        <label class="note-freeform">空間觀察／待追問<textarea id="noteText" name="noteText" maxlength="1200" placeholder="例如：客廳西曬、主臥採光佳；確認管理基金與垃圾處理方式。"></textarea></label>
-        <div class="note-actions"><button id="noteSubmit" type="submit">儲存看屋筆記</button><button id="cancelNoteEdit" class="note-cancel" type="button" hidden>取消編輯</button><span id="noteStatus" role="status"></span></div>
-      </form>
-      <div class="note-list-heading"><h3>已記錄的建案</h3><span id="noteCount">0 筆</span></div><div id="noteList" class="note-list"></div>
-      <section class="mobile-compare"><div class="compare-heading"><div><span class="step-index">MOBILE COMPARISON</span><h3>物件橫向比對</h3></div><div class="compare-modes"><button id="compareCards" class="active" type="button">並排卡</button><button id="compareMetrics" type="button">指標排行</button></div></div><div id="compareCardView"><div class="comparison-scroll"><div class="comparison-grid"><div class="comparison-labels"><span>物件</span><span>單價／公設</span><span>踩雷</span><span>格局動線</span><span>屋況管線</span><span>社區管理</span><span>環境安寧</span><span>直覺偏好</span></div><div id="comparisonColumns" class="comparison-columns"></div></div></div><p class="compare-hint">左右滑動查看其他物件</p></div><div id="compareMetricView" hidden><div id="metricPicker" class="metric-picker"></div><div id="metricRanking" class="metric-ranking"></div></div></section>
-    </section>
-
-    <section id="method" class="method-section"><div><span class="step-index">HOW IT WORKS</span><h2>一盞燈背後，<br />有清楚的比較依據。</h2></div><div class="method-copy"><p>本案自己的近三年、相近坪數成交會自動納入；系統另選入價格最低的最多三個可比建案，你可隨時加入、移除或清空。只要本案或任一已加入建案有可用成交，即會判燈；全數沒有成交才不判燈。候選案需符合相同建物類型、相近房屋坪數、基地直線距離 0 至 300 公尺與首次成交年份前後 1 至 3 年。</p><div class="legend"><span><i class="green"></i>低於基準 · 綠燈</span><span><i class="amber"></i>基準至高出 15% · 黃燈</span><span><i class="red"></i>高出超過 15% · 紅燈</span></div><p class="method-small">預售屋尚無實際屋齡，因此以各案「首次公開成交年份」代表案齡，並非完工年份。同一路名也不保證基地緊鄰；資料有發布時間差，成交中位數不是可保證的議價底價。</p></div></section>
+    <div class="practice-note"><svg aria-hidden="true"><use href="assets/icons.svg#flask" /></svg><p>每一個作品，都是一次練習。<span>這裡的作品皆為練習作品。</span></p><span class="note-spark" aria-hidden="true">✦</span></div>
   </main>
-  <footer><span>購屋紅綠燈 / 中和區試行版</span><span id="sourceFreshness">資料來源：新北市政府地政局</span></footer>
-  <script type="module" src="app.mjs?v=20260929-1"></script>
+  <footer class="site-footer"><a href="./">生活實驗室 <span>LIFE LAB</span></a><p>保持好奇，慢慢做出來。</p><a class="back-top" href="#main">回到頂端 ↑</a></footer>
 </body>
 </html>

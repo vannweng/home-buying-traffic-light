@@ -26,27 +26,6 @@ let quickRatings = {};
 let activeMetric = 'layout';
 const breakerFields = ['breakerLight', 'breakerDark', 'breakerBeam', 'breakerDistance', 'breakerStairwell'];
 const metricLabels = { layout: '格局動線', condition: '屋況管線', management: '社區管理', quiet: '環境安寧', preference: '直覺偏好' };
-const themeStorageKey = 'home-buying-theme-v1';
-
-function applyTheme(theme) {
-  const dark = theme === 'dark';
-  document.body.dataset.theme = dark ? 'dark' : 'light';
-  document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
-  document.querySelector('meta[name="theme-color"]').setAttribute('content', dark ? '#101713' : '#102d27');
-  $('#themeToggle').setAttribute('aria-pressed', String(dark));
-  $('#themeToggle').setAttribute('aria-label', dark ? '切換亮色模式' : '切換深色模式');
-  $('#themeToggle').firstElementChild.textContent = dark ? '☀' : '☾';
-  $('#themeToggle').lastElementChild.textContent = dark ? '亮色' : '深色';
-}
-
-try { applyTheme(localStorage.getItem(themeStorageKey) === 'dark' ? 'dark' : 'light'); }
-catch { applyTheme('light'); }
-$('#themeToggle').addEventListener('click', () => {
-  const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
-  applyTheme(next);
-  try { localStorage.setItem(themeStorageKey, next); } catch { /* Theme still changes for this visit. */ }
-});
-
 $('#top').insertBefore($('#watchlist'), $('#analysisPanel'));
 function activateTab(tab, updateHash = true) {
   const watch = tab === 'watchlist';
@@ -643,12 +622,12 @@ $('#runTrend').addEventListener('click', () => {
 });
 
 try {
-  const response = await fetch('./data/zhonghe-presale.json');
+  const response = await fetch(new URL('./data/zhonghe-presale.json', import.meta.url));
   if (!response.ok) throw new Error('資料檔無法讀取');
   snapshot = await response.json();
   transactions = snapshot.transactions;
   try {
-    const geoResponse = await fetch('./data/zhonghe-geo.json');
+    const geoResponse = await fetch(new URL('./data/zhonghe-geo.json', import.meta.url));
     if (geoResponse.ok) geoSnapshot = await geoResponse.json();
   } catch { geoSnapshot = {}; }
   projects = addLocation(getProjects(transactions), geoSnapshot);
@@ -675,11 +654,11 @@ try {
     }
   } catch { scoreAnswers = {}; }
   try {
-    const response = await fetch('./data/trend-evidence.json', { cache: 'no-store' });
+    const response = await fetch(new URL('./data/trend-evidence.json', import.meta.url), { cache: 'no-store' });
     if (response.ok) trendEvidence = (await response.json()).items || [];
   } catch { /* Trends still work without infrastructure leads. */ }
   try {
-    const response = await fetch('./data/trend-ai.json');
+    const response = await fetch(new URL('./data/trend-ai.json', import.meta.url));
     if (response.ok) aiSummaries = (await response.json()).projects || {};
   } catch { /* AI summaries are optional and generated offline. */ }
   try {
