@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f5f2e9" data-light="#f5f2e9" data-dark="#1c241f" />
+  <meta name="description" content="投資發大財的專案點子本。記下方向與靈感，將零碎想法慢慢整理成作品。" />
+  <title>投資發大財・專案點子本｜生活實驗室</title>
+  <script src="../assets/theme.js"></script>
+  <script type="module" src="../assets/planner.mjs"></script>
+  <link rel="stylesheet" href="../assets/journal.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要內容</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="../" aria-label="生活實驗室首頁">
+        <span class="leaf-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>生活實驗室</span>
+      </a>
+      <nav class="header-actions" aria-label="網站導覽">
+        <a class="explore-link" href="../#works">作品</a>
+        <span class="nav-divider" aria-hidden="true"></span>
+        <button class="theme-button" type="button" data-theme-toggle aria-label="切換至暗色模式" aria-pressed="false">
+          <span class="mode-icon mode-light"><svg aria-hidden="true"><use href="../assets/icons.svg#sun" /></svg></span>
+          <span class="mode-icon mode-dark"><svg aria-hidden="true"><use href="../assets/icons.svg#moon" /></svg></span>
+          <span class="sr-only" data-theme-label>暗色</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+  <main id="main" class="site-main notebook-main">
+    <a class="breadcrumb" href="../#works">← 回到所有練習作品</a>
+    <article class="project-notebook" aria-labelledby="project-title">
+      <header class="notebook-intro">
+        <div class="notebook-meta"><p class="section-kicker">PROJECT NOTEBOOK</p><span class="work-status">規劃中</span></div>
+        <h1 id="project-title">投資發大財</h1>
+        <p class="notebook-lead">記錄工具包的方向、策略想法與後續功能。</p>
+        <a class="return-project" href="./">← 開啟投資工具包</a>
+
+      </header>
+      <form class="notebook" data-project="investment" data-project-title="投資發大財" aria-labelledby="notebook-title">
+        <h2 id="notebook-title" class="sr-only">專案點子本</h2>
+        <section class="direction-section" aria-labelledby="direction-title">
+          <div class="notebook-section-heading"><h2 id="direction-title"><span class="field-index" aria-hidden="true">01</span><label for="planDirection">方向與目標</label></h2><p id="directionHint">想往哪裡走？這個作品想完成什麼？</p></div>
+          <textarea id="planDirection" name="direction" rows="2" aria-describedby="directionHint" placeholder="例如：想先認識哪些投資方式？這個作品希望幫自己弄懂什麼？" disabled></textarea>
+        </section>
+        <section class="ideas-section" aria-labelledby="ideas-title">
+          <div class="notebook-section-heading"><div class="ideas-title-line"><h2 id="ideas-title"><span class="field-index" aria-hidden="true">02</span>點子與靈感</h2><span id="ideaCount" class="idea-count" aria-live="polite">0 個點子</span></div><p>勾選完成，直接編輯內容。</p></div>
+          <p class="migration-note" id="migrationNote" hidden>既有文字已依換行整理成條列，舊版原始筆記仍保留。</p>
+          <div class="idea-composer"><label class="sr-only" for="newIdea">新增點子</label><input id="newIdea" name="newIdea" type="text" placeholder="新增點子…" autocomplete="off" disabled /><button class="add-idea" type="button" id="addIdea" aria-label="新增點子" title="新增點子" disabled><span aria-hidden="true">＋</span></button></div>
+          <ul class="idea-list" id="ideaList" aria-label="點子與靈感清單"></ul>
+          <p class="idea-empty" id="ideaEmpty">還沒有點子。先寫下一句話，之後再慢慢整理。</p>
+          <div id="ideaUndo" class="idea-undo" hidden><span>已刪除一則點子。</span><button type="button" id="undoDelete">復原</button></div>
+        </section>
+        <div class="notebook-toolbar"><button class="note-button note-save" type="submit" disabled>儲存筆記</button><button class="note-button" type="button" id="downloadNotes" disabled>下載備份</button><p class="save-status" id="saveStatus" role="status" aria-live="polite">正在開啟點子本…</p></div>
+        <p class="notebook-storage">輸入後自動儲存，每個專案分開記錄。筆記只存在目前瀏覽器，不會跨裝置同步；可下載備份保留內容。</p>
+        <noscript><p>請啟用 JavaScript，才能編輯與儲存筆記。</p></noscript>
+      </form>
+    </article>
+  </main>
+  <footer class="site-footer"><a href="../">生活實驗室</a><span class="footer-divider" aria-hidden="true"></span><p>這裡的作品皆為練習作品</p></footer>
+</body>
+</html>
