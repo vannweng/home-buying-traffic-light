@@ -3,64 +3,61 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#f7f5fb" data-light="#f7f5fb" data-dark="#15121f" />
-  <meta name="description" content="一天一英文的專案點子本。記下方向與靈感，慢慢整理成下一個生活練習作品。" />
+  <meta name="theme-color" content="#f5f2e9" data-light="#f5f2e9" data-dark="#1c241f" />
+  <meta name="description" content="一天一英文的專案點子本。記下方向與靈感，將零碎想法慢慢整理成作品。" />
   <title>一天一英文・專案點子本｜生活實驗室</title>
   <script src="../assets/theme.js"></script>
   <script type="module" src="../assets/planner.mjs"></script>
-  <link rel="stylesheet" href="../assets/lab.css" />
+  <link rel="stylesheet" href="../assets/journal.css" />
 </head>
 <body>
   <a class="skip-link" href="#main">跳到主要內容</a>
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="../" aria-label="生活實驗室首頁">
-        <span class="brand-icon"><svg aria-hidden="true"><use href="../assets/icons.svg#flask" /></svg><i></i></span>
-        <span>生活<span class="brand-accent">實驗室</span></span>
+        <span class="leaf-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>生活實驗室</span>
       </a>
       <nav class="header-actions" aria-label="網站導覽">
-        <a class="explore-link" href="../#works">探索作品 <span aria-hidden="true">↘</span></a>
+        <a class="explore-link" href="../#works">作品</a>
+        <span class="nav-divider" aria-hidden="true"></span>
         <button class="theme-button" type="button" data-theme-toggle aria-label="切換至暗色模式" aria-pressed="false">
-          <svg aria-hidden="true" data-theme-icon="moon"><use href="../assets/icons.svg#moon" /></svg>
-          <svg aria-hidden="true" data-theme-icon="sun" hidden><use href="../assets/icons.svg#sun" /></svg>
-          <span data-theme-label>暗色</span>
+          <span class="mode-icon mode-light"><svg aria-hidden="true"><use href="../assets/icons.svg#sun" /></svg></span>
+          <span class="mode-icon mode-dark"><svg aria-hidden="true"><use href="../assets/icons.svg#moon" /></svg></span>
+          <span class="sr-only" data-theme-label>暗色</span>
         </button>
       </nav>
     </div>
   </header>
-  <main id="main" class="site-main project-main">
+  <main id="main" class="site-main notebook-main">
     <a class="breadcrumb" href="../#works">← 回到所有練習作品</a>
-    <article class="project-intro planner-intro english-card" aria-labelledby="project-title">
-      <div class="planner-top">
-        <span class="work-icon"><svg aria-hidden="true"><use href="../assets/icons.svg#book" /></svg></span>
-        <div class="planner-heading"><span class="project-status"><i aria-hidden="true"></i>規劃中的練習作品</span><h1 id="project-title">一天一英文</h1></div>
-      </div>
-      <p class="project-lead">從每天的一點練習開始，探索適合自己的英文學習方式。</p>
+    <article class="project-notebook" aria-labelledby="project-title">
+      <header class="notebook-intro">
+        <div class="notebook-meta"><p class="section-kicker">PROJECT NOTEBOOK</p><span class="work-status">規劃中</span></div>
+        <h1 id="project-title">一天一英文</h1>
+        <p class="notebook-lead">從每天的一點練習開始，探索適合自己的英文學習方式。</p>
+
+      </header>
       <form class="notebook" data-project="english" data-project-title="一天一英文" aria-labelledby="notebook-title">
-        <div class="notebook-heading"><h2 id="notebook-title">專案點子本</h2><p>先留住想法，之後再慢慢整理。</p></div>
-        <div class="notebook-fields">
-          <div class="notebook-field">
-            <label for="planDirection"><span class="field-index" aria-hidden="true">01</span>方向與目標</label>
-            <p class="field-hint" id="directionHint">想往哪裡走？這個作品想完成什麼？</p>
-            <textarea id="planDirection" name="direction" rows="9" aria-describedby="directionHint" placeholder="例如：希望先練習聽、說、讀、寫的哪一部分？每天想花多少時間？" disabled></textarea>
-          </div>
-          <div class="notebook-field">
-            <label for="planIdeas"><span class="field-index" aria-hidden="true">02</span>點子與靈感</label>
-            <p class="field-hint" id="ideasHint">不必想完整，想到什麼就先寫下來。</p>
-            <textarea id="planIdeas" name="ideas" rows="9" aria-describedby="ideasHint" placeholder="想到的學習方式、有趣的練習題、想試試看的每日安排……
-零碎的靈感也可以先記下來。" disabled></textarea>
-          </div>
-        </div>
-        <div class="notebook-toolbar">
-          <button class="note-button note-save" type="submit" disabled>儲存筆記</button>
-          <button class="note-button" type="button" id="downloadNotes" disabled>下載備份</button>
-          <p class="save-status" id="saveStatus" role="status" aria-live="polite">正在開啟點子本…</p>
-        </div>
-        <p class="notebook-storage">輸入後會自動儲存，每個專案分開記錄。筆記只存在目前瀏覽器，不會跨裝置同步；可以下載備份保留內容。</p>
-        <noscript><p class="notebook-noscript">請啟用 JavaScript，才能編輯與儲存點子筆記。</p></noscript>
+        <h2 id="notebook-title" class="sr-only">專案點子本</h2>
+        <section class="direction-section" aria-labelledby="direction-title">
+          <div class="notebook-section-heading"><h2 id="direction-title"><span class="field-index" aria-hidden="true">01</span><label for="planDirection">方向與目標</label></h2><p id="directionHint">想往哪裡走？這個作品想完成什麼？</p></div>
+          <textarea id="planDirection" name="direction" rows="2" aria-describedby="directionHint" placeholder="例如：希望先練習聽、說、讀、寫的哪一部分？每天想花多少時間？" disabled></textarea>
+        </section>
+        <section class="ideas-section" aria-labelledby="ideas-title">
+          <div class="notebook-section-heading"><div class="ideas-title-line"><h2 id="ideas-title"><span class="field-index" aria-hidden="true">02</span>點子與靈感</h2><span id="ideaCount" class="idea-count" aria-live="polite">0 個點子</span></div><p>勾選完成，直接編輯內容。</p></div>
+          <p class="migration-note" id="migrationNote" hidden>既有文字已依換行整理成條列，舊版原始筆記仍保留。</p>
+          <div class="idea-composer"><label class="sr-only" for="newIdea">新增點子</label><input id="newIdea" name="newIdea" type="text" placeholder="新增點子…" autocomplete="off" disabled /><button class="add-idea" type="button" id="addIdea" aria-label="新增點子" title="新增點子" disabled><span aria-hidden="true">＋</span></button></div>
+          <ul class="idea-list" id="ideaList" aria-label="點子與靈感清單"></ul>
+          <p class="idea-empty" id="ideaEmpty">還沒有點子。先寫下一句話，之後再慢慢整理。</p>
+          <div id="ideaUndo" class="idea-undo" hidden><span>已刪除一則點子。</span><button type="button" id="undoDelete">復原</button></div>
+        </section>
+        <div class="notebook-toolbar"><button class="note-button note-save" type="submit" disabled>儲存筆記</button><button class="note-button" type="button" id="downloadNotes" disabled>下載備份</button><p class="save-status" id="saveStatus" role="status" aria-live="polite">正在開啟點子本…</p></div>
+        <p class="notebook-storage">輸入後自動儲存，每個專案分開記錄。筆記只存在目前瀏覽器，不會跨裝置同步；可下載備份保留內容。</p>
+        <noscript><p>請啟用 JavaScript，才能編輯與儲存筆記。</p></noscript>
       </form>
     </article>
   </main>
-  <footer class="site-footer"><a href="../">生活實驗室 <span>LIFE LAB</span></a><p>這裡的作品皆為練習作品。</p></footer>
+  <footer class="site-footer"><a href="../">生活實驗室</a><span class="footer-divider" aria-hidden="true"></span><p>這裡的作品皆為練習作品</p></footer>
 </body>
 </html>
