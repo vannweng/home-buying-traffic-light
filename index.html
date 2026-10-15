@@ -3,26 +3,27 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#f7f5fb" data-light="#f7f5fb" data-dark="#15121f" />
-  <meta name="description" content="生活實驗室，收錄購屋紅綠燈、投資發大財、一天一英文等練習作品。把想學的、想搞懂的，做成小工具。" />
-  <title>生活實驗室｜把好奇心做成小工具</title>
+  <meta name="theme-color" content="#f5f2e9" data-light="#f5f2e9" data-dark="#1c241f" />
+  <meta name="description" content="生活實驗室，收錄購屋紅綠燈、投資發大財、一天一英文與翻頁之後等練習作品。把好奇，變成生活裡的小作品。" />
+  <title>生活實驗室｜把好奇變成生活裡的小作品</title>
   <script src="assets/theme.js"></script>
-  <link rel="stylesheet" href="assets/lab.css" />
+  <link rel="stylesheet" href="assets/journal.css" />
 </head>
 <body>
   <a class="skip-link" href="#main">跳到主要內容</a>
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="./" aria-label="生活實驗室首頁">
-        <span class="brand-icon"><svg aria-hidden="true"><use href="assets/icons.svg#flask" /></svg><i></i></span>
-        <span>生活<span class="brand-accent">實驗室</span></span>
+        <span class="leaf-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>生活實驗室</span>
       </a>
       <nav class="header-actions" aria-label="網站導覽">
-        <a class="explore-link" href="#works">探索作品 <span aria-hidden="true">↘</span></a>
+        <a class="explore-link" href="#works">作品</a>
+        <span class="nav-divider" aria-hidden="true"></span>
         <button class="theme-button" type="button" data-theme-toggle aria-label="切換至暗色模式" aria-pressed="false">
-          <svg aria-hidden="true" data-theme-icon="moon"><use href="assets/icons.svg#moon" /></svg>
-          <svg aria-hidden="true" data-theme-icon="sun" hidden><use href="assets/icons.svg#sun" /></svg>
-          <span data-theme-label>暗色</span>
+          <span class="mode-icon mode-light"><svg aria-hidden="true"><use href="assets/icons.svg#sun" /></svg></span>
+          <span class="mode-icon mode-dark"><svg aria-hidden="true"><use href="assets/icons.svg#moon" /></svg></span>
+          <span class="sr-only" data-theme-label>暗色</span>
         </button>
       </nav>
     </div>
@@ -30,40 +31,54 @@
   <main id="main" class="site-main">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <span class="eyebrow"><span class="status-dot"></span> 練習作品・持續探索中</span>
-        <h1 id="hero-title">把想學的、<br />想搞懂的，<br /><span class="headline-accent">做成小工具。</span></h1>
-        <p class="hero-description">這裡收錄我的練習作品，<br class="mobile-break" />從購屋判讀到投資與英文學習。</p>
-        <a class="primary-link" href="#works">探索練習作品 <svg aria-hidden="true"><use href="assets/icons.svg#arrow" /></svg></a>
-        <div class="hero-meta"><span><b>03</b> 個練習主題</span><span class="meta-divider"></span><span><i class="status-dot"></i><b>01</b> 件可體驗</span></div>
+        <p class="eyebrow">A LIFE EXPERIMENTS JOURNAL</p>
+        <h1 id="hero-title">把好奇，<br />變成生活裡的小作品。</h1>
+        <span class="title-rule" aria-hidden="true"></span>
+        <p class="hero-description">購屋、投資、英文與閱讀，<wbr />我的練習與探索。</p>
       </div>
-      <div class="hero-visual" aria-hidden="true">
-        <span class="visual-orbit orbit-one"></span><span class="visual-orbit orbit-two"></span>
-        <img src="assets/lab-illustration.svg" width="600" height="540" alt="" fetchpriority="high" />
-        <span class="visual-note"><span>✦</span> 讓好奇心，有個去處。</span>
+      <div class="css-illustration" aria-hidden="true">
+        <div class="illustration-scene">
+          <span class="paper-slip slip-back"></span><span class="paper-slip slip-front"></span>
+          <span class="little-sun"></span>
+          <span class="sprout"><i></i><i></i></span>
+          <div class="open-notebook"><span class="notebook-page page-left"></span><span class="notebook-page page-right"></span></div>
+          <span class="pencil"><i></i></span>
+        </div>
       </div>
     </section>
     <section id="works" class="works" aria-labelledby="works-title">
-      <div class="section-heading"><div><span class="section-kicker">THE EXPERIMENTS</span><h2 id="works-title">挑一個，開始探索。</h2></div><p>從生活裡的問題出發，<br />慢慢把想法做出來。</p></div>
+      <div class="section-heading">
+        <div><p class="section-kicker">PROJECTS</p><h2 id="works-title">四個關於生活的練習</h2></div>
+        <p class="section-description">從日常的提問出發，<br />把好奇變成行動，在生活裡慢慢實驗。</p>
+      </div>
       <div class="works-grid">
         <a class="work-card home-card" href="home-buying/" aria-labelledby="home-title" aria-describedby="home-description home-status">
-          <div class="card-top"><span class="work-icon"><svg aria-hidden="true"><use href="assets/icons.svg#house" /></svg></span><span class="topic-tag">購屋工具</span></div>
-          <div class="card-content"><span class="work-number">01 / HOME</span><h3 id="home-title">購屋紅綠燈</h3><p id="home-description">用公開成交紀錄比一比開價，<br />把建案觀察與看屋筆記一起收好。</p></div>
-          <div class="card-bottom"><span class="card-link">進入購屋紅綠燈 <svg aria-hidden="true"><use href="assets/icons.svg#arrow" /></svg></span><span id="home-status" class="work-status"><i class="status-dot"></i>可體驗</span></div>
+          <span class="work-number">01</span>
+          <div class="work-title-row"><h3 id="home-title">購屋紅綠燈</h3><span id="home-status" class="work-status available">可體驗</span></div>
+          <p id="home-description" class="work-description">開價比較・建案觀察・看屋筆記</p>
+          <span class="card-link"><span>進入作品</span><svg aria-hidden="true"><use href="assets/icons.svg#arrow" /></svg></span>
         </a>
         <a class="work-card investment-card" href="investment/" aria-labelledby="investment-title" aria-describedby="investment-description investment-status">
-          <div class="card-top"><span class="work-icon"><svg aria-hidden="true"><use href="assets/icons.svg#chart" /></svg></span><span class="topic-tag">投資探索</span></div>
-          <div class="card-content"><span class="work-number">02 / INVEST</span><h3 id="investment-title">投資發大財</h3><p id="investment-description">探索不同的投資方式，<br />整理想學的觀念與方法。</p></div>
-          <div class="card-bottom"><span class="card-link">看看作品方向 <svg aria-hidden="true"><use href="assets/icons.svg#arrow" /></svg></span><span id="investment-status" class="work-status planning">規劃中</span></div>
+          <span class="work-number">02</span>
+          <div class="work-title-row"><h3 id="investment-title">投資發大財</h3><span id="investment-status" class="work-status">規劃中</span></div>
+          <p id="investment-description" class="work-description">投資方式、想學的觀念與方法。</p>
+          <span class="card-link"><span>記錄方向與點子</span><svg aria-hidden="true"><use href="assets/icons.svg#arrow" /></svg></span>
         </a>
         <a class="work-card english-card" href="english/" aria-labelledby="english-title" aria-describedby="english-description english-status">
-          <div class="card-top"><span class="work-icon"><svg aria-hidden="true"><use href="assets/icons.svg#book" /></svg></span><span class="topic-tag">英文學習</span></div>
-          <div class="card-content"><span class="work-number">03 / ENGLISH</span><h3 id="english-title">一天一英文</h3><p id="english-description">從每天的一點練習開始，<br />探索適合自己的英文學習方式。</p></div>
-          <div class="card-bottom"><span class="card-link">看看作品方向 <svg aria-hidden="true"><use href="assets/icons.svg#arrow" /></svg></span><span id="english-status" class="work-status planning">規劃中</span></div>
+          <span class="work-number">03</span>
+          <div class="work-title-row"><h3 id="english-title">一天一英文</h3><span id="english-status" class="work-status">規劃中</span></div>
+          <p id="english-description" class="work-description">每日練習、學習方式與小靈感。</p>
+          <span class="card-link"><span>記錄方向與點子</span><svg aria-hidden="true"><use href="assets/icons.svg#arrow" /></svg></span>
+        </a>
+        <a class="work-card reading-card" href="reading/" aria-labelledby="reading-title" aria-describedby="reading-description reading-status">
+          <span class="work-number">04</span>
+          <div class="work-title-row"><h3 id="reading-title">翻頁之後</h3><span id="reading-status" class="work-status">規劃中</span></div>
+          <p id="reading-description" class="work-description">讀後感受、書中啟發與心得。</p>
+          <span class="card-link"><span>記錄方向與點子</span><svg aria-hidden="true"><use href="assets/icons.svg#arrow" /></svg></span>
         </a>
       </div>
     </section>
-    <div class="practice-note"><svg aria-hidden="true"><use href="assets/icons.svg#flask" /></svg><p>每一個作品，都是一次練習。<span>這裡的作品皆為練習作品。</span></p><span class="note-spark" aria-hidden="true">✦</span></div>
   </main>
-  <footer class="site-footer"><a href="./">生活實驗室 <span>LIFE LAB</span></a><p>保持好奇，慢慢做出來。</p><a class="back-top" href="#main">回到頂端 ↑</a></footer>
+  <footer class="site-footer"><a href="./">生活實驗室</a><span class="footer-divider" aria-hidden="true"></span><p>這裡的作品皆為練習作品</p><a class="back-top" href="#main">回到頂端 ↑</a></footer>
 </body>
 </html>

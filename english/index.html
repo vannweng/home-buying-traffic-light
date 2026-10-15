@@ -4,9 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#f7f5fb" data-light="#f7f5fb" data-dark="#15121f" />
-  <meta name="description" content="一天一英文是生活實驗室規劃中的練習作品。從每天的一點練習開始，探索適合自己的英文學習方式。" />
-  <title>一天一英文｜生活實驗室</title>
+  <meta name="description" content="一天一英文的專案點子本。記下方向與靈感，慢慢整理成下一個生活練習作品。" />
+  <title>一天一英文・專案點子本｜生活實驗室</title>
   <script src="../assets/theme.js"></script>
+  <script type="module" src="../assets/planner.mjs"></script>
   <link rel="stylesheet" href="../assets/lab.css" />
 </head>
 <body>
@@ -29,14 +30,35 @@
   </header>
   <main id="main" class="site-main project-main">
     <a class="breadcrumb" href="../#works">← 回到所有練習作品</a>
-    <article class="project-intro english-card" aria-labelledby="project-title">
-      <span class="work-icon"><svg aria-hidden="true"><use href="../assets/icons.svg#book" /></svg></span>
-      <span class="project-status"><i aria-hidden="true"></i>規劃中的練習作品</span>
-      <h1 id="project-title">一天一英文</h1>
+    <article class="project-intro planner-intro english-card" aria-labelledby="project-title">
+      <div class="planner-top">
+        <span class="work-icon"><svg aria-hidden="true"><use href="../assets/icons.svg#book" /></svg></span>
+        <div class="planner-heading"><span class="project-status"><i aria-hidden="true"></i>規劃中的練習作品</span><h1 id="project-title">一天一英文</h1></div>
+      </div>
       <p class="project-lead">從每天的一點練習開始，探索適合自己的英文學習方式。</p>
-      <section class="direction-box" aria-labelledby="direction-title"><h2 id="direction-title">先把方向記下來</h2><p>這個作品預計收錄一些學英文的方式。實際的練習內容與呈現方式，會在後續討論後再規劃。</p></section>
-      <a class="primary-link" href="../#works">回到生活實驗室 <svg aria-hidden="true"><use href="../assets/icons.svg#arrow" /></svg></a>
-      <p class="project-footnote">目前先提供作品介紹，功能尚未開放。</p>
+      <form class="notebook" data-project="english" data-project-title="一天一英文" aria-labelledby="notebook-title">
+        <div class="notebook-heading"><h2 id="notebook-title">專案點子本</h2><p>先留住想法，之後再慢慢整理。</p></div>
+        <div class="notebook-fields">
+          <div class="notebook-field">
+            <label for="planDirection"><span class="field-index" aria-hidden="true">01</span>方向與目標</label>
+            <p class="field-hint" id="directionHint">想往哪裡走？這個作品想完成什麼？</p>
+            <textarea id="planDirection" name="direction" rows="9" aria-describedby="directionHint" placeholder="例如：希望先練習聽、說、讀、寫的哪一部分？每天想花多少時間？" disabled></textarea>
+          </div>
+          <div class="notebook-field">
+            <label for="planIdeas"><span class="field-index" aria-hidden="true">02</span>點子與靈感</label>
+            <p class="field-hint" id="ideasHint">不必想完整，想到什麼就先寫下來。</p>
+            <textarea id="planIdeas" name="ideas" rows="9" aria-describedby="ideasHint" placeholder="想到的學習方式、有趣的練習題、想試試看的每日安排……
+零碎的靈感也可以先記下來。" disabled></textarea>
+          </div>
+        </div>
+        <div class="notebook-toolbar">
+          <button class="note-button note-save" type="submit" disabled>儲存筆記</button>
+          <button class="note-button" type="button" id="downloadNotes" disabled>下載備份</button>
+          <p class="save-status" id="saveStatus" role="status" aria-live="polite">正在開啟點子本…</p>
+        </div>
+        <p class="notebook-storage">輸入後會自動儲存，每個專案分開記錄。筆記只存在目前瀏覽器，不會跨裝置同步；可以下載備份保留內容。</p>
+        <noscript><p class="notebook-noscript">請啟用 JavaScript，才能編輯與儲存點子筆記。</p></noscript>
+      </form>
     </article>
   </main>
   <footer class="site-footer"><a href="../">生活實驗室 <span>LIFE LAB</span></a><p>這裡的作品皆為練習作品。</p></footer>
