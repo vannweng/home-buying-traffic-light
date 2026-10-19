@@ -2,4 +2,4 @@
 .lab-home-link:hover { text-decoration: underline; text-underline-offset: 4px; }
 .lab-home-link:focus-visible { outline: 2px solid currentColor; outline-offset: 5px; border-radius: 2px; }
 @media (max-width: 750px) { .top-right { gap: 12px; } .top-right .region-pill { display: none; } }
-@media (max-width: 380px) { .lab-home-link { font-size: 10px; } .top-right { gap: 8px; } }
+@media (max-width: 380px) { .lab-home-link { font-size: 12px; } .top-right { gap: 8px; } }

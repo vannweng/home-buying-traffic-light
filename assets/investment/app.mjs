@@ -1,4 +1,4 @@
-import { defaultPortfolio, portfolioInput, previewRebalance, previewContribution, simulatePortfolio } from './portfolio.mjs';
+import { ASSET_CURRENCIES, defaultPortfolio, portfolioInput, previewRebalance, previewContribution, simulatePortfolio } from './portfolio.mjs';
 import { defaultOptions, parseCloseCSV, evaluateSignal, contractGuide, evaluatePosition } from './options.mjs';
 
 const $ = selector => document.querySelector(selector);
@@ -92,8 +92,10 @@ function capturePortfolio() {
 }
 function renderAssetEditor() {
   $('#assetEditor').innerHTML = state.portfolioDraft.assets.map((a, i) => {
+    const currencies = ASSET_CURRENCIES.some(c => c.code === a.currency) ? ASSET_CURRENCIES : [...ASSET_CURRENCIES, { code: a.currency, name: '原有設定' }];
+    const currencySelect = `<label>原幣別<select aria-label="商品 ${i + 1} 原幣別" data-property="currency">${currencies.map(c => `<option value="${esc(c.code)}" title="${esc(c.name)}" aria-label="${esc(c.code)} ${esc(c.name)}"${c.code === a.currency ? ' selected' : ''}>${esc(c.code)}</option>`).join('')}</select></label>`;
     const input = (prop, title, type = 'text', attrs = '') => prop === 'value' ? `<div class="twd-field"><label for="asset-value-${i}">${title}</label><div class="twd-control"><input id="asset-value-${i}" aria-label="商品 ${i + 1} ${title}" data-property="value" type="text" inputmode="decimal" data-twd role="spinbutton" aria-valuemin="0" autocomplete="off" value="${esc(a[prop])}" /><input class="twd-native-stepper" type="number" step="1000" value="0" data-twd-native tabindex="-1" aria-hidden="true" /></div></div>` : `<label>${title}<input aria-label="商品 ${i + 1} ${title}" data-property="${prop}" type="${type}" value="${esc(a[prop])}" ${attrs} /></label>`;
-    return `<div class="asset-row" data-id="${esc(a.id)}">${input('symbol', '商品代號', 'text', 'maxlength="24"')}${input('name', '商品名稱', 'text', 'maxlength="100"')}${input('type', '類型', 'text', 'maxlength="20"')}${input('currency', '原幣別', 'text', 'maxlength="3"')}${input('value', '市值（TWD）', 'number', 'min="0" step="1000"')}${input('weight', '投資內比例（%）', 'number', 'min="0" max="100" step="0.01"')}${input('annual', '假設年化（%）', 'number', 'min="-100" max="1000" step="0.01"')}<button class="delete-asset" type="button" aria-label="刪除商品 ${esc(a.symbol || i + 1)}" title="刪除商品">×</button></div>`;
+    return `<div class="asset-row" data-id="${esc(a.id)}">${input('symbol', '商品代號', 'text', 'maxlength="24"')}${input('name', '商品名稱', 'text', 'maxlength="100"')}${input('type', '類型', 'text', 'maxlength="20"')}${currencySelect}${input('value', '市值（TWD）', 'number', 'min="0" step="1000"')}${input('weight', '投資內比例（%）', 'number', 'min="0" max="100" step="1"')}${input('annual', '假設年化（%）', 'number', 'min="-100" max="1000" step="1"')}<button class="delete-asset" type="button" aria-label="刪除商品 ${esc(a.symbol || i + 1)}" title="刪除商品">×</button></div>`;
   }).join('');
   $('#assetEditor').querySelectorAll('[data-twd]').forEach(formatTwd);
 }
@@ -144,7 +146,7 @@ document.querySelectorAll('[form="portfolioForm"]').forEach(el => el.addEventLis
 $('#addAsset').addEventListener('click', () => {
   capturePortfolio();
   if (state.portfolioDraft.assets.length >= 50) return errorAt('#portfolioError', '最多 50 項商品');
-  state.portfolioDraft.assets.push({ id: crypto.randomUUID(), symbol: '', name: '', type: 'ETF', currency: 'TWD', value: '0', weight: '0', annual: '0' });
+  state.portfolioDraft.assets.push({ id: crypto.randomUUID(), symbol: '', name: '', type: 'ETF', currency: 'USD', value: '0', weight: '0', annual: '0' });
   renderAssetEditor(); updatePreview(); invalidateSimulation(); saveSoon(); $('#assetEditor').lastElementChild.querySelector('input').focus();
 });
 $('#assetEditor').addEventListener('click', event => {
@@ -198,6 +200,10 @@ $('#exportSimulation').addEventListener('click', () => {
 });
 
 const optionMap = { symbol: ['settings', 'symbol'], lookback: ['settings', 'lookback'], drawdown: ['settings', 'drawdown_percent'], days: ['settings', 'days_to_expiry'], otm: ['settings', 'otm_percent'], mode: ['observation', 'mode'], current: ['observation', 'current_price'], high: ['observation', 'high_price'], highDate: ['observation', 'high_date'], quoteTime: ['observation', 'quoted_at'], contracts: ['position', 'contracts'], strike: ['position', 'strike'], expiration: ['position', 'expiration'], buy: ['position', 'buy_premium'], premium: ['position', 'current_premium'], premiumTime: ['position', 'quoted_at'], take: ['position', 'take_profit_percent'], stop: ['position', 'stop_loss_percent'] };
+function currentLocalQuoteTime() {
+  const now = new Date(), pad = value => String(value).padStart(2, '0');
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+}
 function captureOptions() {
   for (const [name, [group, key]] of Object.entries(optionMap)) {
     const input = optionForm.elements.namedItem(name), value = input.value;
@@ -208,14 +214,21 @@ function captureOptions() {
 function optionMode() { $('#manualHigh').hidden = optionForm.elements.mode.value !== 'manual'; $('#csvHigh').hidden = optionForm.elements.mode.value !== 'csv'; }
 function hydrateOptions() {
   for (const [name, [group, key]] of Object.entries(optionMap)) optionForm.elements.namedItem(name).value = state.options[group][key];
+  for (const [name, group] of [['quoteTime', 'observation'], ['premiumTime', 'position']]) {
+    const input = optionForm.elements.namedItem(name);
+    if (!input.value) { input.value = currentLocalQuoteTime(); state.options[group].quoted_at = input.value; }
+  }
   optionForm.elements.history.value = state.options.history_csv; optionForm.elements.qqq.value = state.options.qqq_price; optionMode();
 }
 function clearOptionResults() { for (const key of ['signal', 'contract', 'position']) { $(`#${key}Output`).replaceChildren(); errorAt(`#${key}Error`, null); } }
 optionForm.addEventListener('submit', e => e.preventDefault());
 optionForm.addEventListener('input', event => {
   if (event.target.name === 'symbol') {
-    for (const name of ['current', 'high', 'highDate', 'quoteTime', 'history']) optionForm.elements.namedItem(name).value = '';
+    for (const name of ['current', 'high', 'highDate', 'history']) optionForm.elements.namedItem(name).value = '';
+    optionForm.elements.quoteTime.value = currentLocalQuoteTime();
   }
+  if (event.target.name === 'current' && event.target.value !== '') optionForm.elements.quoteTime.value = currentLocalQuoteTime();
+  if (event.target.name === 'premium' && event.target.value !== '') optionForm.elements.premiumTime.value = currentLocalQuoteTime();
   if (event.target.name === 'lookback' && optionForm.elements.mode.value === 'manual') { optionForm.elements.high.value = ''; optionForm.elements.highDate.value = ''; }
   captureOptions(); optionMode(); clearOptionResults(); saveSoon();
 });

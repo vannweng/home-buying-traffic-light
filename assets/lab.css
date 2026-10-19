@@ -82,7 +82,7 @@ svg { display: block; width: 24px; height: 24px; flex-shrink: 0; }
 .visual-note > span { font-size: 24px; color: #eea65b; }
 .works { padding: 6px 0 0; }
 .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 27px; }
-.section-kicker { color: var(--purple); font: 700 11px ui-monospace, monospace; letter-spacing: .14em; }
+.section-kicker { color: var(--purple); font: 700 12px ui-monospace, monospace; letter-spacing: .14em; }
 .section-heading h2 { margin: 10px 0 0; font-size: 31px; font-weight: 900; letter-spacing: -.05em; }
 .section-heading > p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.8; }
 .works-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
@@ -113,7 +113,7 @@ svg { display: block; width: 24px; height: 24px; flex-shrink: 0; }
 .card-link { display: inline-flex; align-items: center; gap: 7px; color: var(--accent); font-size: 12px; font-weight: 800; }
 .card-link svg { width: 19px; height: 19px; transition: transform .2s; }
 .work-card:hover .card-link svg { transform: translateX(3px); }
-.work-status { display: inline-flex; align-items: center; gap: 5px; color: var(--green); font-size: 10px; white-space: nowrap; }
+.work-status { display: inline-flex; align-items: center; gap: 5px; color: var(--green); font-size: 12px; white-space: nowrap; }
 .work-status .status-dot { width: 5px; height: 5px; }
 .work-status.planning { color: var(--muted); }
 .practice-note { display: flex; align-items: center; gap: 16px; margin: 38px 0 54px; padding: 25px 28px; border: 1px dashed var(--line); border-radius: 20px; }
@@ -123,7 +123,7 @@ svg { display: block; width: 24px; height: 24px; flex-shrink: 0; }
 .note-spark { margin-left: auto; color: var(--purple); font-size: 27px; }
 .site-footer { display: flex; align-items: center; gap: 24px; padding: 24px 0 35px; border-top: 1px solid var(--line); }
 .site-footer > a:first-child { font-size: 12px; font-weight: 800; }
-.site-footer > a:first-child span { margin-left: 8px; color: var(--muted); font: 500 9px ui-monospace, monospace; letter-spacing: .12em; }
+.site-footer > a:first-child span { margin-left: 8px; color: var(--muted); font: 500 10px ui-monospace, monospace; letter-spacing: .12em; }
 .site-footer p { margin: 0; color: var(--muted); font-size: 11px; }
 .back-top { margin-left: auto; padding: 10px 0 10px 10px; font-size: 11px; color: var(--muted); }
 .project-main { padding-top: 42px; min-height: calc(100svh - 188px); }
@@ -151,7 +151,7 @@ svg { display: block; width: 24px; height: 24px; flex-shrink: 0; }
 .notebook-fields { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; }
 .notebook-field { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
 .notebook-field label { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 800; }
-.field-index { font: 600 11px ui-monospace, monospace; color: var(--purple); }
+.field-index { font: 600 12px ui-monospace, monospace; color: var(--purple); }
 .field-hint { margin: 0 0 4px; color: var(--muted); font-size: 12px; line-height: 1.7; }
 .notebook textarea { width: 100%; min-height: 280px; padding: 19px; border: 1px solid var(--line); border-radius: 17px; background: var(--surface-soft); color: var(--ink); font: 400 15px/1.95 'Noto Sans TC', system-ui, sans-serif; resize: vertical; }
 .notebook textarea::placeholder { color: var(--muted); opacity: .85; }
@@ -208,7 +208,7 @@ svg { display: block; width: 24px; height: 24px; flex-shrink: 0; }
   .card-content p { font-size: 14px; }
   .card-bottom { flex-direction: row; align-items: center; }
   .card-link { font-size: 13px; }
-  .work-status { font-size: 11px; }
+  .work-status { font-size: 12px; }
   .practice-note { margin: 28px 0 38px; padding: 21px; }
   .practice-note p span { display: block; margin: 6px 0 0; }
   .site-footer { flex-wrap: wrap; gap: 14px; padding-bottom: 25px; }
@@ -221,7 +221,7 @@ svg { display: block; width: 24px; height: 24px; flex-shrink: 0; }
   .planner-top .work-icon { width: 58px; height: 58px; border-radius: 19px; margin-top: 4px; }
   .planner-top .work-icon svg { width: 32px; height: 32px; }
   .planner-top h1 { font-size: 29px; }
-  .planner-top .project-status { font-size: 10px; padding: 6px 9px; }
+  .planner-top .project-status { font-size: 12px; padding: 6px 9px; }
   .planner-intro .project-lead { font-size: 14px; margin: 22px 0 25px; }
   .notebook-fields { grid-template-columns: 1fr; gap: 25px; }
   .notebook textarea { min-height: 220px; font-size: 16px; padding: 16px; }

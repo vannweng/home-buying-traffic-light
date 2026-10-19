@@ -64,6 +64,13 @@ test('simulation has month 0 to 120, excludes contributions from profit and cons
   for(const row of r.monthly_results){assert.equal(cents(row.total_value),cents(row.invest_value)+cents(row.cash_value));assert.equal(cents(row.total_value),cents(row.total_principal)+cents(row.investment_profit));assert.equal(row.cumulative_contributions,row.month*10000);assert.equal(row.assets.reduce((n,a)=>n+cents(a.current_value),0),cents(row.invest_value));}
   assert.equal(r.monthly_results[0].invest_value,700000);assert.equal(r.monthly_results[0].cash_value,300000);
 });
+test('trading currency accepts stablecoin codes without changing the TWD valuation',()=>{
+  const p=defaultPortfolio();
+  for(const code of ['TWD','USD','USDT','USDC','JPY','MYR']){
+    p.assets[0].currency=code;const value=portfolioInput(p);assert.equal(value.assets[0].currency,code);assert.equal(previewRebalance(value).total_value,1000000);
+  }
+  for(const code of ['usd','US$','TOOLONG',null,123]){p.assets[0].currency=code;assert.throws(()=>portfolioInput(p),/幣別/);}
+});
 test('zero-return simulation has no profit even with contributions and rebalancing',()=>{
   const s=simulation();s.assets.forEach(a=>a.expected_annual_return=0);
   const r=simulatePortfolio(s);assert.equal(r.summary.projected_final_value,2200000);assert.equal(r.summary.projected_profit,0);assert.equal(r.monthly_results.filter(r=>r.rebalance_executed).length,0);

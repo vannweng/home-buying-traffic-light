@@ -206,10 +206,10 @@ function renderViewingNotes() {
     actions.append(edit, remove);
     header.append(actions);
     const status = element('div', 'note-summary');
-    if (decision.failed.length) status.append(element('strong', 'note-reject', `建議跳過 · Tier 1 有 ${decision.failed.length} 項未通過`));
-    else status.append(element('strong', 'note-pass', 'Tier 1 通過'));
-    status.append(element('span', '', decision.score === null ? 'Tier 2：尚未評分' : `Tier 2：${decision.score} 分${decision.score < 75 ? ' · 未達 75 分' : ' · 達標'}`));
-    status.append(element('span', '', `Tier 3 裝修預備金：${number(decision.budget, 0)} 萬`));
+    if (decision.failed.length) status.append(element('strong', 'note-reject', `建議跳過 · 硬性門檻有 ${decision.failed.length} 項未通過`));
+    else status.append(element('strong', 'note-pass', '硬性門檻通過'));
+    status.append(element('span', '', decision.score === null ? '核心體驗：尚未評分' : `核心體驗：${decision.score} 分${decision.score < 75 ? ' · 未達 75 分' : ' · 達標'}`));
+    status.append(element('span', '', `裝修預備金：${number(decision.budget, 0)} 萬`));
     if (breakerFields.some((field) => note.breakers?.[field])) status.append(element('strong', 'note-reject', '踩雷物件'));
     card.append(header, status);
     if (note.tags?.length) card.append(element('p', 'note-card-tags', note.tags.map((tag) => `#${tag}`).join(' ')));

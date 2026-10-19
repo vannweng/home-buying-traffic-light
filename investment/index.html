@@ -10,6 +10,7 @@
   <script type="module" src="../assets/investment/app.mjs"></script>
   <link rel="stylesheet" href="../assets/journal.css" />
   <link rel="stylesheet" href="../assets/investment/toolkit.css" />
+  <link rel="stylesheet" href="../assets/controls.css?v=20261019-2" />
 </head>
 <body>
   <a class="skip-link" href="#main">跳到主要內容</a>
@@ -48,10 +49,10 @@
         <fieldset class="tool-section"><legend><span class="field-index">01</span> 使用者設定</legend>
           <div class="settings-grid">
             <label>組合名稱<input name="name" maxlength="80" autocomplete="off" /></label>
-            <label>目標投資比例（%）<input name="invest" type="number" min="0" max="100" step="0.01" required /></label>
-            <label>目標現金比例（%）<input name="cash" type="number" min="0" max="100" step="0.01" required /></label>
+            <label>目標投資比例（%）<input name="invest" type="number" min="0" max="100" step="1" required /></label>
+            <label>目標現金比例（%）<input name="cash" type="number" min="0" max="100" step="1" required /></label>
             <div class="twd-field"><label for="monthlyContribution">每月新增投入（TWD）</label><div class="twd-control"><input id="monthlyContribution" name="monthly" type="text" inputmode="decimal" data-twd role="spinbutton" aria-valuemin="0" autocomplete="off" required /><input class="twd-native-stepper" type="number" step="1000" value="0" data-twd-native tabindex="-1" aria-hidden="true" /></div></div>
-            <label>再平衡門檻（百分點）<input name="threshold" type="number" min="0" max="100" step="0.01" required /></label>
+            <label>再平衡門檻（百分點）<input name="threshold" type="number" min="0" max="100" step="1" required /></label>
             <div class="twd-field"><label for="currentCash">目前現金（TWD）</label><div class="twd-control"><input id="currentCash" name="cashValue" type="text" inputmode="decimal" data-twd role="spinbutton" aria-valuemin="0" autocomplete="off" required /><input class="twd-native-stepper" type="number" step="1000" value="0" data-twd-native tabindex="-1" aria-hidden="true" /></div></div>
           </div>
           <p class="help">每月檢查，偏離「超過」門檻才觸發。只提供交易預覽；實際投資／現金比例是唯一觸發條件。</p>
@@ -71,7 +72,7 @@
         <div class="section-top"><h2 id="simulationTitle"><span class="field-index">04</span> 未來資產情境</h2><button type="button" id="runSimulation" class="note-button note-save">計算情境</button></div>
         <div class="simulation-settings settings-grid">
           <label>模擬年數<select name="years" form="portfolioForm"><option value="5">5 年</option><option value="10">10 年</option><option value="20">20 年</option></select></label>
-          <label>現金年化報酬（%）<input name="cashReturn" form="portfolioForm" type="number" min="-100" max="1000" step="0.01" /></label>
+          <label>現金年化報酬（%）<input name="cashReturn" form="portfolioForm" type="number" min="-100" max="1000" step="1" /></label>
         </div>
         <p class="help">以目前總資產為起點，第 0 月依目標比例配置。每月先計算報酬，月底投入新資金並補足投資缺口，再檢查門檻。初始實際持倉的偏離不帶入本模擬。</p>
         <p class="assumption">固定報酬假設的情境試算，不是市場預測；未納入價格波動、匯率、交易費用及稅費。金額以新臺幣分計算，每月四捨五入。</p>
@@ -86,19 +87,19 @@
           <div class="settings-grid">
             <label>訊號觀察標的<select name="symbol"><option value="NDX">Nasdaq-100（NDX）</option><option value="QQQ">QQQ ETF</option></select></label>
             <label>高點觀察期間<select name="lookback"><option value="20">20 個交易日</option><option value="60">60 個交易日</option><option value="252">252 個交易日</option></select></label>
-            <label>從高點回落（%）<input name="drawdown" type="number" min="0.01" max="99.99" step="0.01" /></label>
+            <label>從高點回落（%）<input name="drawdown" type="number" min="1" max="99.99" step="1" /></label>
             <label>高點資料來源<select name="mode"><option value="manual">手動填入高點</option><option value="csv">每日收盤 CSV</option></select></label>
           </div>
           <p class="help">20／60／252 個交易日約對應 1 個月／3 個月／1 年，提供不同觀察尺度，不代表特定期間比較準確。</p>
           <div id="manualHigh" class="settings-grid two-columns"><label>期間最高收盤價<input name="high" type="number" min="0.0001" step="any" /></label><label>最高收盤價日期<input name="highDate" type="date" /></label></div>
           <div id="csvHigh" hidden><div class="actions"><label class="note-button file-label">匯入收盤 CSV<input id="importCloses" type="file" accept=".csv,text/csv" /></label><button type="button" class="text-button" id="csvTemplate">下載格式範本</button></div><label>每日收盤資料<textarea name="history" rows="4" placeholder="date,close&#10;2026-01-02,100.25"></textarea></label><p class="help">只放所選標的資料，每個交易日一筆；需有足夠的已完成交易日，系統不會補齊缺漏。取報價美東日期之前最近 N 筆資料的最高收盤價，CSV 與現價須使用一致的價格口徑。</p></div>
           <div class="settings-grid two-columns"><label>觀察標的目前價格<input name="current" type="number" min="0.0001" step="any" /></label><label>目前價格的報價時間（本地時間）<input name="quoteTime" type="datetime-local" /></label></div>
-          <p class="help">手動高點的期間須自行核對。收盤前開啟本頁並更新價格後檢查；不會自動取得即時行情或背景推播。超過 15 分鐘的報價會標記為待更新。</p>
+          <p class="help">輸入價格時自動帶入本地當下時間，可依實際報價時間修改。手動高點的期間須自行核對。收盤前開啟本頁並更新價格後檢查；不會自動取得即時行情或背景推播。超過 15 分鐘的報價會標記為待更新。</p>
           <button type="button" id="checkSignal" class="note-button note-save">檢查進場條件</button>
           <p id="signalError" class="error-box" role="alert" hidden></p><div id="signalOutput" aria-live="polite"></div>
         </fieldset>
         <fieldset class="tool-section"><legend><span class="field-index">02</span> QQQ Call 合約參考</legend>
-          <div class="settings-grid"><label>QQQ 現價（USD）<input name="qqq" type="number" min="0.0001" step="any" /></label><label>希望距到期日（曆日）<input name="days" type="number" min="1" max="1095" step="1" /></label><label>價外幅度（%）<input name="otm" type="number" min="0" max="100" step="0.01" /></label></div>
+          <div class="settings-grid"><label>QQQ 現價（USD）<input name="qqq" type="number" min="0.0001" step="any" /></label><label>希望距到期日（曆日）<input name="days" type="number" min="1" max="1095" step="1" /></label><label>價外幅度（%）<input name="otm" type="number" min="0" max="100" step="1" /></label></div>
           <button type="button" id="checkContract" class="note-button">計算參考條件</button><p id="contractError" class="error-box" role="alert" hidden></p><div id="contractOutput" aria-live="polite"></div>
           <p class="help">提供日期與履約價搜尋起點；實際可交易合約、買賣價差及流動性須在券商確認。本工具沒有期權鏈，無法保證該日期或履約價有掛牌合約。</p>
         </fieldset>
@@ -106,11 +107,11 @@
           <div class="settings-grid">
             <label>持倉口數<input name="contracts" type="number" min="1" max="10000" step="1" /></label><label>實際履約價（USD）<input name="strike" type="number" min="0.01" step="any" /></label><label>實際到期日<input name="expiration" type="date" /></label>
             <label>平均買入權利金（每股 USD）<input name="buy" type="number" min="0.01" step="any" /></label><label>目前權利金（每股 USD）<input name="premium" type="number" min="0" step="any" /></label><label>權利金報價時間（本地時間）<input name="premiumTime" type="datetime-local" /></label>
-            <label>停利漲幅（%）<input name="take" type="number" min="0.01" step="0.01" /></label><label>停損跌幅（%）<input name="stop" type="number" min="0.01" max="100" step="0.01" /></label>
+            <label>停利漲幅（%）<input name="take" type="number" min="1" step="1" /></label><label>停損跌幅（%）<input name="stop" type="number" min="1" max="100" step="1" /></label>
           </div>
           <button type="button" id="checkPosition" class="note-button note-save">檢查持倉</button><p id="positionError" class="error-box" role="alert" hidden></p><div id="positionOutput" aria-live="polite"></div>
           <p class="assumption">以一口 100 股的標準合約試算，未含費用；停損門檻不代表能以該價格成交。買入 Call 可能損失全部權利金，價格同時受時間與隱含波動率影響。到期前須自行確認平倉或行權安排。</p>
-          <p class="help">停利賣出部分後，請更新剩餘口數；剩餘部位的出場規則尚未另設，需自行決定。</p>
+          <p class="help">輸入目前權利金時自動帶入本地當下時間，可依實際報價時間修改。停利賣出部分後，請更新剩餘口數；剩餘部位的出場規則尚未另設，需自行決定。</p>
         </fieldset>
       </form>
       <p class="help">策略設定來自本專案討論，尚未經歷史期權資料驗證。參考：<a class="inline-link" href="https://www.optionseducation.org/optionsoverview/leverage-risk" target="_blank" rel="noopener noreferrer">期權業協會：槓桿與風險</a>、<a class="inline-link" href="https://www.theocc.com/company-information/documents-and-archives/options-disclosure-document" target="_blank" rel="noopener noreferrer">OCC 期權風險說明</a>。</p>

@@ -2,6 +2,13 @@
 const SCALE = 1_000_000_000n;
 // Keep public JSON number values safely round-trippable at cent precision.
 const MAX_CENTS = 100_000_000_000_000n;
+export const ASSET_CURRENCIES = [
+  { code: 'TWD', name: '新臺幣' }, { code: 'USD', name: '美元' }, { code: 'USDT', name: '泰達幣' },
+  { code: 'EUR', name: '歐元' }, { code: 'JPY', name: '日圓' }, { code: 'HKD', name: '港幣' },
+  { code: 'CNY', name: '人民幣' }, { code: 'SGD', name: '新加坡幣' }, { code: 'GBP', name: '英鎊' },
+  { code: 'AUD', name: '澳幣' }, { code: 'CAD', name: '加拿大幣' }, { code: 'CHF', name: '瑞士法郎' },
+  { code: 'KRW', name: '韓元' }, { code: 'NZD', name: '紐西蘭幣' }, { code: 'USDC', name: 'USDC' },
+];
 const abs = n => n < 0n ? -n : n;
 function fixed(value, places, label) {
   if (typeof value !== 'number' && typeof value !== 'string') throw Error(`${label}必須是數字`);
@@ -171,7 +178,7 @@ export function portfolioInput(portfolio) {
   previewRebalance(input);
   money(input.monthly_contribution, '每月投入'); integer(input.simulation_years, 1, 50, '模擬年數');
   annual(input.cash_annual_return ?? 0, '現金年化報酬');
-  if (new Set(portfolio.assets.map(a => a.id)).size !== portfolio.assets.length || portfolio.assets.some(a => typeof a.id !== 'string' || !a.id || typeof a.name !== 'string' || typeof a.type !== 'string' || !/^[A-Z]{3}$/.test(a.currency))) throw Error('商品需要唯一 ID、名稱、類型與三碼幣別');
+  if (new Set(portfolio.assets.map(a => a.id)).size !== portfolio.assets.length || portfolio.assets.some(a => typeof a.id !== 'string' || !a.id || typeof a.name !== 'string' || typeof a.type !== 'string' || typeof a.currency !== 'string' || !/^[A-Z]{3,5}$/.test(a.currency))) throw Error('商品需要唯一 ID、名稱、類型與有效幣別代碼（3 至 5 碼大寫英文字母）');
   portfolio.assets.forEach(a => annual(a.expected_annual_return, `${a.symbol} 年化報酬`));
   return input;
 }

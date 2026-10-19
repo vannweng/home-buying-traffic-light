@@ -1,0 +1,144 @@
+/* Shared field boundaries and select spacing across every project. */
+small { font-size: max(10px, .875em); }
+:root {
+  --field-font-family: 'Noto Sans TC', system-ui, sans-serif;
+  --field-label-size: 12px;
+  --field-label-line: 20px;
+  --field-label-weight: 500;
+  --field-text-size: 16px;
+  --field-text-line: 24px;
+  --field-height: 44px;
+  --field-inset: 12px;
+  --field-unit-gap: 8px;
+  --field-label-gap: 6px;
+  --field-row-gap: 12px;
+  --field-textarea-height: 92px;
+  --control-border: #768878;
+  --control-focus: #385d45;
+  --control-option-bg: #fffdf5;
+  --control-option-ink: #233e30;
+}
+:root[data-theme="dark"] {
+  --control-border: #8a9e8d;
+  --control-focus: #c3dfb6;
+  --control-option-bg: #1e3023;
+  --control-option-ink: #f0f5e9;
+}
+:root body select:not([multiple]):not([size]) {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-inline: 12px 44px;
+  border-color: var(--control-border);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='m1 1.5 6 6 6-6' fill='none' stroke='%23334f3b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 14px 9px;
+}
+:root[data-theme="dark"] body select:not([multiple]):not([size]) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='m1 1.5 6 6 6-6' fill='none' stroke='%23edf5e5' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+:root body select:focus-visible {
+  outline: 2px solid var(--control-focus);
+  outline-offset: 2px;
+}
+:root body select option {
+  background: var(--control-option-bg);
+  color: var(--control-option-ink);
+}
+
+/* Shared form typography and dimensions. See DESIGN_SYSTEM.md. */
+:root body :is(
+  input:not([type="checkbox"], [type="radio"], [type="file"], [type="hidden"], [type="range"], [type="button"], [type="submit"], [type="reset"], [type="color"], .twd-native-stepper),
+  select,
+  textarea
+) {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  font: 400 var(--field-text-size)/var(--field-text-line) var(--field-font-family);
+  letter-spacing: normal;
+  padding: 9px var(--field-inset);
+}
+:root body :is(
+  input:not([type="checkbox"], [type="radio"], [type="file"], [type="hidden"], [type="range"], [type="button"], [type="submit"], [type="reset"], [type="color"], .twd-native-stepper),
+  select:not([multiple]):not([size])
+) {
+  height: var(--field-height);
+  min-height: var(--field-height);
+}
+:root body :is(input, textarea)::placeholder { font: inherit; opacity: 1; }
+:root body textarea { min-height: var(--field-textarea-height); resize: vertical; }
+:root body :is(
+  label:has(> input:not([type="checkbox"], [type="radio"], [type="file"], [type="hidden"])),
+  label:has(> select),
+  label:has(> textarea),
+  label:has(> .input-unit),
+  .field-label,
+  .twd-field > label,
+  .watchlist-picker > label,
+  .trend-controls > label
+):not(.sr-only, .file-label) {
+  min-height: var(--field-label-line);
+  font: var(--field-label-weight) var(--field-label-size)/var(--field-label-line) var(--field-font-family);
+  letter-spacing: normal;
+  gap: var(--field-label-gap);
+}
+:root body .field-label { margin-bottom: var(--field-label-gap); }
+:root body .twd-field { gap: var(--field-label-gap); }
+:root body :is(.settings-grid, .note-basics, .quick-numbers, .note-ratings, .note-costs) {
+  align-items: end;
+  row-gap: var(--field-row-gap);
+}
+:root body :is(.watchlist-picker, .trend-controls) { gap: var(--field-label-gap) 12px; }
+:root body :is(.watchlist-picker, .trend-controls) > button,
+:root body .delete-asset { height: var(--field-height); }
+
+/* Composite controls have one 44px boundary, including its 1px borders. */
+:root body :is(.input-unit, .search-wrap, .idea-composer) {
+  box-sizing: border-box;
+  height: var(--field-height);
+  min-height: var(--field-height);
+  padding: 0;
+}
+:root body :is(.input-unit, .search-wrap, .idea-composer) > input:not(.twd-native-stepper) {
+  height: calc(var(--field-height) - 2px);
+  min-height: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+}
+:root body .input-unit {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--field-unit-gap);
+  align-items: center;
+  width: 100%;
+}
+:root body .input-unit > input {
+  width: 100%;
+  min-width: 0;
+}
+:root body .input-unit > span {
+  position: static;
+  flex: 0 0 auto;
+  padding-right: var(--field-inset);
+  font: 400 var(--field-label-size)/var(--field-label-line) var(--field-font-family);
+  color: var(--muted);
+  white-space: nowrap;
+}
+:root body .search-icon { margin-left: var(--field-inset); }
+:root body .search-wrap button { margin-right: 5px; }
+:root body .idea-composer { grid-template-columns: minmax(0, 1fr) 42px; }
+:root body .idea-composer .add-idea { min-height: 0; }
+:root body .idea-row { align-items: start; }
+:root body .idea-row :is(.idea-check, .idea-tool) { height: var(--field-height); }
+:root body .notebook .idea-text {
+  min-height: var(--field-height);
+  resize: none;
+  padding: 9px var(--field-inset);
+}
+/* Decorative TWD native steppers and hidden upload inputs retain their size. */
+:root body .twd-control input[data-twd] { padding-right: 36px; }
+:root body select:not([multiple]):not([size]) { padding-right: 44px; }
+:root body select option { font: 400 var(--field-text-size)/var(--field-text-line) var(--field-font-family); }
+:root body input[type="number"]::-webkit-inner-spin-button { height: 22px; opacity: 1; margin: 0; }
